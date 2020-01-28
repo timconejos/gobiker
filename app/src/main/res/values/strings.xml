@@ -1,3 +1,67 @@
 <resources>
     <string name="app_name">Go Biker</string>
+
+    <!--    COMMON -->
+    <string name="next">Next</string>
+    <string name="back">Back</string>
+    <string name="done">Done</string>
+    <string name="success">Success!</string>
+    <string name="ok">Ok</string>
+
+
+    <!--    HOME    -->
+    <string name="feed">Feed</string>
+    <string name="home">Home</string>
+    <string name="rides">Rides</string>
+    <string name="challenges">Challenges</string>
+    <string name="profile">Profile</string>
+
+
+    <!--    PROFILE     -->
+    <string name="edit_prof">Edit profile</string>
+    <string name="hometown">Hometown</string>
+    <string name="name">Name</string>
+    <string name="change_prof_pic">Change profile picture</string>
+
+    <!--    LOGIN SCREEN STRINGS -->
+    <string name="title_activity_main_login">Sign in</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Login</string>
+    <string name="action_sign_up">Sign Up</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="welcome">"Welcome !"</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="login_failed">"Login failed"</string>
+    <string name="connect_with">Or connect with</string>
+    <string name="facebook">Facebook</string>
+    <string name="google">Google</string>
+    <string name="no_account_q">"Don't have an account? Sign up now!"</string>
+    <string name="forgot_password">"Forgot Password?"</string>
+
+    <!--    CREATE ACCCOUNT STRINGS -->
+
+    <string name="create_an_acc">Create an account</string>
+    <string name="phone_num">Phone Number</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="alrdy_have_acc">I already have an account</string>
+    <string name="continue_reg">Continue Registration</string>
+    <string name="cancel_reg">Cancel Registration</string>
+    <string name="verify_acc">Verify your account</string>
+    <string name="enter_verification_email">Please enter the verification code we sent to your email</string>
+    <string name="enter_verification_sms">Please enter the verification code we sent to your mobile number</string>
+    <string name="account_verified">Account Verified</string>
+
+    <!--    RESET PASSWORD -->
+    <string name="pls_enter_email">Please enter your email address.</string>
+    <string name="pls_enter_sms">Please enter your phone number.</string>
+    <string name="email_sent">Email sent!</string>
+    <string name="sms_sent">SMS sent!</string>
+    <string name="pls_check_email">Please check your email to reset your password.</string>
+    <string name="pls_check_sms">Please check your phone to reset your password.</string>
+    <string name="rmb_password">I remember my password</string>
+    <string name="reset_pw">Reset your password</string>
+
+
 </resources>
