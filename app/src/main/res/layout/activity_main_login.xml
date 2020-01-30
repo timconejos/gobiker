@@ -61,7 +61,7 @@
                 android:selectAllOnFocus="true" />
 
             <Button
-                android:id="@+id/login"
+                android:id="@+id/continueLogin"
                 style="@style/PrimaryBtn.Positive"
                 android:layout_width="@android:dimen/thumbnail_width"
                 android:layout_height="wrap_content"
