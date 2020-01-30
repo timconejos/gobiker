@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:dist="http://schemas.android.com/apk/distribution"
     package="ph.com.team.gobiker">
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <dist:module dist:instant="true" />
 
@@ -29,6 +30,7 @@
             android:name=".ui.login.MainLoginActivity"
             android:label="@string/title_activity_main_login" />
         <activity android:name=".MainActivity" />
+        <activity android:name=".HomeActivity"/>
     </application>
 
 </manifest>
