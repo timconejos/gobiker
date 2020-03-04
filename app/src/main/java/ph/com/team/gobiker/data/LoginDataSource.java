@@ -21,16 +21,24 @@ import java.io.IOException;
 public class LoginDataSource {
 
     private FirebaseAuth mAuth;
+    private static boolean loginSuccess;
     public Result<LoggedInUser> login(String username, String password) {
 
         try {
             // TODO: handle loggedInUser authentication
-            firebaseAuthenticate(username, password);
+            String uid = firebaseAuthenticate(username, password);
             LoggedInUser fakeUser =
                     new LoggedInUser(
                             java.util.UUID.randomUUID().toString(),
                             "Jane Doe");
-            return new Result.Success<>(fakeUser);
+
+            if(loginSuccess){
+                return new Result.Success<>(new LoggedInUser(uid, "Sample"));
+            }
+            else{
+                return new Result.Error(new IOException("Invalid Username or password"));
+            }
+
         } catch (Exception e) {
             return new Result.Error(new IOException("Error logging in", e));
         }
@@ -40,20 +48,19 @@ public class LoginDataSource {
         // TODO: revoke authentication
     }
 
-    private void firebaseAuthenticate(String username, String password){
+    private String firebaseAuthenticate(String username, String password){
         mAuth = FirebaseAuth.getInstance();
         mAuth.signInWithEmailAndPassword(username,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
-                    Log.d("yay", "yay");
-
+                    loginSuccess = true;
                 }
                 else{
-                    Log.d("yay", "nay");
-                    Log.d("yay", task.getException().getMessage());
+                    loginSuccess = false;
                 }
             }
         });
+        return FirebaseAuth.getInstance().getCurrentUser().getUid().isEmpty() || FirebaseAuth.getInstance().getCurrentUser().getUid() == null ? FirebaseAuth.getInstance().getCurrentUser().getUid() : "";
     }
 }

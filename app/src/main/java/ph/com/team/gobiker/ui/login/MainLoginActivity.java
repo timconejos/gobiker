@@ -3,7 +3,6 @@ package ph.com.team.gobiker.ui.login;
 import android.app.Activity;
 
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.content.Intent;
@@ -24,10 +23,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import ph.com.team.gobiker.HomeActivity;
+import ph.com.team.gobiker.MainPageActivity;
 import ph.com.team.gobiker.R;
-import ph.com.team.gobiker.ui.login.LoginViewModel;
-import ph.com.team.gobiker.ui.login.LoginViewModelFactory;
+import ph.com.team.gobiker.MapsActivity;
 
 public class MainLoginActivity extends AppCompatActivity {
 
@@ -77,7 +75,7 @@ public class MainLoginActivity extends AppCompatActivity {
                 setResult(Activity.RESULT_OK);
 
                 //Complete and destroy login activity once successful
-                startActivity(new Intent(MainLoginActivity.this, HomeActivity.class));
+                startActivity(new Intent(MainLoginActivity.this, MainPageActivity.class));
                 finish();
             }
         });
