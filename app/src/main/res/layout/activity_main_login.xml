@@ -47,7 +47,7 @@
                 android:selectAllOnFocus="true" />
 
             <EditText
-                android:id="@+id/password"
+                android:id="@+id/login_password"
                 style="@style/CustomTextInput.Dark"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
@@ -70,7 +70,6 @@
                 android:layout_marginTop="30dp"
                 android:layout_marginEnd="48dp"
                 android:layout_marginBottom="6dp"
-                android:enabled="false"
                 android:text="@string/action_sign_in" />
 
             <TextView
@@ -104,6 +103,7 @@
             </LinearLayout>
 
             <Button
+                android:id="@+id/login_no_account"
                 style="@style/TransparentBtn.Negative"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -111,14 +111,14 @@
                 android:text="@string/no_account_q" />
 
             <Button
+                android:id="@+id/login_forgot_pass"
                 style="@style/TransparentBtn.Negative"
                 android:layout_width="wrap_content"
+
                 android:layout_height="wrap_content"
-
                 android:layout_gravity="center"
-                android:text="@string/forgot_password"
 
-                />
+                android:text="@string/forgot_password" />
 
 
             <ProgressBar
