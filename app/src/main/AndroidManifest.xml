@@ -15,9 +15,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".CommentsActivity"></activity>
+        <activity android:name=".CommentActivity" />
+        <activity android:name=".PostActivity" />
+        <activity android:name=".ClickPostActivity" />
         <activity
             android:name=".NavActivity"
-            android:label="@string/title_activity_nav"></activity>
+            android:label="@string/title_activity_nav" />
         <activity android:name=".ResetPassword" />
         <activity android:name=".ForgotEmailSent" />
         <activity android:name=".ForgotPassword" />
