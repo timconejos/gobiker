@@ -5,35 +5,69 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".PostActivity">
-    <ImageButton
-        android:id="@+id/select_post_image"
-        android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:layout_marginTop="110dp"
-        android:scaleType="fitCenter"
-        app:srcCompat="@drawable/select_image" />
 
-    <EditText
-        android:id="@+id/post_description"
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar_top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="450dp"
-        android:background="@drawable/inputs"
-        android:ems="10"
-        android:gravity="start|top"
-        android:hint="Write something about your image"
-        android:inputType="textMultiLine"
-        android:padding="15dp" />
+        android:theme="@style/ToolbarTheme"
+        android:minHeight="?attr/actionBarSize">
 
-    <Button
-        android:id="@+id/update_post_button"
-        android:layout_width="200dp"
+        <TextView
+            android:id="@+id/create_post"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/create_post" />
+
+        <Button
+            style="@style/TransparentBtn"
+            android:layout_gravity="end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/save"
+            android:id="@+id/update_post_button"/>
+
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="200dp"
-        android:layout_marginTop="550dp"
-        android:background="@drawable/button"
-        android:padding="10dp"
-        android:text="Update Post"
-        android:textColor="@android:color/background_light"
-        android:textSize="18sp" />
+        android:layout_below="@id/toolbar_top"
+        android:orientation="vertical">
+        <EditText
+            android:id="@+id/post_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/inputs"
+            android:ems="10"
+            android:gravity="start|top"
+            android:hint="Write something about your image"
+            android:inputType="textMultiLine"
+            android:padding="15dp" />
+        <ImageButton
+            android:id="@+id/select_post_image"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_marginTop="0dp"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/select_image" />
+
+
+
+<!--        <Button-->
+<!--            android:id="@+id/update_post_button"-->
+<!--            android:layout_width="200dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginLeft="200dp"-->
+
+<!--            android:background="@drawable/button"-->
+<!--            android:padding="10dp"-->
+<!--            android:text="Update Post"-->
+<!--            android:textColor="@android:color/background_light"-->
+<!--            android:textSize="18sp" />-->
+    </LinearLayout>
+
 </RelativeLayout>

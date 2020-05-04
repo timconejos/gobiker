@@ -2,6 +2,7 @@ package ph.com.team.gobiker.ui.home;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -25,6 +27,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -46,7 +49,7 @@ import ph.com.team.gobiker.ui.login.MainLoginActivity;
 public class HomeFragment extends Fragment {
 
     private HomeViewModel homeViewModel;
-    private Button addNewPost;
+    private FloatingActionButton addNewPost;
     private NavigationView navigationView;
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle actionBarDrawerToggle;
@@ -116,8 +119,8 @@ public class HomeFragment extends Fragment {
                         final String PostKey = getRef(position).getKey();
 
                         viewHolder.setFullname(posts.getFullname());
-                        viewHolder.setTime(posts.getTime());
-                        viewHolder.setDate(posts.getDate());
+                        viewHolder.setTime(posts.getTime(), posts.getDate());
+//                        viewHolder.setDate();
                         viewHolder.setDescription(posts.getDescription());
                         //viewHolder.setProfileimage(getApplicationContext(),posts.getProfileimage());
                         viewHolder.setPostimage(getActivity().getApplicationContext(),posts.getPostimage());
@@ -133,7 +136,7 @@ public class HomeFragment extends Fragment {
                             }
                         });
 
-                        viewHolder.CommentPostButton.setOnClickListener(new View.OnClickListener() {
+                        viewHolder.CommentBtn.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
                                 Intent commentsIntent = new Intent(getActivity(), CommentsActivity.class);
@@ -142,7 +145,7 @@ public class HomeFragment extends Fragment {
                             }
                         });
 
-                        viewHolder.LikepostButton.setOnClickListener(new View.OnClickListener() {
+                        viewHolder.LikeBtn.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
                                 LikeChecker = true;
@@ -176,6 +179,7 @@ public class HomeFragment extends Fragment {
     public static class PostsViewHolder extends RecyclerView.ViewHolder{
         View mView;
         ImageButton LikepostButton, CommentPostButton;
+        Button LikeBtn, CommentBtn;
         TextView DisplayNoOfLikes;
         int countLikes;
         String currentUserId;
@@ -184,9 +188,11 @@ public class HomeFragment extends Fragment {
         public PostsViewHolder(View itemView){
             super(itemView);
             mView = itemView;
-            LikepostButton = mView.findViewById(R.id.like_button);
-            CommentPostButton = mView.findViewById(R.id.comment_button);
-            DisplayNoOfLikes = mView.findViewById(R.id.display_no_of_likes);
+            LikeBtn = mView.findViewById(R.id.like_button);
+            CommentBtn = mView.findViewById(R.id.comment_button);
+//            LikepostButton = mView.findViewById(R.id.like_button);
+//            CommentPostButton = mView.findViewById(R.id.comment_button);
+//            DisplayNoOfLikes = mView.findViewById(R.id.like_button);
 
             LikesRef = FirebaseDatabase.getInstance().getReference().child("Likes");
             currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -194,17 +200,24 @@ public class HomeFragment extends Fragment {
 
         public void setLikeButtonStatus(final String PostKey){
             LikesRef.addValueEventListener(new ValueEventListener() {
+                @RequiresApi(api = Build.VERSION_CODES.M)
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    Context context = null;
                     if(dataSnapshot.child(PostKey).hasChild(currentUserId)){
                         countLikes = (int) dataSnapshot.child(PostKey).getChildrenCount();
-                        LikepostButton.setImageResource(R.drawable.like);
-                        DisplayNoOfLikes.setText(Integer.toString(countLikes));
+                        LikeBtn.setText(Integer.toString(countLikes)+" Likes");
+//                        LikeBtn.setBackgroundResource(R.drawable.btn);
+                        LikeBtn.setTextAppearance(R.style.TransparentBtn_Like);
+//                        LikepostButton.setImageResource(R.drawable.ic_favorite_black_24dp);
+//                        DisplayNoOfLikes.setText(Integer.toString(countLikes));
                     }
                     else{
                         countLikes = (int) dataSnapshot.child(PostKey).getChildrenCount();
-                        LikepostButton.setImageResource(R.drawable.dislike);
-                        DisplayNoOfLikes.setText(Integer.toString(countLikes));
+                        LikeBtn.setText(Integer.toString(countLikes)+" Likes");
+                        LikeBtn.setTextAppearance(R.style.TransparentBtn_Unlike);
+//                        LikepostButton.setImageResource(R.drawable.ic_favorite_border_black_24dp);
+//                        DisplayNoOfLikes.setText(Integer.toString(countLikes));
                     }
                 }
 
@@ -224,14 +237,14 @@ public class HomeFragment extends Fragment {
             CircleImageView image = (CircleImageView) mView.findViewById(R.id.post_profile_image);
             Picasso.with(ctx).load(profileimage).into(image);
         }
-        public void setTime(String time) {
+        public void setTime(String time, String date) {
             TextView PostTime = (TextView) mView.findViewById(R.id.post_time);
-            PostTime.setText("   "+time);
+            PostTime.setText(date+" "+time);
         }
-        public void setDate(String date) {
-            TextView PostDate = (TextView) mView.findViewById(R.id.post_date);
-            PostDate.setText("   "+date);
-        }
+//        public void setDate(String date) {
+//            TextView PostDate = (TextView) mView.findViewById(R.id.post_date);
+//            PostDate.setText("   "+date);
+//        }
 
         public void setDescription(String description) {
             TextView PostDescription = (TextView) mView.findViewById(R.id.post_description);

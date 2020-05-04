@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
     android:layout_height="wrap_content">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginBottom="4dp"
+        android:layout_marginBottom="6dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:background="@drawable/post_border"
-        android:layout_marginTop="10dp">
+        android:background="@color/white">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -18,12 +18,14 @@
             android:padding="5dp"
             android:orientation="horizontal">
             <de.hdodenhof.circleimageview.CircleImageView
-                android:layout_width="60dp"
-                android:layout_height="60dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:src="@drawable/profile"
                 android:id="@+id/post_profile_image"
                 android:scaleType="centerCrop"
-                android:layout_marginLeft="4dp"/>
+                android:layout_marginLeft="4dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="4dp"/>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -33,34 +35,32 @@
                     android:layout_height="wrap_content"
                     android:text="user_name"
                     android:id="@+id/post_user_name"
-                    android:layout_marginLeft="5dp"
                     android:layout_marginTop="8dp"
                     android:textAlignment="textStart"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:textColor="@android:color/black"/>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginLeft="5dp"
-                    android:padding="2dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Date"
-                        android:textColor="@android:color/black"
-                        android:textSize="13sp"
-                        android:id="@+id/post_date"/>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Time"
-                        android:textColor="@android:color/black"
-                        android:textSize="13sp"
-                        android:id="@+id/post_time"/>
-                </LinearLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Date"
+                    android:textColor="@color/subtitleText"
+                    android:textSize="12sp"
+                    android:id="@+id/post_time"/>
+<!--                <LinearLayout-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:orientation="horizontal">-->
+
+<!--                    <TextView-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:text="Time"-->
+<!--                        android:textColor="@android:color/black"-->
+<!--                        android:textSize="13sp"-->
+<!--                        android:id="@+id/post_time"/>-->
+<!--                </LinearLayout>-->
             </LinearLayout>
         </LinearLayout>
 
@@ -69,7 +69,7 @@
             android:layout_height="wrap_content"
             android:text="Post Description..."
             android:textColor="@android:color/black"
-            android:textSize="14sp"
+            android:textSize="13sp"
             android:id="@+id/post_description"
             android:layout_marginLeft="3dp"
             android:layout_marginRight="3dp"
@@ -78,7 +78,7 @@
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            android:layout_margin="3dp"
+            android:padding="5dp"
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
             android:id="@+id/post_image"/>
@@ -86,30 +86,51 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp">
-            <ImageButton
-                android:id="@+id/like_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/dislike"/>
-            <TextView
-                android:id="@+id/display_no_of_likes"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="0 likes"
-                android:padding="15dp"
-                android:textColor="@android:color/black"
-                android:textSize="14sp"
-                android:textStyle="bold"/>
-            <ImageButton
-                android:id="@+id/comment_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="150dp"
-                android:baselineAlignBottom="false"
-                android:src="@drawable/comment"/>
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:orientation="horizontal">
+
+
+                <Button
+                    style="@style/TransparentBtn.Like"
+                    android:id="@+id/like_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:text="0 likes" />
+                <Button
+                    style="@style/TransparentBtn.Comment"
+                    android:id="@+id/comment_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:text="Comments" />
+            </LinearLayout>
+<!--            <ImageButton-->
+<!--                android:id="@+id/like_button"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:src="@drawable/ic_favorite_border_black_24dp"-->
+<!--                android:background="@color/white"/>-->
+<!--            <TextView-->
+<!--                android:id="@+id/display_no_of_likes"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="0 likes"-->
+<!--                android:textColor="@android:color/black"-->
+<!--                android:textSize="14sp"-->
+<!--                android:textStyle="bold"/>-->
+<!--            <ImageButton-->
+<!--                android:id="@+id/comment_button"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:baselineAlignBottom="false"-->
+<!--                android:src="@drawable/ic_comment_black_24dp"-->
+<!--                android:background="@color/white"/>-->
         </LinearLayout>
 
     </LinearLayout>

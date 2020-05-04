@@ -62,12 +62,16 @@
     <string name="pls_check_sms">Please check your phone to reset your password.</string>
     <string name="rmb_password">I remember my password</string>
     <string name="reset_pw">Reset your password</string>
-    <string name="title_activity_nav">NavActivity</string>
+    <string name="title_activity_nav">Map</string>
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
     <string name="title_feed">Feed</string>
+    <string name="title_message">Messages</string>
     <string name="title_map">Map</string>
+    <string name="create_post">Create Post</string>
+    <string name="save">Save</string>
+
 
     <!--    Permissions    -->
     <string name="permission_rationale_location">Access to the location service is required to demonstrate the \'my location\' feature, which shows your current location on the map.</string>
