@@ -49,6 +49,7 @@ public class MainLoginActivity extends AppCompatActivity {
     private EditText UserEmail, UserPassword;
     private ProgressDialog loadingBar;
     private FirebaseAuth mAuth;
+    private Boolean emailAddressChecker;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -198,8 +199,9 @@ public class MainLoginActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()){
-                                SendUserToMainActivity();
-                                Toast.makeText(MainLoginActivity.this,"You are Logged In successfully.",Toast.LENGTH_SHORT).show();
+                                //SendUserToMainActivity();
+                                //Toast.makeText(MainLoginActivity.this,"You are Logged In successfully.",Toast.LENGTH_SHORT).show();
+                                VerifyEmailAddress();
                             }
                             else{
                                 String message = task.getException().getMessage();
@@ -215,5 +217,18 @@ public class MainLoginActivity extends AppCompatActivity {
         Intent setupIntent = new Intent(MainLoginActivity.this, NavActivity.class);
         startActivity(setupIntent);
         finish();
+    }
+
+    private void VerifyEmailAddress(){
+        FirebaseUser user = mAuth.getCurrentUser();
+        emailAddressChecker = user.isEmailVerified();
+
+        if (emailAddressChecker){
+            SendUserToMainActivity();
+        }
+        else{
+            Toast.makeText(this,"Please verify your account first",Toast.LENGTH_SHORT).show();
+            mAuth.signOut();
+        }
     }
 }

@@ -16,6 +16,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -101,8 +102,9 @@ public class CreateAccount extends AppCompatActivity {
                                     @Override
                                     public void onComplete(@NonNull Task task) {
                                         if (task.isSuccessful()){
-                                            SendUserToLoginActivity();
-                                            Toast.makeText(CreateAccount.this,"Your Account is created successfully",Toast.LENGTH_LONG).show();
+                                            SendEmailVerificationMessage();
+                                            //SendUserToLoginActivity();
+                                            //Toast.makeText(CreateAccount.this,"Your Account is created successfully",Toast.LENGTH_LONG).show();
                                         }
                                         else{
                                             String message = task.getException().getMessage();
@@ -128,5 +130,26 @@ public class CreateAccount extends AppCompatActivity {
         Intent setupIntent = new Intent(CreateAccount.this, MainLoginActivity.class);
         startActivity(setupIntent);
         finish();
+    }
+
+    private void SendEmailVerificationMessage(){
+        FirebaseUser user = mAuth.getCurrentUser();
+
+        if (user!=null){
+            user.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if (task.isSuccessful()){
+                        Toast.makeText(CreateAccount.this,"Registration Successful. Please verify your account.",Toast.LENGTH_SHORT).show();
+                        SendUserToLoginActivity();
+                        mAuth.signOut();
+                    }
+                    else{
+                        Toast.makeText(CreateAccount.this,"Error: "+task.getException().getMessage(),Toast.LENGTH_SHORT).show();
+                        mAuth.signOut();
+                    }
+                }
+            });
+        }
     }
 }
