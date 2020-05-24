@@ -5,16 +5,20 @@ public class Comments {
     public String time;
     public String date;
     public String comment;
+    public String uid;
+    public String profileimage;
 
     public Comments(){
 
     }
 
-    public Comments(String username, String time, String date, String comment) {
+    public Comments(String username, String time, String date, String comment,String uid,String profileimage) {
         this.username = username;
         this.time = time;
         this.date = date;
         this.comment = comment;
+        this.uid = uid;
+        this.profileimage = profileimage;
     }
 
     public String getUsername() {
@@ -49,4 +53,19 @@ public class Comments {
         this.comment = comments;
     }
 
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
+    public String getProfileimage() {
+        return profileimage;
+    }
+
+    public void setProfileimage(String profileimage) {
+        this.profileimage = profileimage;
+    }
 }

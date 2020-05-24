@@ -117,14 +117,33 @@ public class HomeFragment extends Fragment {
                         PostsViewHolder.class,
                         SortPostsInDescendingOrder) {
                     @Override
-                    protected void populateViewHolder(PostsViewHolder viewHolder, Posts posts, int position) {
+                    protected void populateViewHolder(final PostsViewHolder viewHolder, Posts posts, int position) {
                         final String PostKey = getRef(position).getKey();
 
-                        viewHolder.setFullname(posts.getFullname());
+                        //viewHolder.setFullname(UsersRef.child(posts.getUid()).child("fullname").val);
+
+                        UsersRef.child(posts.getUid()).addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                if (dataSnapshot.exists()) {
+                                    viewHolder.setFullname(dataSnapshot.child("fullname").getValue().toString());
+                                    if (dataSnapshot.hasChild("profileimage"))
+                                        viewHolder.setProfileimage(getActivity().getApplicationContext(),dataSnapshot.child("profileimage").getValue().toString());
+                                    //viewHolder.setProfileimage(getActivity().getApplicationContext(),Picasso.with(getActivity()).load(dataSnapshot.child("profileimage").getValue().toString()).placeholder(R.drawable.profile));
+
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+
                         viewHolder.setTime(posts.getTime(), posts.getDate());
 //                        viewHolder.setDate();
                         viewHolder.setDescription(posts.getDescription());
-                        //viewHolder.setProfileimage(getApplicationContext(),posts.getProfileimage());
+                        //viewHolder.setProfileimage(getActivity().getApplicationContext(),posts.getProfileimage());
                         viewHolder.setPostimage(getActivity().getApplicationContext(),posts.getPostimage());
 
                         viewHolder.setLikeButtonStatus(PostKey);
@@ -237,7 +256,7 @@ public class HomeFragment extends Fragment {
 
         public void setProfileimage(Context ctx, String profileimage) {
             CircleImageView image = (CircleImageView) mView.findViewById(R.id.post_profile_image);
-            Picasso.with(ctx).load(profileimage).into(image);
+            Picasso.with(ctx).load(profileimage).placeholder(R.drawable.profile).into(image);
         }
         public void setTime(String time, String date) {
             TextView PostTime = (TextView) mView.findViewById(R.id.post_time);

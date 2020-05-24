@@ -6,20 +6,21 @@ public class Posts {
     public String date;
     public String postimage;
     public String description;
-    //public String profileimage;
+    public String profileimage;
     public String fullname;
 
     public Posts(){
 
     }
 
-    public Posts(String uid, String time, String date, String postimage, String description, String fullname) {
+    public Posts(String uid, String time, String date, String postimage, String description, String fullname,String profileimage) {
         this.uid = uid;
         this.time = time;
         this.date = date;
         this.postimage = postimage;
         this.description = description;
         this.fullname = fullname;
+        this.profileimage = profileimage;
     }
 
     public String getUid() {
@@ -68,5 +69,13 @@ public class Posts {
 
     public void setFullname(String fullname) {
         this.fullname = fullname;
+    }
+
+    public String getProfileimage() {
+        return profileimage;
+    }
+
+    public void setProfileimage(String profileimage) {
+        this.profileimage = profileimage;
     }
 }

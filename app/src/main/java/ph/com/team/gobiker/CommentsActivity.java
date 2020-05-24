@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -22,10 +23,13 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
     public class CommentsActivity extends AppCompatActivity {
 
@@ -93,8 +97,22 @@ import java.util.HashMap;
                             postRef
                     ) {
                         @Override
-                        protected void populateViewHolder(CommentsViewHolder commentsViewHolder, Comments comments, int i) {
-                            commentsViewHolder.setUsername(comments.getUsername());
+                        protected void populateViewHolder(final CommentsViewHolder commentsViewHolder, Comments comments, int i) {
+                            //commentsViewHolder.setUsername(comments.getUsername());
+                            UsersRef.child(comments.getUid()).addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    if (dataSnapshot.exists())
+                                        commentsViewHolder.setUsername(dataSnapshot.child("fullname").getValue().toString());
+                                        commentsViewHolder.setProfileimage(getApplicationContext(),dataSnapshot.child("profileimage").getValue().toString());
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
+
                             commentsViewHolder.setComments(comments.getComments());
                             //commentsViewHolder.setDate(comments.getDate()+" "+comments.getTime());
                             commentsViewHolder.setTime(comments.getDate()+" "+comments.getTime());
@@ -119,6 +137,11 @@ import java.util.HashMap;
             public void setTime(String time) {
                 TextView myTime = mView.findViewById(R.id.comment_time);
                 myTime.setText(time);
+            }
+
+            public void setProfileimage(Context ctx, String profileimage) {
+                CircleImageView image = (CircleImageView) mView.findViewById(R.id.comment_profile_image);
+                Picasso.with(ctx).load(profileimage).placeholder(R.drawable.profile).into(image);
             }
 
             public void setComments(String comments) {
