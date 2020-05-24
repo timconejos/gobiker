@@ -45,6 +45,7 @@
             android:label="@string/title_activity_main_login" />
         <activity android:name=".MainActivity" />
         <activity android:name=".HomeActivity" />
+        <activity android:name=".ui.map.NavigationStartActivity"/>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
