@@ -102,9 +102,13 @@ import de.hdodenhof.circleimageview.CircleImageView;
                             UsersRef.child(comments.getUid()).addValueEventListener(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    if (dataSnapshot.exists())
+                                    if (dataSnapshot.exists()) {
                                         commentsViewHolder.setUsername(dataSnapshot.child("fullname").getValue().toString());
-                                        commentsViewHolder.setProfileimage(getApplicationContext(),dataSnapshot.child("profileimage").getValue().toString());
+                                        if (dataSnapshot.hasChild("profileimage"))
+                                            commentsViewHolder.setProfileimage(getApplicationContext(), dataSnapshot.child("profileimage").getValue().toString());
+                                        else
+                                            commentsViewHolder.setProfileimage(getApplicationContext(), "");
+                                    }
                                 }
 
                                 @Override
@@ -141,7 +145,10 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
             public void setProfileimage(Context ctx, String profileimage) {
                 CircleImageView image = (CircleImageView) mView.findViewById(R.id.comment_profile_image);
-                Picasso.with(ctx).load(profileimage).placeholder(R.drawable.profile).into(image);
+                if (profileimage.equals(""))
+                    Picasso.with(ctx).load(R.drawable.profile).into(image);
+                else
+                    Picasso.with(ctx).load(profileimage).placeholder(R.drawable.profile).into(image);
             }
 
             public void setComments(String comments) {

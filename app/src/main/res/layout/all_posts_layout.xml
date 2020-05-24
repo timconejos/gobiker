@@ -8,6 +8,8 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_marginBottom="6dp"
+        android:id="@+id/linear_posts"
+        android:visibility="gone"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:background="@color/white">
@@ -77,7 +79,7 @@
 
         <ImageView
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="wrap_content"
             android:padding="5dp"
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"

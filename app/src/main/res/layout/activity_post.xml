@@ -44,7 +44,7 @@
             android:background="@drawable/inputs"
             android:ems="10"
             android:gravity="start|top"
-            android:hint="Write something about your image"
+            android:hint="Write something you want"
             android:inputType="textMultiLine"
             android:padding="15dp" />
         <ImageButton

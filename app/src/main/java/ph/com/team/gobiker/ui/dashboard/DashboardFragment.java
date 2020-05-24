@@ -84,7 +84,7 @@ public class DashboardFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()){
-                    String myProfileImage = dataSnapshot.child("profileimage").getValue().toString();
+
                     String myProfileName = dataSnapshot.child("fullname").getValue().toString();
                     String myGender = dataSnapshot.child("gender").getValue().toString();
                     String myEmail = dataSnapshot.child("email").getValue().toString();
@@ -93,7 +93,13 @@ public class DashboardFragment extends Fragment {
                     String myMotor = dataSnapshot.child("motor").getValue().toString();
                     String bm = "";
 
-                    Picasso.with(getActivity()).load(myProfileImage).placeholder(R.drawable.profile).into(userProfileImage);
+                    if (dataSnapshot.hasChild("profileimage")){
+                        String myProfileImage = dataSnapshot.child("profileimage").getValue().toString();
+                        Picasso.with(getActivity()).load(myProfileImage).placeholder(R.drawable.profile).into(userProfileImage);
+                    }
+                    else{
+                        Picasso.with(getActivity()).load(R.drawable.profile).into(userProfileImage);
+                    }
 
                     userProfName.setText(myProfileName);
                     userGender.setText("Gender: "+myGender);

@@ -79,15 +79,19 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()){
-                    String myProfileImage = dataSnapshot.child("profileimage").getValue().toString();
                     String myProfileName = dataSnapshot.child("fullname").getValue().toString();
                     String myGender = dataSnapshot.child("gender").getValue().toString();
                     String myPhone = dataSnapshot.child("phone").getValue().toString();
                     String myBike = dataSnapshot.child("bike").getValue().toString();
                     String myMotor = dataSnapshot.child("motor").getValue().toString();
 
-                    Picasso.with(SettingsActivity.this).load(myProfileImage).placeholder(R.drawable.profile).into(userProfImage);
-
+                    if (dataSnapshot.hasChild("profileimage")){
+                        String myProfileImage = dataSnapshot.child("profileimage").getValue().toString();
+                        Picasso.with(SettingsActivity.this).load(myProfileImage).placeholder(R.drawable.profile).into(userProfImage);
+                    }
+                    else{
+                        Picasso.with(SettingsActivity.this).load(R.drawable.profile).into(userProfImage);
+                    }
                     userProfName.setText(myProfileName);
                     if (myGender.equals("Male"))
                         Gender.setSelection(0);

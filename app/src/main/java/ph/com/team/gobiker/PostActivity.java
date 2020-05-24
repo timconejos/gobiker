@@ -46,7 +46,7 @@ public class PostActivity extends AppCompatActivity {
     private StorageReference PostsImageReference;
     private DatabaseReference usersRef, postRef;
     private FirebaseAuth mAuth;
-    private String saveCurrentDate, saveCurrentTime, postRandomName, downloadUrl, current_user_id;
+    private String saveCurrentDate, saveCurrentTime, postRandomName, downloadUrl = "", current_user_id;
     private long countPosts = 0;
 
     @Override
@@ -84,7 +84,7 @@ public class PostActivity extends AppCompatActivity {
 
     private void ValidatePostInfo() {
         Description = PostDescription.getText().toString();
-        /*if(ImageUri==null){
+        /*
             Toast.makeText(this,"Please select post image...",Toast.LENGTH_SHORT).show();
         }
         else if(TextUtils.isEmpty(Description)){
@@ -95,16 +95,23 @@ public class PostActivity extends AppCompatActivity {
         loadingBar.setMessage("Please wait, while we are adding your new post...");
         loadingBar.show();
         loadingBar.setCanceledOnTouchOutside(true);
-        StoringImageToFirebaseStorage();
-        //}
-    }
-
-    private void StoringImageToFirebaseStorage() {
         Calendar calForDate = Calendar.getInstance();
         SimpleDateFormat currentDate = new SimpleDateFormat("MM-dd-yyyy");
         saveCurrentDate = currentDate.format(calForDate.getTime());
         SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm:ss");
         saveCurrentTime = currentTime.format(calForDate.getTime());
+        if(ImageUri==null){
+            SavingPostInformationToDatabase();
+        }
+        else {
+            StoringImageToFirebaseStorage();
+        }
+
+        //}
+    }
+
+    private void StoringImageToFirebaseStorage() {
+
 
         postRandomName = saveCurrentDate+saveCurrentTime;
 
@@ -172,7 +179,8 @@ public class PostActivity extends AppCompatActivity {
                     postsMap.put("date",saveCurrentDate);
                     postsMap.put("time",saveCurrentTime);
                     postsMap.put("description",Description);
-                    postsMap.put("postimage",downloadUrl);
+                    if (!downloadUrl.equals(""))
+                        postsMap.put("postimage",downloadUrl);
                     //postsMap.put("profileimage",userProfileImage);
                     postsMap.put("fullname",userFullName);
                     postsMap.put("counter",countPosts);

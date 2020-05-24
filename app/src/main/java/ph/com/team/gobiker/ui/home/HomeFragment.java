@@ -9,8 +9,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,6 +45,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import ph.com.team.gobiker.ClickPostActivity;
 import ph.com.team.gobiker.CommentsActivity;
 import ph.com.team.gobiker.CreateAccount;
+import ph.com.team.gobiker.FindFriendsActivity;
 import ph.com.team.gobiker.PostActivity;
 import ph.com.team.gobiker.R;
 import ph.com.team.gobiker.ui.login.MainLoginActivity;
@@ -63,6 +66,8 @@ public class HomeFragment extends Fragment {
 
     private FirebaseAuth mAuth;
     private DatabaseReference UsersRef, PostsRef, LikesRef;
+    private ImageButton searchButton;
+    private EditText SearchInputText;
     private String currentUserID;
     private View root;
     Boolean LikeChecker = false;
@@ -100,6 +105,18 @@ public class HomeFragment extends Fragment {
         linearLayoutManager.setStackFromEnd(true);
         postList.setLayoutManager(linearLayoutManager);
         currentUserID = mAuth.getCurrentUser().getUid();
+        searchButton = root.findViewById(R.id.search_people_friends_button_fragment);
+        SearchInputText = root.findViewById(R.id.search_box_input_fragment);
+
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String searchBoxInput = SearchInputText.getText().toString();
+                Intent intent = new Intent(getActivity(), FindFriendsActivity.class);
+                intent.putExtra("searchKey",searchBoxInput);
+                startActivity(intent);
+            }
+        });
         DisplayAllUsersPosts();
 
         return root;
@@ -117,81 +134,111 @@ public class HomeFragment extends Fragment {
                         PostsViewHolder.class,
                         SortPostsInDescendingOrder) {
                     @Override
-                    protected void populateViewHolder(final PostsViewHolder viewHolder, Posts posts, int position) {
-                        final String PostKey = getRef(position).getKey();
+                    protected void populateViewHolder(final PostsViewHolder viewHolder, final Posts posts, int position) {
 
-                        //viewHolder.setFullname(UsersRef.child(posts.getUid()).child("fullname").val);
+                            final String PostKey = getRef(position).getKey();
 
-                        UsersRef.child(posts.getUid()).addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                if (dataSnapshot.exists()) {
-                                    viewHolder.setFullname(dataSnapshot.child("fullname").getValue().toString());
-                                    if (dataSnapshot.hasChild("profileimage"))
-                                        viewHolder.setProfileimage(getActivity().getApplicationContext(),dataSnapshot.child("profileimage").getValue().toString());
-                                    //viewHolder.setProfileimage(getActivity().getApplicationContext(),Picasso.with(getActivity()).load(dataSnapshot.child("profileimage").getValue().toString()).placeholder(R.drawable.profile));
+                            //viewHolder.setFullname(UsersRef.child(posts.getUid()).child("fullname").val);
+
+                            UsersRef.child(posts.getUid()).addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    if (dataSnapshot.exists()) {
+                                        viewHolder.setFullname(dataSnapshot.child("fullname").getValue().toString());
+                                        if (dataSnapshot.hasChild("profileimage"))
+                                            viewHolder.setProfileimage(getActivity().getApplicationContext(), dataSnapshot.child("profileimage").getValue().toString());
+                                        else
+                                            viewHolder.setProfileimage(getActivity().getApplicationContext(), "");
+
+                                        //viewHolder.setProfileimage(getActivity().getApplicationContext(),Picasso.with(getActivity()).load(dataSnapshot.child("profileimage").getValue().toString()).placeholder(R.drawable.profile));
+
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
 
                                 }
-                            }
+                            });
 
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                            }
-                        });
-
-                        viewHolder.setTime(posts.getTime(), posts.getDate());
+                            viewHolder.setTime(posts.getTime(), posts.getDate());
 //                        viewHolder.setDate();
-                        viewHolder.setDescription(posts.getDescription());
-                        //viewHolder.setProfileimage(getActivity().getApplicationContext(),posts.getProfileimage());
-                        viewHolder.setPostimage(getActivity().getApplicationContext(),posts.getPostimage());
+                            viewHolder.setDescription(posts.getDescription());
+                            //viewHolder.setProfileimage(getActivity().getApplicationContext(),posts.getProfileimage());
 
-                        viewHolder.setLikeButtonStatus(PostKey);
+                            if (posts.getPostimage()==""){
 
-                        viewHolder.mView.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                Intent clickPostIntent = new Intent(getActivity(), ClickPostActivity.class);
-                                clickPostIntent.putExtra("PostKey",PostKey);
-                                startActivity(clickPostIntent);
                             }
-                        });
-
-                        viewHolder.CommentBtn.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                Intent commentsIntent = new Intent(getActivity(), CommentsActivity.class);
-                                commentsIntent.putExtra("PostKey",PostKey);
-                                startActivity(commentsIntent);
+                            else {
+                                viewHolder.setPostimage(getActivity().getApplicationContext(), posts.getPostimage());
                             }
-                        });
 
-                        viewHolder.LikeBtn.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                LikeChecker = true;
-                                LikesRef.addValueEventListener(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                        if (LikeChecker.equals(true)){
-                                            if(dataSnapshot.child(PostKey).hasChild(currentUserID)){
-                                                LikesRef.child(PostKey).child(currentUserID).removeValue();
-                                                LikeChecker = false;
-                                            }
-                                            else{
-                                                LikesRef.child(PostKey).child(currentUserID).setValue(true);
-                                                LikeChecker = false;
+                            viewHolder.setLikeButtonStatus(PostKey);
+
+                            viewHolder.mView.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    Intent clickPostIntent = new Intent(getActivity(), ClickPostActivity.class);
+                                    clickPostIntent.putExtra("PostKey", PostKey);
+                                    startActivity(clickPostIntent);
+                                }
+                            });
+
+                            viewHolder.CommentBtn.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    Intent commentsIntent = new Intent(getActivity(), CommentsActivity.class);
+                                    commentsIntent.putExtra("PostKey", PostKey);
+                                    startActivity(commentsIntent);
+                                }
+                            });
+
+                            viewHolder.LikeBtn.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    LikeChecker = true;
+                                    LikesRef.addValueEventListener(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                            if (LikeChecker.equals(true)) {
+                                                if (dataSnapshot.child(PostKey).hasChild(currentUserID)) {
+                                                    LikesRef.child(PostKey).child(currentUserID).removeValue();
+                                                    LikeChecker = false;
+                                                } else {
+                                                    LikesRef.child(PostKey).child(currentUserID).setValue(true);
+                                                    LikeChecker = false;
+                                                }
                                             }
                                         }
-                                    }
 
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
 
+                                        }
+                                    });
+                                }
+                            });
+
+                            UsersRef.child(currentUserID).child("following").addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    if (dataSnapshot.hasChild(posts.getUid()) || posts.getUid().equals(currentUserID)){
+                                        viewHolder.mView.setVisibility(View.VISIBLE);
+                                        viewHolder.lp.setVisibility(View.VISIBLE);
                                     }
-                                });
-                            }
-                        });
+                                    else{
+                                        viewHolder.mView.setVisibility(View.GONE);
+                                        viewHolder.lp.setVisibility(View.GONE);
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
+
+
                     }
                 };
         postList.setAdapter(firebaseRecyclerAdapter);
@@ -204,6 +251,7 @@ public class HomeFragment extends Fragment {
         TextView DisplayNoOfLikes;
         int countLikes;
         String currentUserId;
+        LinearLayout lp;
         DatabaseReference LikesRef;
 
         public PostsViewHolder(View itemView){
@@ -211,6 +259,7 @@ public class HomeFragment extends Fragment {
             mView = itemView;
             LikeBtn = mView.findViewById(R.id.like_button);
             CommentBtn = mView.findViewById(R.id.comment_button);
+            lp = mView.findViewById(R.id.linear_posts);
 //            LikepostButton = mView.findViewById(R.id.like_button);
 //            CommentPostButton = mView.findViewById(R.id.comment_button);
 //            DisplayNoOfLikes = mView.findViewById(R.id.like_button);
@@ -256,7 +305,10 @@ public class HomeFragment extends Fragment {
 
         public void setProfileimage(Context ctx, String profileimage) {
             CircleImageView image = (CircleImageView) mView.findViewById(R.id.post_profile_image);
-            Picasso.with(ctx).load(profileimage).placeholder(R.drawable.profile).into(image);
+            if (profileimage.equals(""))
+                Picasso.with(ctx).load(R.drawable.profile).into(image);
+            else
+                Picasso.with(ctx).load(profileimage).placeholder(R.drawable.profile).into(image);
         }
         public void setTime(String time, String date) {
             TextView PostTime = (TextView) mView.findViewById(R.id.post_time);
