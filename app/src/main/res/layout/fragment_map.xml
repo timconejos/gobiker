@@ -6,12 +6,65 @@
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     android:orientation="vertical">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:id="@+id/nav_info">
 
-    <fragment
+        <TextView
+            android:id="@+id/nav_info_speed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="30 m/s"
+            android:textSize="30sp"
+            android:layout_alignParentRight="true"/>
+        <TextView
+            android:id="@+id/nav_info_distance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1000 km"
+            android:textSize="30sp" />
+        <TextView
+            android:id="@+id/nav_info_calories"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="40 kCal"
+            android:textSize="30sp"
+            android:layout_below="@id/nav_info_distance"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="8:39"
+            android:textSize="30sp"
+            android:layout_below="@id/nav_info_speed"
+            android:layout_alignParentRight="true"/>
+
+    </RelativeLayout>
+
+    <androidx.fragment.app.FragmentContainerView
+        android:layout_below="@+id/nav_info"
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/startFree"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="97dp"
+        android:clickable="true"
+        android:elevation="8dp"
+        android:src="@android:drawable/ic_dialog_map"
+        app:rippleColor="@color/black"
+        android:focusable="true" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/startNav"
@@ -23,5 +76,6 @@
         android:layout_width="56dp"
         android:layout_height="56dp"
         app:rippleColor="@color/black"
-        android:clickable="true"/>
+        android:clickable="true"
+        android:focusable="true" />
 </RelativeLayout>
