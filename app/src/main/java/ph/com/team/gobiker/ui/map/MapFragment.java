@@ -10,9 +10,11 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -31,7 +33,6 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
@@ -48,6 +49,7 @@ import com.google.maps.model.TravelMode;
 import com.google.maps.model.Unit;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,14 +62,20 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private static Place navTo;
     private static Place navFrom;
+    private static Location currentLocation;
+    private static float distanceTravelled;
     private MapViewModel mViewModel;
     private GoogleMap mMap;
     private boolean mPermissionDenied = false;
     private LocationManager locationManager;
+    private boolean isFreeRide;
     private FloatingActionButton startNav;
     private FloatingActionButton startFreeRide;
-    private boolean isFreeRide;
-    private static Location currentLocation;
+    private TextView infoSpeed;
+    private TextView infoCalories;
+    private TextView infoTime;
+    private TextView infoDistance;
+    private static DecimalFormat df = new DecimalFormat("0.00");
 
     public static MapFragment newInstance() {
         return new MapFragment();
@@ -80,7 +88,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         locationManager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
         startNav = v.findViewById(R.id.startNav);
         startNav.setOnClickListener(view -> startActivityForResult(new Intent(getContext(), NavigationStartActivity.class), 1));
-        setupMapIfNeeded();
         startFreeRide = v.findViewById(R.id.startFree);
         startFreeRide.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,6 +100,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
 
             }
         });
+
+        infoSpeed = v.findViewById(R.id.nav_info_speed);
+        infoCalories = v.findViewById(R.id.nav_info_calories);
+        infoDistance = v.findViewById(R.id.nav_info_distance);
+        infoTime = v.findViewById(R.id.nav_info_time);
+
+        distanceTravelled = 0;
+
+        setupMapIfNeeded();
+        setUpLocationManager();
 
         return v;
     }
@@ -131,28 +148,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
 
     @Override
     public boolean onMyLocationButtonClick() {
-        showDirection();
+        //showDirection();
         return false;
     }
 
     @Override
     public void onMyLocationClick(@NonNull Location location) {
-    }
-
-    private void moveCamToLocation() {
-        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
-            if (mMap != null) {
-                currentLocation = locationManager.getLastKnownLocation(locationManager.getBestProvider(new Criteria(), false));
-                if (currentLocation != null) {
-                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()), 20));
-                }
-            }
-        } else {
-            // Permission to access the location is missing. Show rationale and request permission
-            PermissionUtils.requestPermission((AppCompatActivity) getContext(), LOCATION_PERMISSION_REQUEST_CODE,
-                    Manifest.permission.ACCESS_FINE_LOCATION, true);
-        }
     }
 
     @Override
@@ -282,7 +283,38 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
 
     @Override
     public void onLocationChanged(Location location) {
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 20));
+
+        double speed = 0;
+//        if (currentLocation != null)
+//            speed = Math.sqrt(
+//                    Math.pow(location.getLongitude() - currentLocation.getLongitude(), 2)
+//                            + Math.pow(location.getLatitude() - currentLocation.getLatitude(), 2)
+//            ) / (location.getTime() - currentLocation.getTime());
+//        if (location.hasSpeed())
+//            speed = location.getSpeed();
+
+/*        if (currentLocation != null) {
+            double elapsedTime = (location.getTime() - currentLocation.getTime()) / 1_000; // Convert milliseconds to seconds
+            speed = currentLocation.distanceTo(location) / elapsedTime;
+        }*/
+
+        speed = location.hasSpeed() ? location.getSpeed() : 0;
+
+        distanceTravelled += currentLocation != null ? currentLocation.distanceTo(location) : 0;
+        currentLocation = location;
+
+        infoSpeed.setText(df.format(speed) + " m/s ");
+
+        if(distanceTravelled / 1000 >= 1){
+            infoDistance.setText(df.format(distanceTravelled / 1000) + " km");
+        }
+        else{
+            infoDistance.setText(df.format(distanceTravelled) + " m");
+        }
+
+        moveCamToLocation();
+        Log.d("MapLocationManager", "location updated ");
+        Log.d("MapLocationManager", "speed: " + location.hasSpeed() + " - " + location.getSpeed());
     }
 
     @Override
@@ -326,4 +358,30 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
             mapFragment.getMapAsync(this);
         }
     }
+
+    private void setUpLocationManager() {
+        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+            Log.d("MapLocationManager", "location Manager started");
+        }
+    }
+
+    private void moveCamToLocation() {
+        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            if (mMap != null) {
+
+                currentLocation = locationManager.getLastKnownLocation(locationManager.getBestProvider(new Criteria(), false));
+                if (currentLocation != null) {
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()), 17));
+                }
+            }
+        } else {
+            // Permission to access the location is missing. Show rationale and request permission
+            PermissionUtils.requestPermission((AppCompatActivity) getContext(), LOCATION_PERMISSION_REQUEST_CODE,
+                    Manifest.permission.ACCESS_FINE_LOCATION, true);
+        }
+    }
+
 }

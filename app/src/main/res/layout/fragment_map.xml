@@ -16,30 +16,33 @@
             android:id="@+id/nav_info_speed"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="30 m/s"
-            android:textSize="30sp"
-            android:layout_alignParentRight="true"/>
+            android:layout_alignParentRight="true"
+            android:text="- m/s"
+            android:textSize="30sp" />
+
         <TextView
             android:id="@+id/nav_info_distance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="1000 km"
+            android:text="- km"
             android:textSize="30sp" />
+
         <TextView
             android:id="@+id/nav_info_calories"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="40 kCal"
-            android:textSize="30sp"
-            android:layout_below="@id/nav_info_distance"/>
+            android:layout_below="@id/nav_info_distance"
+            android:text="- kCal"
+            android:textSize="30sp" />
 
         <TextView
+            android:id="@+id/nav_info_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="8:39"
-            android:textSize="30sp"
             android:layout_below="@id/nav_info_speed"
-            android:layout_alignParentRight="true"/>
+            android:layout_alignParentRight="true"
+            android:text="-:--"
+            android:textSize="30sp" />
 
     </RelativeLayout>
 
