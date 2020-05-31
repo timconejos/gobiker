@@ -1,5 +1,6 @@
 package ph.com.team.gobiker.ui.dashboard;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,6 +15,8 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -22,7 +25,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
+
 import de.hdodenhof.circleimageview.CircleImageView;
+import ph.com.team.gobiker.LogoutActivity;
 import ph.com.team.gobiker.R;
 import ph.com.team.gobiker.SettingsActivity;
 import ph.com.team.gobiker.login;
@@ -34,7 +43,7 @@ public class DashboardFragment extends Fragment {
     private Button signOutButton, updateProfileButton;
     private TextView userProfName,userGender, userBM, userEmail, userPhone;
     private CircleImageView userProfileImage;
-    private DatabaseReference profileUserRef;
+    private DatabaseReference profileUserRef,UsersRef;
     private String currentUserId;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -53,6 +62,7 @@ public class DashboardFragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
         currentUserId = mAuth.getCurrentUser().getUid();
         profileUserRef = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId);
+        UsersRef = FirebaseDatabase.getInstance().getReference().child("Users");
 
         userProfName = root.findViewById(R.id.my_profile_full_name);
         userGender = root.findViewById(R.id.my_gender);
@@ -68,8 +78,7 @@ public class DashboardFragment extends Fragment {
         signOutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mAuth.signOut();
-                SendUserToLoginActivity();
+                SendUserToLogoutActivity();
             }
         });
 
@@ -137,6 +146,11 @@ public class DashboardFragment extends Fragment {
 
     private void SendUserToSettingsActivity() {
         Intent loginIntent = new Intent(getActivity(), SettingsActivity.class);
+        startActivity(loginIntent);
+    }
+
+    private void SendUserToLogoutActivity() {
+        Intent loginIntent = new Intent(getActivity(), LogoutActivity.class);
         startActivity(loginIntent);
     }
 }

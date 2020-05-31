@@ -15,7 +15,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".PersonProfileActivity"></activity>
+        <activity android:name=".LogoutActivity"></activity>
+        <activity android:name=".ChatActivity" />
+        <activity android:name=".PersonProfileActivity" />
         <activity android:name=".FindFriendsActivity" />
         <activity
             android:name=".SettingsActivity"
@@ -45,7 +47,7 @@
             android:label="@string/title_activity_main_login" />
         <activity android:name=".MainActivity" />
         <activity android:name=".HomeActivity" />
-        <activity android:name=".ui.map.NavigationStartActivity"/>
+        <activity android:name=".ui.map.NavigationStartActivity" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

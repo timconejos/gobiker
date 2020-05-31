@@ -3,6 +3,7 @@ package ph.com.team.gobiker;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -26,10 +27,10 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class PersonProfileActivity extends AppCompatActivity {
     private TextView userBM, userProfName, userGender;
     private CircleImageView userProfileImage;
-    private Button SendFriendReqButton;
+    private Button SendFriendReqButton, SendMsgButton;
     private DatabaseReference UsersRef;
     private FirebaseAuth mAuth;
-    private String senderUserId, receiverUserId, CURRENT_STATE;
+    private String senderUserId, receiverUserId, CURRENT_STATE, myProfileName;
     private String saveCurrentDate;
 
     @Override
@@ -47,6 +48,12 @@ public class PersonProfileActivity extends AppCompatActivity {
         userBM = findViewById(R.id.person_bm);
         userProfileImage = findViewById(R.id.person_profile_pic);
         SendFriendReqButton = findViewById(R.id.person_send_friend_request_btn);
+        SendMsgButton = findViewById(R.id.person_send_msg_btn);
+
+        SendMsgButton.setOnClickListener(view -> {
+            SendUserToChatActivity();
+        });
+
 
         UsersRef.child(receiverUserId).addValueEventListener(new ValueEventListener() {
             @Override
@@ -57,7 +64,7 @@ public class PersonProfileActivity extends AppCompatActivity {
                         Picasso.with(PersonProfileActivity.this).load(myProfileImage).placeholder(R.drawable.profile).into(userProfileImage);
                     }
 
-                    String myProfileName = dataSnapshot.child("fullname").getValue().toString();
+                    myProfileName = dataSnapshot.child("fullname").getValue().toString();
                     String myGender = dataSnapshot.child("gender").getValue().toString();
                     String myBike = dataSnapshot.child("bike").getValue().toString();
                     String myMotor = dataSnapshot.child("motor").getValue().toString();
@@ -106,6 +113,8 @@ public class PersonProfileActivity extends AppCompatActivity {
         if (!senderUserId.equals(receiverUserId)){
             SendFriendReqButton.setVisibility(View.VISIBLE);
             SendFriendReqButton.setEnabled(true);
+            SendMsgButton.setVisibility(View.VISIBLE);
+            SendMsgButton.setEnabled(true);
             SendFriendReqButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -126,7 +135,16 @@ public class PersonProfileActivity extends AppCompatActivity {
         else{
             SendFriendReqButton.setEnabled(false);
             SendFriendReqButton.setVisibility(View.INVISIBLE);
+            SendMsgButton.setEnabled(false);
+            SendMsgButton.setVisibility(View.INVISIBLE);
         }
+    }
+
+    private void SendUserToChatActivity() {
+        Intent chatIntent = new Intent(PersonProfileActivity.this,ChatActivity.class);
+        chatIntent.putExtra("visit_user_id",receiverUserId);
+        chatIntent.putExtra("userName",myProfileName);
+        startActivity(chatIntent);
     }
 
 

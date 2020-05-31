@@ -20,6 +20,11 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
+
 import ph.com.team.gobiker.ui.login.MainLoginActivity;
 
 public class NavActivity extends AppCompatActivity {
@@ -62,6 +67,18 @@ public class NavActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        updateUserStatus("offline");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateUserStatus("online");
+    }
+
     private void CheckUserExistence() {
         final String current_user_id = mAuth.getCurrentUser().getUid();
         UsersRef.addValueEventListener(new ValueEventListener() {
@@ -70,6 +87,9 @@ public class NavActivity extends AppCompatActivity {
                 if(dataSnapshot.hasChild(current_user_id)){
                     if (!dataSnapshot.child(current_user_id).hasChild("fullname")) {
                         SendUserToSetupActivity();
+                    }
+                    else{
+                        //updateUserStatus("online");
                     }
                 }
             }
@@ -91,5 +111,24 @@ public class NavActivity extends AppCompatActivity {
         Intent setupIntent = new Intent(NavActivity.this, login.class);
         startActivity(setupIntent);
         finish();
+    }
+
+    private void updateUserStatus(String state){
+        String saveCurrentDate, saveCurrentTime;
+        Calendar calForDate = Calendar.getInstance();
+        SimpleDateFormat currentDate = new SimpleDateFormat("MMM dd, yyyy");
+        saveCurrentDate = currentDate.format(calForDate.getTime());
+
+        Calendar calForTime = Calendar.getInstance();
+        SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm");
+        saveCurrentTime = currentTime.format(calForTime.getTime());
+
+        Map currentStateMap = new HashMap<>();
+        currentStateMap.put("time",saveCurrentTime);
+        currentStateMap.put("date",saveCurrentDate);
+        currentStateMap.put("type",state);
+
+        UsersRef.child(mAuth.getCurrentUser().getUid()).child("userState")
+                .updateChildren(currentStateMap);
     }
 }
