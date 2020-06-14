@@ -72,11 +72,77 @@
                 android:layout_below="@+id/settings_phone"
                 android:layout_toEndOf="@+id/settings_checkBoxBike"
                 android:text="Motorcycle" />
+
+            <TextView
+                android:id="@+id/settings_weight_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/settings_checkBoxBike"
+                android:text="Weight (in kg)"
+                android:layout_marginTop="10dp"/>
+
+            <EditText
+                android:id="@+id/settings_weight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="numberDecimal"
+                android:layout_below="@+id/settings_checkBoxBike"
+                android:layout_toEndOf="@+id/settings_weight_text"
+                />
+
+            <TextView
+                android:id="@+id/settings_height_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/settings_weight"
+                android:text="Height (in cm)"
+                android:layout_marginTop="10dp"/>
+
+            <EditText
+                android:id="@+id/settings_height"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="numberDecimal"
+                android:layout_below="@+id/settings_weight"
+                android:layout_toEndOf="@+id/settings_height_text"
+                />
+
+            <TextView
+                android:id="@+id/settings_age_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/settings_height"
+                android:text="Age (years old)"
+                android:layout_marginTop="10dp" />
+
+            <EditText
+                android:id="@+id/settings_age"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="number"
+                android:layout_below="@+id/settings_height"
+                android:layout_toEndOf="@+id/settings_age_text"
+                />
+
+            <TextView
+                android:id="@+id/settings_bike_note"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/settings_age"
+                android:text="NOTE: FOR ACCURATE RESULTS, PLEASE ENTER YOUR HEIGHT, WEIGHT, AND AGE"
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                android:textSize="16sp"
+                android:textColor="@android:color/holo_red_dark"/>
+
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:id="@+id/update_account_settings_button"
-                android:layout_below="@id/settings_checkBoxBike"
+                android:layout_below="@id/settings_bike_note"
                 android:text="Update Profile"
                 android:layout_margin="20dp"
                 android:background="@drawable/button"

@@ -72,9 +72,42 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:text="Weight"
+                android:id="@+id/my_bike_weight"
+                android:layout_below="@+id/my_bike_motor"
+                android:textAlignment="center"
+                android:layout_marginTop="2dp"
+                android:textAllCaps="false"
+                android:textColor="@color/colorAccent"
+                android:textSize="18sp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Height"
+                android:id="@+id/my_bike_height"
+                android:layout_below="@+id/my_bike_weight"
+                android:textAlignment="center"
+                android:layout_marginTop="2dp"
+                android:textAllCaps="false"
+                android:textColor="@color/colorAccent"
+                android:textSize="18sp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Age"
+                android:id="@+id/my_bike_age"
+                android:layout_below="@+id/my_bike_height"
+                android:textAlignment="center"
+                android:layout_marginTop="2dp"
+                android:textAllCaps="false"
+                android:textColor="@color/colorAccent"
+                android:textSize="18sp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:text="Phone"
                 android:id="@+id/my_phone"
-                android:layout_below="@+id/my_bike_motor"
+                android:layout_below="@+id/my_bike_age"
                 android:textAlignment="center"
                 android:layout_marginTop="2dp"
                 android:textAllCaps="false"

@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -38,7 +39,7 @@ import java.util.HashMap;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class SetupActivity extends AppCompatActivity {
-    private EditText FullName;
+    private EditText FullName, weight, height, age;
     private Button SaveInformationbutton;
     private CircleImageView ProfileImage;
     private CheckBox checkBike, checkMotor;
@@ -49,6 +50,8 @@ public class SetupActivity extends AppCompatActivity {
     private ProgressDialog loadingBar;
     private StorageReference UserProfileImageRef;
     private Spinner Gender;
+
+    private TextView wt, ht, at, bn;
 
     String currentUserID;
     final static int Gallery_Pick = 1;
@@ -64,6 +67,46 @@ public class SetupActivity extends AppCompatActivity {
         checkMotor = findViewById(R.id.setup_checkBoxMotor);
         UsersRef = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserID);
         UserProfileImageRef = FirebaseStorage.getInstance().getReference().child("profileimage");
+
+        wt = findViewById(R.id.setup_weight_text);
+        ht = findViewById(R.id.setup_height_text);
+        at = findViewById(R.id.setup_age_text);
+        bn = findViewById(R.id.setup_bike_note);
+        weight = findViewById(R.id.setup_weight);
+        height = findViewById(R.id.setup_height);
+        age = findViewById(R.id.setup_age);
+
+        wt.setVisibility(View.GONE);
+        ht.setVisibility(View.GONE);
+        at.setVisibility(View.GONE);
+        bn.setVisibility(View.GONE);
+        weight.setVisibility(View.GONE);
+        height.setVisibility(View.GONE);
+        age.setVisibility(View.GONE);
+
+        checkBike.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (checkBike.isChecked()){
+                    wt.setVisibility(View.VISIBLE);
+                    ht.setVisibility(View.VISIBLE);
+                    at.setVisibility(View.VISIBLE);
+                    bn.setVisibility(View.VISIBLE);
+                    weight.setVisibility(View.VISIBLE);
+                    height.setVisibility(View.VISIBLE);
+                    age.setVisibility(View.VISIBLE);
+                }
+                else{
+                    wt.setVisibility(View.GONE);
+                    ht.setVisibility(View.GONE);
+                    at.setVisibility(View.GONE);
+                    bn.setVisibility(View.GONE);
+                    weight.setVisibility(View.GONE);
+                    height.setVisibility(View.GONE);
+                    age.setVisibility(View.GONE);
+                }
+            }
+        });
 
         Gender = findViewById(R.id.setup_gender);
         String[] items = new String[]{"Male", "Female"};
@@ -221,6 +264,12 @@ public class SetupActivity extends AppCompatActivity {
             Toast.makeText(this, "Please select bicycle or motorcycle.",Toast.LENGTH_SHORT).show();
         }
         else{
+            String hei="", wei="", yo="";
+            if (checkb){
+                hei = height.getText().toString();
+                wei = weight.getText().toString();
+                yo = age.getText().toString();
+            }
             loadingBar.setTitle("Saving Information");
             loadingBar.setMessage("Please wait, while we are creating your new Account...");
             loadingBar.show();
@@ -230,6 +279,9 @@ public class SetupActivity extends AppCompatActivity {
             userMap.put("gender", gender);
             userMap.put("bike",checkb);
             userMap.put("motor",checkm);
+            userMap.put("height",hei);
+            userMap.put("weight",wei);
+            userMap.put("age",yo);
             UsersRef.updateChildren(userMap).addOnCompleteListener(new OnCompleteListener() {
                 @Override
                 public void onComplete(@NonNull Task task) {

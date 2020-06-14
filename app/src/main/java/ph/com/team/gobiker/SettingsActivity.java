@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -39,7 +40,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import ph.com.team.gobiker.ui.dashboard.DashboardFragment;
 
 public class SettingsActivity extends AppCompatActivity {
-    private EditText userProfName, userPhone;
+    private EditText userProfName, userPhone, weight, height, age;
     private CheckBox checkBike, checkMotor;
     private Button UpdateAccountSettingsButton;
     private CircleImageView userProfImage;
@@ -51,6 +52,8 @@ public class SettingsActivity extends AppCompatActivity {
     private StorageReference UserProfileImageRef;
     private Spinner Gender;
     final static int Gallery_Pick = 1;
+    private TextView wt, ht, at, bn;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,6 +77,46 @@ public class SettingsActivity extends AppCompatActivity {
         UpdateAccountSettingsButton = findViewById(R.id.update_account_settings_button);
         userProfImage = findViewById(R.id.settings_profile_image);
         loadingBar = new ProgressDialog(this);
+
+        wt = findViewById(R.id.settings_weight_text);
+        ht = findViewById(R.id.settings_height_text);
+        at = findViewById(R.id.settings_age_text);
+        bn = findViewById(R.id.settings_bike_note);
+        weight = findViewById(R.id.settings_weight);
+        height = findViewById(R.id.settings_height);
+        age = findViewById(R.id.settings_age);
+
+        wt.setVisibility(View.GONE);
+        ht.setVisibility(View.GONE);
+        at.setVisibility(View.GONE);
+        bn.setVisibility(View.GONE);
+        weight.setVisibility(View.GONE);
+        height.setVisibility(View.GONE);
+        age.setVisibility(View.GONE);
+
+        checkBike.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (checkBike.isChecked()){
+                    wt.setVisibility(View.VISIBLE);
+                    ht.setVisibility(View.VISIBLE);
+                    at.setVisibility(View.VISIBLE);
+                    bn.setVisibility(View.VISIBLE);
+                    weight.setVisibility(View.VISIBLE);
+                    height.setVisibility(View.VISIBLE);
+                    age.setVisibility(View.VISIBLE);
+                }
+                else{
+                    wt.setVisibility(View.GONE);
+                    ht.setVisibility(View.GONE);
+                    at.setVisibility(View.GONE);
+                    bn.setVisibility(View.GONE);
+                    weight.setVisibility(View.GONE);
+                    height.setVisibility(View.GONE);
+                    age.setVisibility(View.GONE);
+                }
+            }
+        });
 
         SettingsUserRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -104,6 +147,30 @@ public class SettingsActivity extends AppCompatActivity {
                         checkBike.setChecked(true);
                     if (myMotor.equals("true"))
                         checkMotor.setChecked(true);
+
+                    if (myBike.equals("true")){
+                        wt.setVisibility(View.VISIBLE);
+                        ht.setVisibility(View.VISIBLE);
+                        at.setVisibility(View.VISIBLE);
+                        bn.setVisibility(View.VISIBLE);
+                        weight.setVisibility(View.VISIBLE);
+                        height.setVisibility(View.VISIBLE);
+                        age.setVisibility(View.VISIBLE);
+                        String myWeight="", myHeight="",myAge="";
+                        if (dataSnapshot.hasChild("weight")) {
+                            myWeight = dataSnapshot.child("weight").getValue().toString();
+                        }
+                        if (dataSnapshot.hasChild("height")) {
+                            myHeight = dataSnapshot.child("height").getValue().toString();
+                        }
+                        if (dataSnapshot.hasChild("age")) {
+                            myAge = dataSnapshot.child("age").getValue().toString();
+                        }
+
+                        weight.setText(myWeight);
+                        height.setText(myHeight);
+                        age.setText(myAge);
+                    }
                 }
             }
 
@@ -240,6 +307,12 @@ public class SettingsActivity extends AppCompatActivity {
             Toast.makeText(this, "Please select bicycle or motorcycle.",Toast.LENGTH_SHORT).show();
         }
         else{
+            String hei="", wei="", yo="";
+            if (checkb){
+                hei = height.getText().toString();
+                wei = weight.getText().toString();
+                yo = age.getText().toString();
+            }
             loadingBar.setTitle("Saving Information");
             loadingBar.setMessage("Please wait, while we are creating your new Account...");
             loadingBar.show();
@@ -250,6 +323,9 @@ public class SettingsActivity extends AppCompatActivity {
             userMap.put("gender", gender);
             userMap.put("bike",checkb);
             userMap.put("motor",checkm);
+            userMap.put("height",hei);
+            userMap.put("weight",wei);
+            userMap.put("age",yo);
             SettingsUserRef.updateChildren(userMap).addOnCompleteListener(new OnCompleteListener() {
                 @Override
                 public void onComplete(@NonNull Task task) {

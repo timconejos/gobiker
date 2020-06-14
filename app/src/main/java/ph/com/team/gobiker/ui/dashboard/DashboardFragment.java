@@ -41,7 +41,7 @@ public class DashboardFragment extends Fragment {
     private DashboardViewModel dashboardViewModel;
     private FirebaseAuth mAuth;
     private Button signOutButton, updateProfileButton;
-    private TextView userProfName,userGender, userBM, userEmail, userPhone;
+    private TextView userProfName,userGender, userBM, userEmail, userPhone, userWeight, userHeight, userAge;
     private CircleImageView userProfileImage;
     private DatabaseReference profileUserRef,UsersRef;
     private String currentUserId;
@@ -70,6 +70,9 @@ public class DashboardFragment extends Fragment {
         userEmail = root.findViewById(R.id.my_email_address);
         userPhone = root.findViewById(R.id.my_phone);
         userProfileImage = root.findViewById(R.id.my_profile_pic);
+        userWeight = root.findViewById(R.id.my_bike_weight);
+        userHeight = root.findViewById(R.id.my_bike_height);
+        userAge = root.findViewById(R.id.my_bike_age);
 
         updateProfileButton = root.findViewById(R.id.myUpdateProfileButton);
 
@@ -127,6 +130,33 @@ public class DashboardFragment extends Fragment {
 
                     userBM.setText(bm);
 
+                    if (myBike.equals("true")){
+                        userHeight.setVisibility(View.GONE);
+                        userWeight.setVisibility(View.GONE);
+                        userAge.setVisibility(View.GONE);
+
+                        String myWeight="", myHeight="",myAge="";
+                        if (dataSnapshot.hasChild("weight")) {
+                            myWeight = dataSnapshot.child("weight").getValue().toString();
+                            userWeight.setText("Weight: "+myWeight+" kg");
+                            userWeight.setVisibility(View.VISIBLE);
+                        }
+                        if (dataSnapshot.hasChild("height")) {
+                            myHeight = dataSnapshot.child("height").getValue().toString();
+                            userHeight.setText("Height: "+myHeight+" cm");
+                            userHeight.setVisibility(View.VISIBLE);
+                        }
+                        if (dataSnapshot.hasChild("age")) {
+                            myAge = dataSnapshot.child("age").getValue().toString();
+                            userAge.setText("Age: "+myAge+" years old");
+                            userAge.setVisibility(View.VISIBLE);
+                        }
+                    }
+                    else{
+                        userHeight.setVisibility(View.GONE);
+                        userWeight.setVisibility(View.GONE);
+                        userAge.setVisibility(View.GONE);
+                    }
                 }
             }
 
