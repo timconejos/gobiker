@@ -4,113 +4,226 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.dashboard.DashboardFragment">
+    tools:context=".ui.dashboard.DashboardFragment"
+    android:background="@color/white">
 
-    <TextView
-        android:id="@+id/text_dashboard"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+<!--    <TextView-->
+<!--        android:id="@+id/text_dashboard"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginStart="8dp"-->
+<!--        android:layout_marginTop="8dp"-->
+<!--        android:layout_marginEnd="8dp"-->
+<!--        android:textAlignment="center"-->
+<!--        android:textSize="20sp"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent" />-->
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="30dp"
+                android:id="@+id/profile_info">
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="15dp"
+                    android:src="@drawable/profile"
+                    android:id="@+id/my_profile_pic" />
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="10dp">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Profile Name"
+                            android:id="@+id/my_profile_full_name"
+                            android:layout_marginTop="5dp"
+                            android:textAlignment="textStart"
+                            android:textAllCaps="false"
+                            android:textColor="@color/black"
+                            android:textSize="20sp"
+                            android:textStyle="bold"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/my_email_address"
+                        android:text="Email"
+                        android:textAlignment="textStart"
+                        android:layout_marginTop="2dp"
+                        android:textAllCaps="false"
+                        android:textColor="@color/black"
+                        android:textSize="12sp"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Phone"
+                        android:id="@+id/my_phone"
+                        android:textAlignment="textStart"
+                        android:layout_marginTop="2dp"
+                        android:textAllCaps="false"
+                        android:textColor="@color/black"
+                        android:textSize="12sp"/>
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:layout_width="300dp"
-                android:layout_height="300dp"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="15dp"
-                android:src="@drawable/profile"
-                android:id="@+id/my_profile_pic" />
-            <TextView
+                </LinearLayout>
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    />
+        <Button
+            android:id="@+id/myUpdateProfileButton"
+            android:layout_width="100dp"
+            android:layout_height="35dp"
+            android:text="Edit Profile"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            style="@style/SecondaryBtn.Secondary"
+            />
+
+            </LinearLayout>
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Profile Name"
-                android:id="@+id/my_profile_full_name"
-                android:layout_below="@+id/my_profile_pic"
-                android:layout_marginTop="5dp"
-                android:textAlignment="center"
-                android:textAllCaps="false"
-                android:textColor="@color/colorAccent"
-                android:textSize="20sp"
-                android:textStyle="bold"/>
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Gender"
-                android:id="@+id/my_gender"
-                android:layout_below="@+id/my_profile_full_name"
-                android:textAlignment="center"
-                android:layout_marginTop="2dp"
-                android:textAllCaps="false"
-                android:textColor="@color/colorAccent"
-                android:textSize="18sp"/>
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Bike / Motor"
-                android:id="@+id/my_bike_motor"
-                android:layout_below="@+id/my_gender"
-                android:textAlignment="center"
-                android:layout_marginTop="2dp"
-                android:textAllCaps="false"
-                android:textColor="@color/colorAccent"
-                android:textSize="18sp"/>
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Phone"
-                android:id="@+id/my_phone"
-                android:layout_below="@+id/my_bike_motor"
-                android:textAlignment="center"
-                android:layout_marginTop="2dp"
-                android:textAllCaps="false"
-                android:textColor="@color/colorAccent"
-                android:textSize="18sp"/>
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Email Address"
-                android:id="@+id/my_email_address"
-                android:layout_below="@+id/my_phone"
-                android:textAlignment="center"
-                android:layout_marginTop="2dp"
-                android:textAllCaps="false"
-                android:textColor="@color/colorAccent"
-                android:textSize="18sp"/>
-            <Button
-                android:id="@+id/myUpdateProfileButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/my_email_address"
-                android:text="Update Profile"
-                android:layout_centerHorizontal="true"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginEnd="8dp" />
-            <Button
-                android:id="@+id/signOutButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/myUpdateProfileButton"
-                android:text="Sign Out"
-                android:layout_centerHorizontal="true"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginEnd="8dp" />
-        </RelativeLayout>
-    </ScrollView>
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:id="@+id/bikes"
+                android:layout_weight="2"
+                android:layout_below="@+id/profile_info"
+                >
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Gender"
+                    android:id="@+id/my_gender"
+                    android:textAlignment="center"
+                    android:layout_marginTop="2dp"
+                    android:textAllCaps="false"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="18sp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Bike / Motor"
+                    android:id="@+id/my_bike_motor"
+                    android:textAlignment="center"
+                    android:layout_marginTop="2dp"
+                    android:textAllCaps="false"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="18sp"/>
+
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dip"
+                    android:layout_weight="1"
+                    android:gravity="center|bottom"
+                    android:orientation="vertical"
+                    android:paddingBottom="20dp">
+
+                    <Button
+                        android:id="@+id/signOutButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:text="Sign Out"
+                        android:layout_below="@id/bikes"
+                        style="@style/SecondaryBtn.Negative"
+                        />
+                </LinearLayout>
+            </LinearLayout>
+
+<!--            <de.hdodenhof.circleimageview.CircleImageView-->
+<!--                android:layout_width="300dp"-->
+<!--                android:layout_height="300dp"-->
+<!--                android:layout_alignParentTop="true"-->
+<!--                android:layout_centerHorizontal="true"-->
+<!--                android:layout_marginTop="15dp"-->
+<!--                android:src="@drawable/profile"-->
+<!--                android:id="@+id/my_profile_pic" />-->
+<!--            <TextView-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="Profile Name"-->
+<!--                android:id="@+id/my_profile_full_name"-->
+<!--                android:layout_below="@+id/my_profile_pic"-->
+<!--                android:layout_marginTop="5dp"-->
+<!--                android:textAlignment="center"-->
+<!--                android:textAllCaps="false"-->
+<!--                android:textColor="@color/colorAccent"-->
+<!--                android:textSize="20sp"-->
+<!--                android:textStyle="bold"/>-->
+<!--            <TextView-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="Gender"-->
+<!--                android:id="@+id/my_gender"-->
+<!--                android:layout_below="@+id/my_profile_full_name"-->
+<!--                android:textAlignment="center"-->
+<!--                android:layout_marginTop="2dp"-->
+<!--                android:textAllCaps="false"-->
+<!--                android:textColor="@color/colorAccent"-->
+<!--                android:textSize="18sp"/>-->
+<!--            <TextView-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="Bike / Motor"-->
+<!--                android:id="@+id/my_bike_motor"-->
+<!--                android:layout_below="@+id/my_gender"-->
+<!--                android:textAlignment="center"-->
+<!--                android:layout_marginTop="2dp"-->
+<!--                android:textAllCaps="false"-->
+<!--                android:textColor="@color/colorAccent"-->
+<!--                android:textSize="18sp"/>-->
+<!--            <TextView-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="Phone"-->
+<!--                android:id="@+id/my_phone"-->
+<!--                android:layout_below="@+id/my_bike_motor"-->
+<!--                android:textAlignment="center"-->
+<!--                android:layout_marginTop="2dp"-->
+<!--                android:textAllCaps="false"-->
+<!--                android:textColor="@color/colorAccent"-->
+<!--                android:textSize="18sp"/>-->
+<!--            <TextView-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="Email Address"-->
+<!--                android:id="@+id/my_email_address"-->
+<!--                android:layout_below="@+id/my_phone"-->
+<!--                android:textAlignment="center"-->
+<!--                android:layout_marginTop="2dp"-->
+<!--                android:textAllCaps="false"-->
+<!--                android:textColor="@color/colorAccent"-->
+<!--                android:textSize="18sp"/>-->
+<!--            <Button-->
+<!--                android:id="@+id/myUpdateProfileButton"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_below="@id/my_email_address"-->
+<!--                android:text="Update Profile"-->
+<!--                android:layout_centerHorizontal="true"-->
+<!--                android:layout_marginStart="8dp"-->
+<!--                android:layout_marginTop="20dp"-->
+<!--                android:layout_marginEnd="8dp" />-->
+<!--            <Button-->
+<!--                android:id="@+id/signOutButton"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_below="@id/myUpdateProfileButton"-->
+<!--                android:text="Sign Out"-->
+<!--                android:layout_centerHorizontal="true"-->
+<!--                android:layout_marginStart="8dp"-->
+<!--                android:layout_marginTop="20dp"-->
+<!--                android:layout_marginEnd="8dp" />-->
+
+
 </RelativeLayout>
