@@ -132,9 +132,9 @@ public class ChatActivity extends AppCompatActivity {
             String message_push_id = user_message_key.getKey();
 
             Calendar calForDate = Calendar.getInstance();
-            SimpleDateFormat currentDate = new SimpleDateFormat("dd-MMMM-yyyy");
+            SimpleDateFormat currentDate = new SimpleDateFormat("MM-dd-yyyy");
             saveCurrentDate = currentDate.format(calForDate.getTime());
-            SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm aa");
+            SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm:ss");
             saveCurrentTime = currentTime.format(calForDate.getTime());
 
             Map messageTextBody = new HashMap();
