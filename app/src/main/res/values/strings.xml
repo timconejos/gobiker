@@ -7,6 +7,7 @@
     <string name="done">Done</string>
     <string name="success">Success!</string>
     <string name="ok">Ok</string>
+    <string name="cancel">Cancel</string>
 
 
     <!--    HOME    -->
@@ -70,6 +71,7 @@
     <string name="title_message">Messages</string>
     <string name="title_map">Map</string>
     <string name="create_post">Create Post</string>
+    <string name="update_profile">Update Profile</string>
     <string name="save">Save</string>
 
 
@@ -84,5 +86,18 @@
     <string name="start_point_nav">Enter start point (your location by default)</string>
     <string name="end_point_nav">Enter end point</string>
     <string name="start_nav_btn">Let\'s go!</string>
+
+    <!--    ACCOUNT -->
+
+    <string name="my_info">My information</string>
+    <string name="gender">Gender</string>
+    <string name="height">Height</string>
+    <string name="weight">Weight</string>
+    <string name="age">Age</string>
+    <string name="biometrics">Biometrics</string>
+    <string name="personal_info">Personal Info</string>
+    <string name="note_account_info">NOTE: For accurate results, please enter your HEIGHT, WEIGHT, and AGE.</string>
+    <string name="add_pic">Add picture</string>
+    <string name="ride">Ride</string>
 
 </resources>

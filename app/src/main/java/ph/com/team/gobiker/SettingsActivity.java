@@ -42,7 +42,7 @@ import ph.com.team.gobiker.ui.dashboard.DashboardFragment;
 public class SettingsActivity extends AppCompatActivity {
     private EditText userProfName, userPhone, weight, height, age;
     private CheckBox checkBike, checkMotor;
-    private Button UpdateAccountSettingsButton;
+    private Button UpdateAccountSettingsButton, CancelUpdateButton;
     private CircleImageView userProfImage;
     private DatabaseReference SettingsUserRef;
     private FirebaseAuth mAuth;
@@ -75,6 +75,7 @@ public class SettingsActivity extends AppCompatActivity {
         checkMotor = findViewById(R.id.settings_checkBoxMotor);
 
         UpdateAccountSettingsButton = findViewById(R.id.update_account_settings_button);
+        CancelUpdateButton = findViewById(R.id.cancel_action);
         userProfImage = findViewById(R.id.settings_profile_image);
         loadingBar = new ProgressDialog(this);
 
@@ -184,6 +185,13 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 ValidateAccountInfo();
+            }
+        });
+
+        CancelUpdateButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                finish();
             }
         });
 

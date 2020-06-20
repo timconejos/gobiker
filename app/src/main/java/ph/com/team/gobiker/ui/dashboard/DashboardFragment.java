@@ -138,17 +138,17 @@ public class DashboardFragment extends Fragment {
                         String myWeight="", myHeight="",myAge="";
                         if (dataSnapshot.hasChild("weight")) {
                             myWeight = dataSnapshot.child("weight").getValue().toString();
-                            userWeight.setText("Weight: "+myWeight+" kg");
+                            userWeight.setText(myWeight+" kg");
                             userWeight.setVisibility(View.VISIBLE);
                         }
                         if (dataSnapshot.hasChild("height")) {
                             myHeight = dataSnapshot.child("height").getValue().toString();
-                            userHeight.setText("Height: "+myHeight+" cm");
+                            userHeight.setText(myHeight+" cm");
                             userHeight.setVisibility(View.VISIBLE);
                         }
                         if (dataSnapshot.hasChild("age")) {
                             myAge = dataSnapshot.child("age").getValue().toString();
-                            userAge.setText("Age: "+myAge+" years old");
+                            userAge.setText(myAge+" years old");
                             userAge.setVisibility(View.VISIBLE);
                         }
                     }

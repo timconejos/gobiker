@@ -98,15 +98,119 @@
                 android:layout_below="@+id/profile_info"
                 >
                 <TextView
+                    android:id="@+id/my_info_lbl"
+                    android:text="@string/my_info"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:gravity="start"
+                    style="@style/Headings.H1"
+                    android:textColor="@color/black"
+                    android:layout_marginStart="20dp"/>
+                <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Gender"
-                    android:id="@+id/my_gender"
-                    android:textAlignment="center"
-                    android:layout_marginTop="2dp"
-                    android:textAllCaps="false"
-                    android:textColor="@color/colorAccent"
-                    android:textSize="18sp"/>
+                    android:background="@drawable/round_shape"
+                    android:layout_margin="20dp"
+                    android:padding="15dp">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:id="@+id/gender_lbl"
+                                android:text="Gender"
+                                android:layout_height="wrap_content"
+                                android:layout_width="wrap_content"
+                                android:layout_alignParentLeft="true"
+                                android:gravity="center"
+                                style="@style/Subtitle.H5"
+                                android:textColor="@color/black"/>
+                            <TextView
+                                android:id="@+id/my_gender"
+                                android:text="Gender"
+                                android:layout_height="wrap_content"
+                                android:layout_width="wrap_content"
+                                android:gravity="end"
+                                android:layout_alignParentRight="true"
+                                style="@style/Headings.H3"
+                                android:textColor="@color/black"/>
+                        </RelativeLayout>
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:id="@+id/weight_lbl"
+                                android:text="Weight"
+                                android:layout_height="wrap_content"
+                                android:layout_width="wrap_content"
+                                android:layout_alignParentLeft="true"
+                                android:gravity="center"
+                                style="@style/Subtitle.H5"
+                                android:textColor="@color/black"/>
+                            <TextView
+                                android:id="@+id/my_bike_weight"
+                                android:text="Weight"
+                                android:layout_height="wrap_content"
+                                android:layout_width="wrap_content"
+                                android:gravity="end"
+                                android:layout_alignParentRight="true"
+                                style="@style/Headings.H3"
+                                android:textColor="@color/black"/>
+                        </RelativeLayout>
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:id="@+id/height_lbl"
+                                android:text="Height"
+                                android:layout_height="wrap_content"
+                                android:layout_width="wrap_content"
+                                android:layout_alignParentLeft="true"
+                                android:gravity="center"
+                                style="@style/Subtitle.H5"
+                                android:textColor="@color/black"/>
+                            <TextView
+                                android:id="@+id/my_bike_height"
+                                android:text="Height"
+                                android:layout_height="wrap_content"
+                                android:layout_width="wrap_content"
+                                android:gravity="end"
+                                android:layout_alignParentRight="true"
+                                style="@style/Headings.H3"
+                                android:textColor="@color/black"/>
+                        </RelativeLayout>
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:id="@+id/age_lbl"
+                                android:text="Age"
+                                android:layout_height="wrap_content"
+                                android:layout_width="wrap_content"
+                                android:layout_alignParentLeft="true"
+                                android:gravity="center"
+                                style="@style/Subtitle.H5"
+                                android:textColor="@color/black"/>
+                            <TextView
+                                android:id="@+id/my_bike_age"
+                                android:text="Age"
+                                android:layout_height="wrap_content"
+                                android:layout_width="wrap_content"
+                                android:gravity="end"
+                                android:layout_alignParentRight="true"
+                                style="@style/Headings.H3"
+                                android:textColor="@color/black"/>
+                        </RelativeLayout>
+                    </LinearLayout>
+                </FrameLayout>
 
                 <TextView
                     android:layout_width="match_parent"
@@ -128,7 +232,10 @@
                     android:gravity="center|bottom"
                     android:orientation="vertical"
                     android:paddingBottom="20dp">
-
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/lightestColor"/>
                     <Button
                         android:id="@+id/signOutButton"
                         android:layout_width="match_parent"
@@ -139,91 +246,5 @@
                         />
                 </LinearLayout>
             </LinearLayout>
-
-<!--            <de.hdodenhof.circleimageview.CircleImageView-->
-<!--                android:layout_width="300dp"-->
-<!--                android:layout_height="300dp"-->
-<!--                android:layout_alignParentTop="true"-->
-<!--                android:layout_centerHorizontal="true"-->
-<!--                android:layout_marginTop="15dp"-->
-<!--                android:src="@drawable/profile"-->
-<!--                android:id="@+id/my_profile_pic" />-->
-<!--            <TextView-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:text="Profile Name"-->
-<!--                android:id="@+id/my_profile_full_name"-->
-<!--                android:layout_below="@+id/my_profile_pic"-->
-<!--                android:layout_marginTop="5dp"-->
-<!--                android:textAlignment="center"-->
-<!--                android:textAllCaps="false"-->
-<!--                android:textColor="@color/colorAccent"-->
-<!--                android:textSize="20sp"-->
-<!--                android:textStyle="bold"/>-->
-<!--            <TextView-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:text="Gender"-->
-<!--                android:id="@+id/my_gender"-->
-<!--                android:layout_below="@+id/my_profile_full_name"-->
-<!--                android:textAlignment="center"-->
-<!--                android:layout_marginTop="2dp"-->
-<!--                android:textAllCaps="false"-->
-<!--                android:textColor="@color/colorAccent"-->
-<!--                android:textSize="18sp"/>-->
-<!--            <TextView-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:text="Bike / Motor"-->
-<!--                android:id="@+id/my_bike_motor"-->
-<!--                android:layout_below="@+id/my_gender"-->
-<!--                android:textAlignment="center"-->
-<!--                android:layout_marginTop="2dp"-->
-<!--                android:textAllCaps="false"-->
-<!--                android:textColor="@color/colorAccent"-->
-<!--                android:textSize="18sp"/>-->
-<!--            <TextView-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:text="Phone"-->
-<!--                android:id="@+id/my_phone"-->
-<!--                android:layout_below="@+id/my_bike_motor"-->
-<!--                android:textAlignment="center"-->
-<!--                android:layout_marginTop="2dp"-->
-<!--                android:textAllCaps="false"-->
-<!--                android:textColor="@color/colorAccent"-->
-<!--                android:textSize="18sp"/>-->
-<!--            <TextView-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:text="Email Address"-->
-<!--                android:id="@+id/my_email_address"-->
-<!--                android:layout_below="@+id/my_phone"-->
-<!--                android:textAlignment="center"-->
-<!--                android:layout_marginTop="2dp"-->
-<!--                android:textAllCaps="false"-->
-<!--                android:textColor="@color/colorAccent"-->
-<!--                android:textSize="18sp"/>-->
-<!--            <Button-->
-<!--                android:id="@+id/myUpdateProfileButton"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_below="@id/my_email_address"-->
-<!--                android:text="Update Profile"-->
-<!--                android:layout_centerHorizontal="true"-->
-<!--                android:layout_marginStart="8dp"-->
-<!--                android:layout_marginTop="20dp"-->
-<!--                android:layout_marginEnd="8dp" />-->
-<!--            <Button-->
-<!--                android:id="@+id/signOutButton"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_below="@id/myUpdateProfileButton"-->
-<!--                android:text="Sign Out"-->
-<!--                android:layout_centerHorizontal="true"-->
-<!--                android:layout_marginStart="8dp"-->
-<!--                android:layout_marginTop="20dp"-->
-<!--                android:layout_marginEnd="8dp" />-->
-
 
 </RelativeLayout>
