@@ -63,12 +63,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     private static Place navTo;
     private static Place navFrom;
     private static Location currentLocation;
-    private static float distanceTravelled;
+    private static float distanceTotal;
     private MapViewModel mViewModel;
     private GoogleMap mMap;
     private boolean mPermissionDenied = false;
     private LocationManager locationManager;
-    private boolean isFreeRide;
     private FloatingActionButton startNav;
     private FloatingActionButton startFreeRide;
     private TextView infoSpeed;
@@ -76,6 +75,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     private TextView infoTime;
     private TextView infoDistance;
     private static DecimalFormat df = new DecimalFormat("0.00");
+    private static boolean isDirectionalTravel = false;
+    private static boolean isFreeTravel = false;
 
     public static MapFragment newInstance() {
         return new MapFragment();
@@ -92,12 +93,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         startFreeRide.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (isFreeRide) {
-                    Toast.makeText(getContext(), "Cancelling free ride", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getContext(), "Starting free ride", Toast.LENGTH_SHORT).show();
-                }
-
+                isFreeTravel = !isFreeTravel;
+                Toast.makeText(getContext(), isFreeTravel ? "Starting free ride..." : "Stopping free ride...", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -106,7 +103,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         infoDistance = v.findViewById(R.id.nav_info_distance);
         infoTime = v.findViewById(R.id.nav_info_time);
 
-        distanceTravelled = 0;
+        distanceTotal = 0;
 
         setupMapIfNeeded();
         setUpLocationManager();
@@ -297,24 +294,28 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
             double elapsedTime = (location.getTime() - currentLocation.getTime()) / 1_000; // Convert milliseconds to seconds
             speed = currentLocation.distanceTo(location) / elapsedTime;
         }*/
+        if(isFreeTravel) {
+            float distanceTraveled = currentLocation == null ? 0 : currentLocation.distanceTo(location);
+            moveCamToLocation();
 
-        speed = location.hasSpeed() ? location.getSpeed() : 0;
+            distanceTotal += currentLocation != null ?  distanceTraveled: 0;
+            currentLocation = location;
+            speed = distanceTraveled == 0 ? 0 : location.hasSpeed() ? location.getSpeed() : 0;
+            infoSpeed.setText(df.format(speed) + " m/s ");
 
-        distanceTravelled += currentLocation != null ? currentLocation.distanceTo(location) : 0;
-        currentLocation = location;
+            if (distanceTotal / 1000 >= 1) {
+                infoDistance.setText(df.format(distanceTotal / 1000) + " km");
+            } else {
+                infoDistance.setText(df.format(distanceTotal) + " m");
+            }
 
-        infoSpeed.setText(df.format(speed) + " m/s ");
-
-        if(distanceTravelled / 1000 >= 1){
-            infoDistance.setText(df.format(distanceTravelled / 1000) + " km");
+            
+            Log.d("MapLocationManager", "location updated ");
+            Log.d("MapLocationManager", "speed: " + location.hasSpeed() + " - " + location.getSpeed());
         }
         else{
-            infoDistance.setText(df.format(distanceTravelled) + " m");
+            //location
         }
-
-        moveCamToLocation();
-        Log.d("MapLocationManager", "location updated ");
-        Log.d("MapLocationManager", "speed: " + location.hasSpeed() + " - " + location.getSpeed());
     }
 
     @Override
@@ -362,7 +363,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     private void setUpLocationManager() {
         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, this);
             Log.d("MapLocationManager", "location Manager started");
         }
     }
@@ -371,7 +372,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             if (mMap != null) {
-
                 currentLocation = locationManager.getLastKnownLocation(locationManager.getBestProvider(new Criteria(), false));
                 if (currentLocation != null) {
                     mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()), 17));
