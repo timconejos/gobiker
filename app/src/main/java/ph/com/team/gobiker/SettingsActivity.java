@@ -50,7 +50,7 @@ public class SettingsActivity extends AppCompatActivity {
     private Uri ImageUri;
     private ProgressDialog loadingBar;
     private StorageReference UserProfileImageRef;
-    private Spinner Gender;
+    private Spinner Gender, WUnit, HUnit;
     final static int Gallery_Pick = 1;
     private TextView wt, ht, at, bn;
 
@@ -86,6 +86,16 @@ public class SettingsActivity extends AppCompatActivity {
         height = findViewById(R.id.settings_height);
         age = findViewById(R.id.settings_age);
 
+        WUnit = findViewById(R.id.settings_weight_unit);
+        String[] itemsW = new String[]{"kgs", "lbs"};
+        ArrayAdapter<String> adapterW = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, itemsW);
+        WUnit.setAdapter(adapterW);
+
+        HUnit = findViewById(R.id.settings_height_unit);
+        String[] itemsH = new String[]{"cm", "in"};
+        ArrayAdapter<String> adapterH = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, itemsH);
+        HUnit.setAdapter(adapterH);
+
         wt.setVisibility(View.GONE);
         ht.setVisibility(View.GONE);
         at.setVisibility(View.GONE);
@@ -93,6 +103,8 @@ public class SettingsActivity extends AppCompatActivity {
         weight.setVisibility(View.GONE);
         height.setVisibility(View.GONE);
         age.setVisibility(View.GONE);
+        WUnit.setVisibility(View.GONE);
+        HUnit.setVisibility(View.GONE);
 
         checkBike.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,6 +117,8 @@ public class SettingsActivity extends AppCompatActivity {
                     weight.setVisibility(View.VISIBLE);
                     height.setVisibility(View.VISIBLE);
                     age.setVisibility(View.VISIBLE);
+                    WUnit.setVisibility(View.VISIBLE);
+                    HUnit.setVisibility(View.VISIBLE);
                 }
                 else{
                     wt.setVisibility(View.GONE);
@@ -114,6 +128,8 @@ public class SettingsActivity extends AppCompatActivity {
                     weight.setVisibility(View.GONE);
                     height.setVisibility(View.GONE);
                     age.setVisibility(View.GONE);
+                    WUnit.setVisibility(View.GONE);
+                    HUnit.setVisibility(View.GONE);
                 }
             }
         });
@@ -156,15 +172,42 @@ public class SettingsActivity extends AppCompatActivity {
                         weight.setVisibility(View.VISIBLE);
                         height.setVisibility(View.VISIBLE);
                         age.setVisibility(View.VISIBLE);
+                        WUnit.setVisibility(View.VISIBLE);
+                        HUnit.setVisibility(View.VISIBLE);
                         String myWeight="", myHeight="",myAge="";
-                        if (dataSnapshot.hasChild("weight")) {
-                            myWeight = dataSnapshot.child("weight").getValue().toString();
+                        if (dataSnapshot.hasChild("savedweight")) {
+                            if (dataSnapshot.child("savedweight").getValue().toString().equals("")) {
+                                WUnit.setSelection(0);
+                            }
+                            else{
+                                myWeight = dataSnapshot.child("savedweight").getValue().toString();
+                                if (dataSnapshot.child("savedwunit").getValue().toString().equals("lbs"))
+                                    WUnit.setSelection(1);
+                                else
+                                    WUnit.setSelection(0);
+                            }
                         }
-                        if (dataSnapshot.hasChild("height")) {
-                            myHeight = dataSnapshot.child("height").getValue().toString();
+
+                        if (dataSnapshot.hasChild("savedheight")) {
+                            if (dataSnapshot.child("savedheight").getValue().toString().equals("")) {
+                                HUnit.setSelection(0);
+                            }
+                            else{
+                                myHeight = dataSnapshot.child("savedheight").getValue().toString();
+                                if (dataSnapshot.child("savedhunit").getValue().toString().equals("in"))
+                                    HUnit.setSelection(1);
+                                else
+                                    HUnit.setSelection(0);
+                            }
                         }
+
                         if (dataSnapshot.hasChild("age")) {
-                            myAge = dataSnapshot.child("age").getValue().toString();
+                            if (dataSnapshot.child("age").getValue().toString().equals("0")) {
+                                myAge="";
+                            }
+                            else{
+                                myAge = dataSnapshot.child("age").getValue().toString();
+                            }
                         }
 
                         weight.setText(myWeight);
@@ -307,14 +350,34 @@ public class SettingsActivity extends AppCompatActivity {
             Toast.makeText(this, "Please select bicycle or motorcycle.",Toast.LENGTH_SHORT).show();
         }
         else{
-            String hei="", wei="", yo="";
+            String hei="", wei="", yo="", hUnit="", wUnit="", sh="", sw="";
             if (checkb){
-                hei = height.getText().toString();
-                wei = weight.getText().toString();
+                sh = height.getText().toString();
+                sw = weight.getText().toString();
                 yo = age.getText().toString();
+
+                if (yo.equals(""))
+                    yo = "0";
+
+                if (!sh.equals("")){
+                    hUnit = HUnit.getSelectedItem().toString();
+                    if (hUnit.equals("cm"))
+                        hei = sh;
+                    else
+                        hei = Double.toString((Double.parseDouble(sh)*2.54));
+                }
+
+                if (!sw.equals("")){
+                    wUnit = WUnit.getSelectedItem().toString();
+
+                    if (wUnit.equals("kgs"))
+                        wei = sw;
+                    else
+                        wei = Double.toString((Double.parseDouble(sw)/2.205));
+                }
             }
             loadingBar.setTitle("Saving Information");
-            loadingBar.setMessage("Please wait, while we are creating your new Account...");
+            loadingBar.setMessage("Please wait, while we are updating your account...");
             loadingBar.show();
             loadingBar.setCanceledOnTouchOutside(true);
             HashMap userMap = new HashMap();
@@ -324,8 +387,13 @@ public class SettingsActivity extends AppCompatActivity {
             userMap.put("bike",checkb);
             userMap.put("motor",checkm);
             userMap.put("height",hei);
+            userMap.put("savedheight",sh);
+            userMap.put("savedhunit",hUnit);
             userMap.put("weight",wei);
+            userMap.put("savedweight",sw);
+            userMap.put("savedwunit",wUnit);
             userMap.put("age",yo);
+
             SettingsUserRef.updateChildren(userMap).addOnCompleteListener(new OnCompleteListener() {
                 @Override
                 public void onComplete(@NonNull Task task) {

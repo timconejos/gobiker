@@ -78,8 +78,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/settings_checkBoxBike"
-                android:text="Weight (in kg)"
-                android:layout_marginTop="10dp"/>
+                android:text="Weight"
+                android:layout_marginTop="20dp"/>
 
             <EditText
                 android:id="@+id/settings_weight"
@@ -89,6 +89,17 @@
                 android:inputType="numberDecimal"
                 android:layout_below="@+id/settings_checkBoxBike"
                 android:layout_toEndOf="@+id/settings_weight_text"
+                android:layout_marginTop="10dp"
+                />
+
+            <Spinner
+                android:id="@+id/settings_weight_unit"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:background="@android:drawable/btn_dropdown"
+                android:spinnerMode="dropdown"
+                android:layout_below="@+id/settings_checkBoxBike"
+                android:layout_toEndOf="@+id/settings_weight"
                 />
 
             <TextView
@@ -96,8 +107,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/settings_weight"
-                android:text="Height (in cm)"
-                android:layout_marginTop="10dp"/>
+                android:text="Height"
+                android:layout_marginTop="20dp"/>
 
             <EditText
                 android:id="@+id/settings_height"
@@ -107,6 +118,17 @@
                 android:inputType="numberDecimal"
                 android:layout_below="@+id/settings_weight"
                 android:layout_toEndOf="@+id/settings_height_text"
+                android:layout_marginTop="10dp"
+                />
+
+            <Spinner
+                android:id="@+id/settings_height_unit"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:background="@android:drawable/btn_dropdown"
+                android:spinnerMode="dropdown"
+                android:layout_below="@+id/settings_weight"
+                android:layout_toEndOf="@+id/settings_height"
                 />
 
             <TextView

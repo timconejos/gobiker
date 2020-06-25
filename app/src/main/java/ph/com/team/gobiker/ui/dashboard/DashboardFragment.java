@@ -130,26 +130,62 @@ public class DashboardFragment extends Fragment {
 
                     userBM.setText(bm);
 
-                    if (myBike.equals("true")){
+                    if (myBike.equals("true")) {
                         userHeight.setVisibility(View.GONE);
                         userWeight.setVisibility(View.GONE);
                         userAge.setVisibility(View.GONE);
 
                         String myWeight="", myHeight="",myAge="";
-                        if (dataSnapshot.hasChild("weight")) {
-                            myWeight = dataSnapshot.child("weight").getValue().toString();
-                            userWeight.setText("Weight: "+myWeight+" kg");
-                            userWeight.setVisibility(View.VISIBLE);
+                        if (dataSnapshot.hasChild("savedweight")) {
+                            if (dataSnapshot.child("savedweight").getValue().toString().equals("")) {
+                                userWeight.setText("");
+                                userWeight.setVisibility(View.GONE);
+                            }
+                            else{
+                                myWeight = dataSnapshot.child("savedweight").getValue().toString();
+                                String wunit = dataSnapshot.child("savedwunit").getValue().toString();
+                                userWeight.setText("Weight: " + myWeight + " " + wunit);
+                                userWeight.setVisibility(View.VISIBLE);
+                            }
                         }
-                        if (dataSnapshot.hasChild("height")) {
-                            myHeight = dataSnapshot.child("height").getValue().toString();
-                            userHeight.setText("Height: "+myHeight+" cm");
-                            userHeight.setVisibility(View.VISIBLE);
+                        else{
+                            userWeight.setText("");
+                            userWeight.setVisibility(View.GONE);
                         }
+
+                        if (dataSnapshot.hasChild("savedheight")) {
+                            if (dataSnapshot.child("savedheight").getValue().toString().equals("")) {
+                                userHeight.setText("");
+                                userHeight.setVisibility(View.GONE);
+                            }
+                            else{
+                                myHeight = dataSnapshot.child("savedheight").getValue().toString();
+                                String hunit = dataSnapshot.child("savedhunit").getValue().toString();
+                                userHeight.setText("Height: " + myHeight + " " + hunit);
+                                userHeight.setVisibility(View.VISIBLE);
+                            }
+                        }
+                        else{
+                            userHeight.setText("");
+                            userHeight.setVisibility(View.GONE);
+                        }
+
                         if (dataSnapshot.hasChild("age")) {
-                            myAge = dataSnapshot.child("age").getValue().toString();
-                            userAge.setText("Age: "+myAge+" years old");
-                            userAge.setVisibility(View.VISIBLE);
+                            if (dataSnapshot.child("age").getValue().toString().equals("0")) {
+                                userAge.setText("");
+                                userAge.setVisibility(View.GONE);
+                            }
+                            else{
+                                myAge = dataSnapshot.child("age").getValue().toString();
+                                userAge.setText("Age: " + myAge + " years old");
+                                userAge.setVisibility(View.VISIBLE);
+                            }
+
+
+                        }
+                        else{
+                            userAge.setText("");
+                            userAge.setVisibility(View.GONE);
                         }
                     }
                     else{
