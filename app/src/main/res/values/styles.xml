@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/white</item>
         <item name="colorPrimaryDark">@color/colorPrimary</item>
@@ -93,6 +93,14 @@
 
     <style name="Subtitle.H6">
         <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="Label" parent="TextAppearance.AppCompat">
+        <item name="android:fontFamily">sans-serif-light</item>
+    </style>
+    <style name="Label.SmallHigh">
+        <item name="android:textSize">10sp</item>
+        <item name="textAllCaps">true</item>
     </style>
 
 

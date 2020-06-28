@@ -18,6 +18,13 @@
     <string name="profile">Profile</string>
 
 
+    <!--    MAP -->
+    <string name="speed">Speed</string>
+    <string name="time">Time</string>
+    <string name="distance">Distance</string>
+    <string name="calories">Calories</string>
+
+
     <!--    PROFILE     -->
     <string name="edit_prof">Edit profile</string>
     <string name="hometown">Hometown</string>

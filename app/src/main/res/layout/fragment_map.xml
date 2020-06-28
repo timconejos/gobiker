@@ -9,40 +9,118 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="5dp"
+        android:paddingTop="30dp"
+        android:paddingEnd="15dp"
+        android:paddingStart="15dp"
+        android:paddingBottom="15dp"
+        android:background="@drawable/background_with_shadow"
         android:id="@+id/nav_info">
 
-        <TextView
-            android:id="@+id/nav_info_speed"
+        <LinearLayout
+            android:id="@+id/distance_lo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_alignParentLeft="true"
+            >
+
+            <TextView
+                android:id="@+id/nav_info_distance_lbl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="textStart"
+                android:text="@string/distance"
+                style="@style/Label.SmallHigh"
+                android:textColor="@color/colorPrimary"/>
+            <TextView
+                android:id="@+id/nav_info_distance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=" - km"
+                android:paddingEnd="10dp"
+                style="@style/Headings.H2"
+                android:textColor="@color/black"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/distance_lo"
+            android:layout_marginTop="15dp">
+
+            <TextView
+                android:id="@+id/nav_info_calories_lbl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="textStart"
+                android:text="@string/calories"
+                style="@style/Label.SmallHigh"
+                android:textColor="@color/colorPrimary"/>
+            <TextView
+                android:id="@+id/nav_info_calories"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=" - kCal"
+                android:paddingEnd="10dp"
+                style="@style/Headings.H2"
+                android:textColor="@color/black"/>
+        </LinearLayout>
+
+
+
+        <LinearLayout
+            android:id="@+id/speed_lo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:text="- m/s"
-            android:textSize="30sp" />
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/nav_info_speed_lbl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="textEnd"
+                android:text="@string/speed"
+                style="@style/Label.SmallHigh"
+                android:textColor="@color/colorPrimary"/>
+            <TextView
+                android:id="@+id/nav_info_speed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="- m/s"
+                style="@style/Headings.H2"
+                android:textColor="@color/black"/>
+        </LinearLayout>
 
-        <TextView
-            android:id="@+id/nav_info_distance"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="- km"
-            android:textSize="30sp" />
-
-        <TextView
-            android:id="@+id/nav_info_calories"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/nav_info_distance"
-            android:text="- kCal"
-            android:textSize="30sp" />
-
-        <TextView
-            android:id="@+id/nav_info_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/nav_info_speed"
+            android:orientation="vertical"
             android:layout_alignParentRight="true"
-            android:text="-:--"
-            android:textSize="30sp" />
+            android:layout_below="@id/speed_lo"
+            android:layout_marginTop="15dp">
+
+            <TextView
+                android:id="@+id/nav_info_time_lbl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:textAlignment="textEnd"
+                android:text="@string/time"
+                style="@style/Label.SmallHigh"
+                android:textColor="@color/colorPrimary"/>
+            <TextView
+                android:id="@+id/nav_info_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:text="-:--"
+                style="@style/Headings.H2"
+                android:textColor="@color/black"/>
+        </LinearLayout>
+
+
 
     </RelativeLayout>
 

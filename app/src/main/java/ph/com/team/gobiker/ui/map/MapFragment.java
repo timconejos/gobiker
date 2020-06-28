@@ -136,9 +136,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 currentUserData.setFullname(dataSnapshot.child("fullname").getValue().toString());
                 currentUserData.setGender(dataSnapshot.child("gender").getValue().toString());
-                currentUserData.setAge(Integer.parseInt(dataSnapshot.child("age").getValue().toString()));
-                currentUserData.setHeight(Float.parseFloat(dataSnapshot.child("height").getValue().toString()));
-                currentUserData.setWeight(Float.parseFloat(dataSnapshot.child("weight").getValue().toString()));
+                currentUserData.setAge(21);//Integer.parseInt(dataSnapshot.child("age").getValue().toString())
+                currentUserData.setHeight(155);//Float.parseFloat(dataSnapshot.child("height").getValue().toString())
+                currentUserData.setWeight(155);//Float.parseFloat(dataSnapshot.child("weight").getValue().toString())
             }
 
             @Override

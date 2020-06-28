@@ -14,7 +14,7 @@ public class User {
         this.fullname = fullname;
     }
 
-    private float age;
+    private int age;
     private float weight;
     private float height;
     private String gender;
@@ -27,11 +27,11 @@ public class User {
         this.UUID = UUID;
     }
 
-    public float getAge() {
+    public int getAge() {
         return age;
     }
 
-    public void setAge(float age) {
+    public void setAge(int age) {
         this.age = age;
     }
 
