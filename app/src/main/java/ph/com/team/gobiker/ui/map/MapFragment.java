@@ -38,6 +38,7 @@ import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.libraries.places.api.model.Place;
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -79,8 +80,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     private GoogleMap mMap;
     private boolean mPermissionDenied = false;
     private LocationManager locationManager;
-    private FloatingActionButton startNav;
-    private FloatingActionButton startFreeRide;
+    private ExtendedFloatingActionButton startNav;
+    private ExtendedFloatingActionButton startFreeRide;
     private TextView infoSpeed;
     private TextView infoCalories;
     private TextView infoTime;
@@ -136,9 +137,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 currentUserData.setFullname(dataSnapshot.child("fullname").getValue().toString());
                 currentUserData.setGender(dataSnapshot.child("gender").getValue().toString());
-                currentUserData.setAge(21);//Integer.parseInt(dataSnapshot.child("age").getValue().toString())
-                currentUserData.setHeight(155);//Float.parseFloat(dataSnapshot.child("height").getValue().toString())
-                currentUserData.setWeight(155);//Float.parseFloat(dataSnapshot.child("weight").getValue().toString())
+                currentUserData.setAge(Integer.parseInt(dataSnapshot.child("age").getValue().toString()));
+                currentUserData.setHeight(Float.parseFloat(dataSnapshot.child("height").getValue().toString()));
+                currentUserData.setWeight(Float.parseFloat(dataSnapshot.child("weight").getValue().toString()));
             }
 
             @Override

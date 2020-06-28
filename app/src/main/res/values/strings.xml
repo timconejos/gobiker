@@ -23,6 +23,8 @@
     <string name="time">Time</string>
     <string name="distance">Distance</string>
     <string name="calories">Calories</string>
+    <string name="add_directions">Add Direction</string>
+    <string name="start">Start</string>
 
 
     <!--    PROFILE     -->
