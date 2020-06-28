@@ -27,8 +27,6 @@ public class NavigationStartActivity extends AppCompatActivity {
     private EditText startPoint;
     private EditText endPoint;
     private Button letsGoBtn;
-
-
     static Place startPlace;
     static Place endPlace;
 

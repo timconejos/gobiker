@@ -58,8 +58,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/setup_checkBoxBike"
-        android:text="Weight (in kg)"
-        android:layout_marginTop="10dp"/>
+        android:text="Weight"
+        android:layout_marginTop="20dp"/>
 
     <EditText
         android:id="@+id/setup_weight"
@@ -69,15 +69,25 @@
         android:inputType="numberDecimal"
         android:layout_below="@+id/setup_checkBoxBike"
         android:layout_toEndOf="@+id/setup_weight_text"
+        android:layout_marginTop="10dp"
         />
+
+    <Spinner
+        android:id="@+id/setup_weight_unit"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:background="@android:drawable/btn_dropdown"
+        android:spinnerMode="dropdown"
+        android:layout_below="@+id/setup_checkBoxBike"
+        android:layout_toEndOf="@+id/setup_weight"/>
 
     <TextView
         android:id="@+id/setup_height_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/setup_weight"
-        android:text="Height (in cm)"
-        android:layout_marginTop="10dp"/>
+        android:text="Height"
+        android:layout_marginTop="20dp"/>
 
     <EditText
         android:id="@+id/setup_height"
@@ -87,6 +97,17 @@
         android:inputType="numberDecimal"
         android:layout_below="@+id/setup_weight"
         android:layout_toEndOf="@+id/setup_height_text"
+        android:layout_marginTop="10dp"
+        />
+
+    <Spinner
+        android:id="@+id/setup_height_unit"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:background="@android:drawable/btn_dropdown"
+        android:spinnerMode="dropdown"
+        android:layout_below="@+id/setup_weight"
+        android:layout_toEndOf="@+id/setup_height"
         />
 
     <TextView
@@ -132,5 +153,7 @@
         android:textSize="20sp"
         android:textStyle="bold"
          />
+
+
 
 </RelativeLayout>

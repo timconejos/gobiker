@@ -10,7 +10,6 @@ public class FindChat {
     public FindChat(String profileimage, String fullname, String status) {
         this.profileimage = profileimage;
         this.fullname = fullname;
-        this.status = status;
     }
 
     public String getProfileimage() {
@@ -27,13 +26,5 @@ public class FindChat {
 
     public void setFullname(String fullname) {
         this.fullname = fullname;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
     }
 }
