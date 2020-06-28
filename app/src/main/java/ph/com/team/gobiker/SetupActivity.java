@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -49,7 +50,7 @@ public class SetupActivity extends AppCompatActivity {
     private DatabaseReference UsersRef;
     private ProgressDialog loadingBar;
     private StorageReference UserProfileImageRef;
-    private Spinner Gender;
+    private Spinner Gender, WUnit, HUnit;
 
     private TextView wt, ht, at, bn;
 
@@ -76,6 +77,16 @@ public class SetupActivity extends AppCompatActivity {
         height = findViewById(R.id.setup_height);
         age = findViewById(R.id.setup_age);
 
+        WUnit = findViewById(R.id.setup_weight_unit);
+        String[] itemsW = new String[]{"kgs", "lbs"};
+        ArrayAdapter<String> adapterW = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, itemsW);
+        WUnit.setAdapter(adapterW);
+
+        HUnit = findViewById(R.id.setup_height_unit);
+        String[] itemsH = new String[]{"cm", "in"};
+        ArrayAdapter<String> adapterH = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, itemsH);
+        HUnit.setAdapter(adapterH);
+
         wt.setVisibility(View.GONE);
         ht.setVisibility(View.GONE);
         at.setVisibility(View.GONE);
@@ -83,6 +94,8 @@ public class SetupActivity extends AppCompatActivity {
         weight.setVisibility(View.GONE);
         height.setVisibility(View.GONE);
         age.setVisibility(View.GONE);
+        WUnit.setVisibility(View.GONE);
+        HUnit.setVisibility(View.GONE);
 
         checkBike.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,6 +108,8 @@ public class SetupActivity extends AppCompatActivity {
                     weight.setVisibility(View.VISIBLE);
                     height.setVisibility(View.VISIBLE);
                     age.setVisibility(View.VISIBLE);
+                    WUnit.setVisibility(View.VISIBLE);
+                    HUnit.setVisibility(View.VISIBLE);
                 }
                 else{
                     wt.setVisibility(View.GONE);
@@ -104,6 +119,8 @@ public class SetupActivity extends AppCompatActivity {
                     weight.setVisibility(View.GONE);
                     height.setVisibility(View.GONE);
                     age.setVisibility(View.GONE);
+                    WUnit.setVisibility(View.GONE);
+                    HUnit.setVisibility(View.GONE);
                 }
             }
         });
@@ -264,14 +281,34 @@ public class SetupActivity extends AppCompatActivity {
             Toast.makeText(this, "Please select bicycle or motorcycle.",Toast.LENGTH_SHORT).show();
         }
         else{
-            String hei="", wei="", yo="";
+            String hei="", wei="", yo="", hUnit="", wUnit="", sh="", sw="";
             if (checkb){
-                hei = height.getText().toString();
-                wei = weight.getText().toString();
+                sh = height.getText().toString();
+                sw = weight.getText().toString();
                 yo = age.getText().toString();
+
+                if (yo.equals(""))
+                    yo = "0";
+
+                if (!sh.equals("")){
+                    hUnit = HUnit.getSelectedItem().toString();
+                    if (hUnit.equals("cm"))
+                        hei = sh;
+                    else
+                        hei = Double.toString((Double.parseDouble(sh)*2.54));
+                }
+
+                if (!sw.equals("")){
+                    wUnit = WUnit.getSelectedItem().toString();
+
+                    if (wUnit.equals("kgs"))
+                        wei = sw;
+                    else
+                        wei = Double.toString((Double.parseDouble(sw)/2.205));
+                }
             }
             loadingBar.setTitle("Saving Information");
-            loadingBar.setMessage("Please wait, while we are creating your new Account...");
+            loadingBar.setMessage("Please wait, while we are creating your new account...");
             loadingBar.show();
             loadingBar.setCanceledOnTouchOutside(true);
             HashMap userMap = new HashMap();
@@ -280,8 +317,13 @@ public class SetupActivity extends AppCompatActivity {
             userMap.put("bike",checkb);
             userMap.put("motor",checkm);
             userMap.put("height",hei);
+            userMap.put("savedheight",sh);
+            userMap.put("savedhunit",hUnit);
             userMap.put("weight",wei);
+            userMap.put("savedweight",sw);
+            userMap.put("savedwunit",wUnit);
             userMap.put("age",yo);
+
             UsersRef.updateChildren(userMap).addOnCompleteListener(new OnCompleteListener() {
                 @Override
                 public void onComplete(@NonNull Task task) {

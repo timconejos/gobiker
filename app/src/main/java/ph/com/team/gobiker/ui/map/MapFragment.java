@@ -10,6 +10,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,6 +39,11 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.maps.DirectionsApi;
 import com.google.maps.errors.ApiException;
 import com.google.maps.model.DirectionsLeg;
@@ -52,10 +58,12 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import ph.com.team.gobiker.NavActivity;
 import ph.com.team.gobiker.R;
 import ph.com.team.gobiker.maputils.MapStateManager;
+import ph.com.team.gobiker.user.User;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener, GoogleMap.OnMyLocationClickListener, ActivityCompat.OnRequestPermissionsResultCallback, GoogleMap.OnPolylineClickListener, GoogleMap.OnPolygonClickListener, LocationListener {
 
@@ -63,19 +71,25 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     private static Place navTo;
     private static Place navFrom;
     private static Location currentLocation;
-    private static float distanceTravelled;
+    private static float distanceTotal;
+    private static DecimalFormat df = new DecimalFormat("0.00");
+    private static boolean isDirectionalTravel = false;
+    private static boolean isFreeTravel = false;
     private MapViewModel mViewModel;
     private GoogleMap mMap;
     private boolean mPermissionDenied = false;
     private LocationManager locationManager;
-    private boolean isFreeRide;
     private FloatingActionButton startNav;
     private FloatingActionButton startFreeRide;
     private TextView infoSpeed;
     private TextView infoCalories;
     private TextView infoTime;
     private TextView infoDistance;
-    private static DecimalFormat df = new DecimalFormat("0.00");
+    private User currentUserData;
+    private double speed;
+    private double calories;
+    private static double prevDistance = 0;
+    private int secondsTime = 0;
 
     public static MapFragment newInstance() {
         return new MapFragment();
@@ -92,26 +106,46 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         startFreeRide.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (isFreeRide) {
-                    Toast.makeText(getContext(), "Cancelling free ride", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getContext(), "Starting free ride", Toast.LENGTH_SHORT).show();
+                isFreeTravel = !isFreeTravel;
+                if (isFreeTravel) {
+                    secondsTime = 0;
+                    calories = 0;
+                    speed = 0;
                 }
-
+                Toast.makeText(getContext(), isFreeTravel ? "Starting free ride..." : "Stopping free ride...", Toast.LENGTH_SHORT).show();
             }
         });
-
         infoSpeed = v.findViewById(R.id.nav_info_speed);
         infoCalories = v.findViewById(R.id.nav_info_calories);
         infoDistance = v.findViewById(R.id.nav_info_distance);
         infoTime = v.findViewById(R.id.nav_info_time);
 
-        distanceTravelled = 0;
-
+        distanceTotal = 0;
+        setupUser();
         setupMapIfNeeded();
         setUpLocationManager();
-
+        runTimer();
         return v;
+    }
+
+    private void setupUser() {
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        currentUserData = new User(userId);
+        FirebaseDatabase.getInstance().getReference().child("Users").child(userId).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                currentUserData.setFullname(dataSnapshot.child("fullname").getValue().toString());
+                currentUserData.setGender(dataSnapshot.child("gender").getValue().toString());
+                currentUserData.setAge(Integer.parseInt(dataSnapshot.child("age").getValue().toString()));
+                currentUserData.setHeight(Float.parseFloat(dataSnapshot.child("height").getValue().toString()));
+                currentUserData.setWeight(Float.parseFloat(dataSnapshot.child("weight").getValue().toString()));
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     @Override
@@ -142,6 +176,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
 
         mMap.setOnPolylineClickListener(this);
         mMap.setOnPolygonClickListener(this);
+
+        //fix
+        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
         mMap.setMyLocationEnabled(true);
 
     }
@@ -283,8 +322,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
 
     @Override
     public void onLocationChanged(Location location) {
-
-        double speed = 0;
+        speed = 0;
 //        if (currentLocation != null)
 //            speed = Math.sqrt(
 //                    Math.pow(location.getLongitude() - currentLocation.getLongitude(), 2)
@@ -297,24 +335,26 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
             double elapsedTime = (location.getTime() - currentLocation.getTime()) / 1_000; // Convert milliseconds to seconds
             speed = currentLocation.distanceTo(location) / elapsedTime;
         }*/
+        if (isFreeTravel) {
+            float distanceTraveled = currentLocation == null ? 0 : currentLocation.distanceTo(location);
+            moveCamToLocation();
 
-        speed = location.hasSpeed() ? location.getSpeed() : 0;
+            distanceTotal += currentLocation != null ? distanceTraveled : 0;
+            currentLocation = location;
+            speed = distanceTraveled == 0 ? 0 : location.hasSpeed() ? location.getSpeed() : 0;
+            infoSpeed.setText(df.format(speed) + " m/s ");
 
-        distanceTravelled += currentLocation != null ? currentLocation.distanceTo(location) : 0;
-        currentLocation = location;
+            if (distanceTotal / 1000 >= 1) {
+                infoDistance.setText(df.format(distanceTotal / 1000) + " km");
+            } else {
+                infoDistance.setText(df.format(distanceTotal) + " m");
+            }
 
-        infoSpeed.setText(df.format(speed) + " m/s ");
 
-        if(distanceTravelled / 1000 >= 1){
-            infoDistance.setText(df.format(distanceTravelled / 1000) + " km");
+            Log.d("MapLocationManager", "location updated ");
+        } else {
+            //location
         }
-        else{
-            infoDistance.setText(df.format(distanceTravelled) + " m");
-        }
-
-        moveCamToLocation();
-        Log.d("MapLocationManager", "location updated ");
-        Log.d("MapLocationManager", "speed: " + location.hasSpeed() + " - " + location.getSpeed());
     }
 
     @Override
@@ -362,7 +402,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     private void setUpLocationManager() {
         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, this);
             Log.d("MapLocationManager", "location Manager started");
         }
     }
@@ -371,7 +411,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             if (mMap != null) {
-
                 currentLocation = locationManager.getLastKnownLocation(locationManager.getBestProvider(new Criteria(), false));
                 if (currentLocation != null) {
                     mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()), 17));
@@ -382,6 +421,65 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
             PermissionUtils.requestPermission((AppCompatActivity) getContext(), LOCATION_PERMISSION_REQUEST_CODE,
                     Manifest.permission.ACCESS_FINE_LOCATION, true);
         }
+    }
+
+    private void runTimer() {
+        final Handler handler = new Handler();
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                int hours = secondsTime / 3600;
+                int minutes = (secondsTime % 3600) / 60;
+                int secs = secondsTime % 60;
+                String time = String.format(Locale.getDefault(), "%d:%02d:%02d", hours, minutes, secs);
+                infoTime.setText(time);
+                if (isFreeTravel || isDirectionalTravel) {
+                    secondsTime++;
+                    Log.d("MapLocationManager", "ddiff: " + prevDistance + " - dtotal: " + distanceTotal);
+                    if(prevDistance != distanceTotal) {
+                        handleCaloriesComputation();
+                        if (calories / 1000 >= 1) {
+                            infoCalories.setText(df.format(calories / 1000) + " kCal");
+                        } else {
+                            infoCalories.setText(df.format(calories) + " cal");
+                        }
+                    }
+                    prevDistance = distanceTotal;
+                }
+                handler.postDelayed(this, 1000);
+
+            }
+        });
+    }
+
+    private void handleCaloriesComputation() {
+        double msToMph = 2.23694;
+        double met = 0;
+        if(speed <= 5.5){
+            met = 3.5;
+        }
+        else if(5.5 < speed && speed <= 9.4){
+            met = 4;
+        }
+        else if(9.4 < speed && speed < 10){
+            met = 5.8;
+        }
+        else if(10 <= speed && speed <= 11.9){
+            met = 6.8;
+        }
+        else if(12 <= speed && speed <= 13.9){
+            met = 8;
+        }
+        else if(14 <= speed && speed <= 15.9){
+            met = 10;
+        }
+        else if(16 <= speed && speed <= 19){
+            met = 12;
+        }
+        else if(speed > 19){
+            met = 15.8;
+        }
+        calories += (((met * currentUserData.getWeight() * 3.5)/200)/60);
     }
 
 }

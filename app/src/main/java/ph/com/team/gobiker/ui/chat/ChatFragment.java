@@ -64,7 +64,7 @@ public class ChatFragment extends Fragment {
 
         mAuth = FirebaseAuth.getInstance();
         UsersRef = FirebaseDatabase.getInstance().getReference().child("Users");
-        MessagesRef = FirebaseDatabase.getInstance().getReference().child("Messages").child(mAuth.getCurrentUser().getUid());
+        //MessagesRef = FirebaseDatabase.getInstance().getReference().child("Messages").child(mAuth.getCurrentUser().getUid());
 
         postList = root.findViewById(R.id.all_users_msgs_list);
         postList.setHasFixedSize(true);
