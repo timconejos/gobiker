@@ -235,11 +235,11 @@
                     <Button
                         android:id="@+id/myUpdateProfileButton"
                         android:layout_width="match_parent"
-                        android:layout_height="35dp"
+                        android:layout_height="55dp"
                         android:text="Edit Profile"
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="10dp"
-                        style="@style/SecondaryBtn.Secondary"
+                        android:backgroundTint="@color/colorPrimary"
                         />
 
                     <View
@@ -252,7 +252,8 @@
                         android:layout_height="50dp"
                         android:text="Sign Out"
                         android:layout_below="@id/bikes"
-                        style="@style/SecondaryBtn.Negative"
+                        style="@style/TransparentBtn.Positive"
+                        android:textAllCaps="true"
                         />
                 </LinearLayout>
             </LinearLayout>

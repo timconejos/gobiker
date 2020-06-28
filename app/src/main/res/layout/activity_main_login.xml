@@ -62,7 +62,7 @@
 
             <Button
                 android:id="@+id/continueLogin"
-                style="@style/PrimaryBtn.TransparentNeg"
+                style="@style/TransparentBtn.Primary"
                 android:layout_width="@android:dimen/thumbnail_width"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
