@@ -78,15 +78,15 @@
                     android:layout_height="0dp"
                     android:layout_weight="1"
                     />
-        <Button
-            android:id="@+id/myUpdateProfileButton"
-            android:layout_width="100dp"
-            android:layout_height="35dp"
-            android:text="Edit Profile"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="10dp"
-            style="@style/SecondaryBtn.Secondary"
-            />
+<!--        <Button-->
+<!--            android:id="@+id/myUpdateProfileButton"-->
+<!--            android:layout_width="100dp"-->
+<!--            android:layout_height="35dp"-->
+<!--            android:text="Edit Profile"-->
+<!--            android:layout_centerHorizontal="true"-->
+<!--            android:layout_marginTop="10dp"-->
+<!--            style="@style/SecondaryBtn.Secondary"-->
+<!--            />-->
 
             </LinearLayout>
             <LinearLayout
@@ -231,7 +231,17 @@
                     android:layout_weight="1"
                     android:gravity="center|bottom"
                     android:orientation="vertical"
-                    android:paddingBottom="20dp">
+                    android:padding="20dp">
+                    <Button
+                        android:id="@+id/myUpdateProfileButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="35dp"
+                        android:text="Edit Profile"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="10dp"
+                        style="@style/SecondaryBtn.Secondary"
+                        />
+
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
