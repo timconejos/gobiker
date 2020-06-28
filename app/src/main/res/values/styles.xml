@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/white</item>
         <item name="colorPrimaryDark">@color/colorPrimary</item>
@@ -130,6 +130,10 @@
         <item name="android:background">@drawable/btn_neg_states</item>
         <item name="android:textColor">@color/colorPrimary</item>
     </style>
+    <style name="PrimaryBtn.TransparentNeg">
+        <item name="android:background">@color/transparent</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
 
     <style name="SecondaryBtn" parent="Widget.AppCompat.Button">
         <item name="android:textSize">14dp</item>
@@ -203,12 +207,16 @@
         <item name="android:background">@color/facebook</item>
         <item name="android:drawableLeft">@drawable/ico_fb</item>
         <item name="android:drawablePadding">10dp</item>
+        <item name="android:paddingStart">10dp</item>
+        <item name="android:paddingEnd">10dp</item>
     </style>
 
     <style name="SocialBtn.Google">
         <item name="android:background">@color/google</item>
         <item name="android:drawableLeft">@drawable/ico_google</item>
         <item name="android:drawablePadding">10dp</item>
+        <item name="android:paddingStart">10dp</item>
+        <item name="android:paddingEnd">10dp</item>
     </style>
 
 
@@ -221,6 +229,9 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowBackground">@drawable/splash_screen</item>
+    </style>
 
 </resources>
 

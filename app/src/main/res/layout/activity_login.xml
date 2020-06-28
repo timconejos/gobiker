@@ -31,7 +31,7 @@
 
             <Button
                 android:id="@+id/login"
-                style="@style/PrimaryBtn.Positive"
+                style="@style/PrimaryBtn.TransparentNeg"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"

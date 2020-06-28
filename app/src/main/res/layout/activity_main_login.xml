@@ -62,14 +62,14 @@
 
             <Button
                 android:id="@+id/continueLogin"
-                style="@style/PrimaryBtn.Positive"
+                style="@style/PrimaryBtn.TransparentNeg"
                 android:layout_width="@android:dimen/thumbnail_width"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginStart="48dp"
                 android:layout_marginTop="30dp"
                 android:layout_marginEnd="48dp"
-                android:layout_marginBottom="6dp"
+                android:layout_marginBottom="20dp"
                 android:text="@string/action_sign_in" />
 
             <TextView
