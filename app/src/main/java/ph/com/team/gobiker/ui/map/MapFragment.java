@@ -63,6 +63,7 @@ import java.util.Locale;
 
 import ph.com.team.gobiker.NavActivity;
 import ph.com.team.gobiker.R;
+import ph.com.team.gobiker.maputils.MapService;
 import ph.com.team.gobiker.maputils.MapStateManager;
 import ph.com.team.gobiker.user.User;
 
@@ -91,6 +92,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     private double calories;
     private static double prevDistance = 0;
     private int secondsTime = 0;
+
+    private int toggleChecker = 0;
+    private static Double lat1 = null;
+    private static Double lon1 = null;
+    private static Double lat2 = null;
+    private static Double lon2 = null;
 
     public static MapFragment newInstance() {
         return new MapFragment();
@@ -336,14 +343,32 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
             double elapsedTime = (location.getTime() - currentLocation.getTime()) / 1_000; // Convert milliseconds to seconds
             speed = currentLocation.distanceTo(location) / elapsedTime;
         }*/
-        if (isFreeTravel) {
-            float distanceTraveled = currentLocation == null ? 0 : currentLocation.distanceTo(location);
-            moveCamToLocation();
 
-            distanceTotal += currentLocation != null ? distanceTraveled : 0;
-            currentLocation = location;
-            speed = distanceTraveled == 0 ? 0 : location.hasSpeed() ? location.getSpeed() : 0;
-            infoSpeed.setText(df.format(speed) + " m/s ");
+        if (isFreeTravel) {
+            /*
+            needs fixing
+             */
+            if (toggleChecker == 0) {
+                lat1 = location.getLatitude();
+                lon1 = location.getLongitude();
+            } else if ((toggleChecker % 2) != 0) {
+                lat2 = location.getLatitude();
+                lon2 = location.getLongitude();
+                distanceTotal += MapService.distanceBetweenTwoPoint(lat1, lon1, lat2, lon2);
+            } else if ((toggleChecker % 2) == 0) {
+                lat1 = location.getLatitude();
+                lon1 = location.getLongitude();
+                distanceTotal += MapService.distanceBetweenTwoPoint(lat2, lon2, lat1, lon1);
+            }
+            toggleChecker++;
+
+//            float distanceTraveled = currentLocation == null ? 0 : currentLocation.distanceTo(location);
+//            moveCamToLocation();
+//
+//            distanceTotal += currentLocation != null ? distanceTraveled : 0;
+//            currentLocation = location;
+//            speed = distanceTraveled == 0 ? 0 : location.hasSpeed() ? location.getSpeed() : 0;
+//            infoSpeed.setText(df.format(speed) + " m/s ");
 
             if (distanceTotal / 1000 >= 1) {
                 infoDistance.setText(df.format(distanceTotal / 1000) + " km");
@@ -438,7 +463,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                     secondsTime++;
                     Log.d("MapLocationManager", "ddiff: " + prevDistance + " - dtotal: " + distanceTotal);
                     if(prevDistance != distanceTotal) {
-                        handleCaloriesComputation();
+                        calories += MapService.handleCaloriesComputation(speed, currentUserData.getWeight());
                         if (calories / 1000 >= 1) {
                             infoCalories.setText(df.format(calories / 1000) + " kCal");
                         } else {
@@ -448,39 +473,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                     prevDistance = distanceTotal;
                 }
                 handler.postDelayed(this, 1000);
-
             }
         });
     }
-
-    private void handleCaloriesComputation() {
-        double msToMph = 2.23694;
-        double met = 0;
-        if(speed <= 5.5){
-            met = 3.5;
-        }
-        else if(5.5 < speed && speed <= 9.4){
-            met = 4;
-        }
-        else if(9.4 < speed && speed < 10){
-            met = 5.8;
-        }
-        else if(10 <= speed && speed <= 11.9){
-            met = 6.8;
-        }
-        else if(12 <= speed && speed <= 13.9){
-            met = 8;
-        }
-        else if(14 <= speed && speed <= 15.9){
-            met = 10;
-        }
-        else if(16 <= speed && speed <= 19){
-            met = 12;
-        }
-        else if(speed > 19){
-            met = 15.8;
-        }
-        calories += (((met * currentUserData.getWeight() * 3.5)/200)/60);
-    }
-
 }
