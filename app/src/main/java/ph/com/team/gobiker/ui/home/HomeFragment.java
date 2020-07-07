@@ -276,7 +276,7 @@ public class HomeFragment extends Fragment {
                     Context context = null;
                     if(dataSnapshot.child(PostKey).hasChild(currentUserId)){
                         countLikes = (int) dataSnapshot.child(PostKey).getChildrenCount();
-                        LikeBtn.setText(Integer.toString(countLikes)+" Likes");
+                        LikeBtn.setText(Integer.toString(countLikes));
 //                        LikeBtn.setBackgroundResource(R.drawable.btn);
                         LikeBtn.setTextAppearance(R.style.TransparentBtn_Like);
 //                        LikepostButton.setImageResource(R.drawable.ic_favorite_black_24dp);
@@ -284,7 +284,7 @@ public class HomeFragment extends Fragment {
                     }
                     else{
                         countLikes = (int) dataSnapshot.child(PostKey).getChildrenCount();
-                        LikeBtn.setText(Integer.toString(countLikes)+" Likes");
+                        LikeBtn.setText(Integer.toString(countLikes));
                         LikeBtn.setTextAppearance(R.style.TransparentBtn_Unlike);
 //                        LikepostButton.setImageResource(R.drawable.ic_favorite_border_black_24dp);
 //                        DisplayNoOfLikes.setText(Integer.toString(countLikes));

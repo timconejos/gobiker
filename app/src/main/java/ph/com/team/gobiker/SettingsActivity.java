@@ -40,7 +40,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import ph.com.team.gobiker.ui.dashboard.DashboardFragment;
 
 public class SettingsActivity extends AppCompatActivity {
-    private EditText userProfName, userPhone, weight, height, age;
+    private EditText userProfName, userPhone, weight, height, age, province_city;
     private CheckBox checkBike, checkMotor;
     private Button UpdateAccountSettingsButton, CancelUpdateButton;
     private CircleImageView userProfImage;
@@ -86,6 +86,7 @@ public class SettingsActivity extends AppCompatActivity {
         weight = findViewById(R.id.settings_weight);
         height = findViewById(R.id.settings_height);
         age = findViewById(R.id.settings_age);
+        province_city = findViewById(R.id.settings_profile_address);
 
         WUnit = findViewById(R.id.settings_weight_unit);
         String[] itemsW = new String[]{"kgs", "lbs"};
@@ -152,6 +153,11 @@ public class SettingsActivity extends AppCompatActivity {
                     else{
                         Picasso.with(SettingsActivity.this).load(R.drawable.profile).into(userProfImage);
                     }
+
+                    if (dataSnapshot.hasChild("address")){
+                        province_city.setText(dataSnapshot.child("address").getValue().toString());
+                    }
+
                     userProfName.setText(myProfileName);
                     if (myGender.equals("Male"))
                         Gender.setSelection(0);
@@ -350,6 +356,7 @@ public class SettingsActivity extends AppCompatActivity {
         String phone = userPhone.getText().toString();
         Boolean checkm = checkMotor.isChecked();
         Boolean checkb = checkBike.isChecked();
+        String prov_city = province_city.getText().toString();
 
         if (TextUtils.isEmpty(fullname)) {
             Toast.makeText(this, "Please write your fullname...", Toast.LENGTH_SHORT).show();
@@ -401,6 +408,7 @@ public class SettingsActivity extends AppCompatActivity {
             userMap.put("savedweight",sw);
             userMap.put("savedwunit",wUnit);
             userMap.put("age",yo);
+            userMap.put("address",prov_city);
 
             SettingsUserRef.updateChildren(userMap).addOnCompleteListener(new OnCompleteListener() {
                 @Override

@@ -46,7 +46,7 @@ public class PostActivity extends AppCompatActivity {
     private StorageReference PostsImageReference;
     private DatabaseReference usersRef, postRef;
     private FirebaseAuth mAuth;
-    private String saveCurrentDate, saveCurrentTime, postRandomName, downloadUrl = "", current_user_id;
+    private String saveCurrentDate, saveCurrentTime, postRandomName, downloadUrl = "", current_user_id, saveCurrentDates;
     private long countPosts = 0;
 
     @Override
@@ -98,6 +98,10 @@ public class PostActivity extends AppCompatActivity {
         Calendar calForDate = Calendar.getInstance();
         SimpleDateFormat currentDate = new SimpleDateFormat("MM-dd-yyyy");
         saveCurrentDate = currentDate.format(calForDate.getTime());
+
+        SimpleDateFormat currentDates = new SimpleDateFormat("MMMM dd, yyyy");
+        saveCurrentDates = currentDates.format(calForDate.getTime());
+
         SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm:ss");
         saveCurrentTime = currentTime.format(calForDate.getTime());
         if(ImageUri==null){
@@ -142,7 +146,7 @@ public class PostActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(Uri uri) {
                         downloadUrl = uri.toString();
-                        Toast.makeText(PostActivity.this, "Image uploaded successfully to storage", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(PostActivity.this, "Image uploaded successfully to storage", Toast.LENGTH_SHORT).show();
                         SavingPostInformationToDatabase();
                     }
                 });
@@ -176,7 +180,7 @@ public class PostActivity extends AppCompatActivity {
 
                     HashMap postsMap = new HashMap();
                     postsMap.put("uid",current_user_id);
-                    postsMap.put("date",saveCurrentDate);
+                    postsMap.put("date",saveCurrentDates);
                     postsMap.put("time",saveCurrentTime);
                     postsMap.put("description",Description);
                     if (!downloadUrl.equals(""))
@@ -190,7 +194,7 @@ public class PostActivity extends AppCompatActivity {
                                 public void onComplete(@NonNull Task task) {
                                     if(task.isSuccessful()){
                                         SendUserToMainActivity();
-                                        Toast.makeText(PostActivity.this,"New Post is updated successfully",Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(PostActivity.this,"New Post is added successfully",Toast.LENGTH_SHORT).show();
                                     }
                                     else{
                                         Toast.makeText(PostActivity.this,"Error occurred while updating your post",Toast.LENGTH_SHORT).show();

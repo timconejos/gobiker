@@ -27,14 +27,29 @@
         android:ems="10"
         android:gravity="start|top"
         android:hint="Full Name"
-        android:inputType="textMultiLine"
+        android:inputType="textCapWords"
+        android:padding="14dp" />
+
+    <EditText
+        android:id="@+id/setup_address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/setup_full_name"
+        android:background="@drawable/inputs"
+        android:layout_marginLeft="7dp"
+        android:layout_marginRight="7dp"
+        android:drawableLeft="@drawable/name"
+        android:ems="10"
+        android:gravity="start|top"
+        android:hint="Province/City"
+        android:inputType="textCapWords"
         android:padding="14dp" />
 
     <Spinner
         android:id="@+id/setup_gender"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/setup_full_name"
+        android:layout_below="@+id/setup_address"
         android:background="@android:drawable/btn_dropdown"
         android:spinnerMode="dropdown"/>
 

@@ -41,7 +41,7 @@ public class DashboardFragment extends Fragment {
     private DashboardViewModel dashboardViewModel;
     private FirebaseAuth mAuth;
     private Button signOutButton, updateProfileButton;
-    private TextView userProfName,userGender, userBM, userEmail, userPhone, userWeight, userHeight, userAge;
+    private TextView userProfName,userGender, userBM, userEmail, userPhone, userWeight, userHeight, userAge, level, overall_distance, address;
     private CircleImageView userProfileImage;
     private DatabaseReference profileUserRef,UsersRef;
     private String currentUserId;
@@ -73,6 +73,9 @@ public class DashboardFragment extends Fragment {
         userWeight = root.findViewById(R.id.my_bike_weight);
         userHeight = root.findViewById(R.id.my_bike_height);
         userAge = root.findViewById(R.id.my_bike_age);
+        level = root.findViewById(R.id.my_level);
+        overall_distance = root.findViewById(R.id.my_distance_traveled);
+        address = root.findViewById(R.id.my_address);
 
         updateProfileButton = root.findViewById(R.id.myUpdateProfileButton);
 
@@ -111,6 +114,42 @@ public class DashboardFragment extends Fragment {
                     }
                     else{
                         Picasso.with(getActivity()).load(R.drawable.profile).into(userProfileImage);
+                    }
+
+                    if (dataSnapshot.hasChild("level")) {
+                        if (dataSnapshot.child("level").getValue().toString().equals("")) {
+                            level.setText("Level: 1");
+                        }
+                        else{
+                            level.setText("Level: "+dataSnapshot.child("level").getValue().toString());
+                        }
+                    }
+                    else{
+                        level.setText("Level: 1");
+                    }
+
+                    if (dataSnapshot.hasChild("overall_distance")) {
+                        if (dataSnapshot.child("overall_distance").getValue().toString().equals("")) {
+                            overall_distance.setText("Distance Traveled: 0 m");
+                        }
+                        else{
+                            overall_distance.setText("Distance Traveled: "+dataSnapshot.child("overall_distance").getValue().toString()+" m");
+                        }
+                    }
+                    else{
+                        overall_distance.setText("Distance Traveled: 0 m");
+                    }
+
+                    if (dataSnapshot.hasChild("address")) {
+                        if (dataSnapshot.child("address").getValue().toString().equals("")) {
+                            address.setText("");
+                        }
+                        else{
+                            address.setText(dataSnapshot.child("address").getValue().toString());
+                        }
+                    }
+                    else{
+                        address.setText("");
                     }
 
                     userProfName.setText(myProfileName);

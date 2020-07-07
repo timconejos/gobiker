@@ -40,7 +40,7 @@ import java.util.HashMap;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class SetupActivity extends AppCompatActivity {
-    private EditText FullName, weight, height, age;
+    private EditText FullName, weight, height, age, province_city;
     private Button SaveInformationbutton;
     private CircleImageView ProfileImage;
     private CheckBox checkBike, checkMotor;
@@ -76,6 +76,7 @@ public class SetupActivity extends AppCompatActivity {
         weight = findViewById(R.id.setup_weight);
         height = findViewById(R.id.setup_height);
         age = findViewById(R.id.setup_age);
+        province_city = findViewById(R.id.setup_address);
 
         WUnit = findViewById(R.id.setup_weight_unit);
         String[] itemsW = new String[]{"kgs", "lbs"};
@@ -273,9 +274,13 @@ public class SetupActivity extends AppCompatActivity {
         String fullname = FullName.getText().toString();
         Boolean checkm = checkMotor.isChecked();
         Boolean checkb = checkBike.isChecked();
+        String prov_city = province_city.getText().toString();
 
         if (TextUtils.isEmpty(fullname)) {
             Toast.makeText(this, "Please write your fullname...", Toast.LENGTH_SHORT).show();
+        }
+        else if (TextUtils.isEmpty(prov_city)) {
+            Toast.makeText(this, "Please write your province or city...", Toast.LENGTH_SHORT).show();
         }
         else if (!checkm && !checkb){
             Toast.makeText(this, "Please select bicycle or motorcycle.",Toast.LENGTH_SHORT).show();
@@ -323,6 +328,9 @@ public class SetupActivity extends AppCompatActivity {
             userMap.put("savedweight",sw);
             userMap.put("savedwunit",wUnit);
             userMap.put("age",yo);
+            userMap.put("level","1");
+            userMap.put("overall_distance","0");
+            userMap.put("address",prov_city);
 
             UsersRef.updateChildren(userMap).addOnCompleteListener(new OnCompleteListener() {
                 @Override

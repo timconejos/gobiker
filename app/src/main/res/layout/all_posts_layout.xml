@@ -103,7 +103,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
-                    android:text="0 likes" />
+                    android:text="" />
+
                 <Button
                     style="@style/TransparentBtn.Comment"
                     android:id="@+id/comment_button"

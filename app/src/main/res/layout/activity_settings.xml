@@ -102,6 +102,24 @@
                     android:padding="20dp"
                     android:textColor="@android:color/background_dark"
                     android:textSize="20sp"
+                    android:inputType="textCapWords"
+                    android:layout_marginTop="6dp"/>
+
+                <TextView
+                    android:id="@+id/profile_address_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Province or City"
+                    android:layout_marginTop="10dp"/>
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/settings_profile_address"
+                    android:hint="Province or City"
+                    android:padding="20dp"
+                    android:textColor="@android:color/background_dark"
+                    android:textSize="20sp"
+                    android:inputType="textCapWords"
                     android:layout_marginTop="6dp"/>
 
                 <TextView
