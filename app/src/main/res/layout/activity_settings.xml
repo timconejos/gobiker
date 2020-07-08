@@ -224,7 +224,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/settings_checkBoxBike"
-                    android:text="Weight (in kg)"
+                    android:text="Weight"
                     android:layout_marginTop="10dp"/>
 
                 <EditText
@@ -323,7 +323,7 @@
                     android:id="@+id/settings_age_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Age (years old)"
+                    android:text="Age"
                     android:layout_marginTop="10dp" />
 
                 <EditText

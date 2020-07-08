@@ -193,13 +193,20 @@ public class PostActivity extends AppCompatActivity {
                                 @Override
                                 public void onComplete(@NonNull Task task) {
                                     if(task.isSuccessful()){
-                                        SendUserToMainActivity();
+                                        //final String PostKey = getRef(position).getKey();
+                                        /*Intent clickPostIntent = new Intent(PostActivity.this, ClickPostActivity.class);
+                                        clickPostIntent.putExtra("PostKey", current_user_id + postRandomName);
+                                        startActivity(clickPostIntent);*/
+                                        //SendUserToMainActivity();
+                                        //Intent mainIntent = new Intent(PostActivity.this,PostActivity.class);
+                                        //startActivity(mainIntent);
                                         Toast.makeText(PostActivity.this,"New Post is added successfully",Toast.LENGTH_SHORT).show();
                                     }
                                     else{
                                         Toast.makeText(PostActivity.this,"Error occurred while updating your post",Toast.LENGTH_SHORT).show();
                                     }
                                     loadingBar.dismiss();
+                                    finish();
                                 }
                             });
                 }

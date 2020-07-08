@@ -24,8 +24,9 @@
             android:parentActivityName=".NavActivity" />
         <activity android:name=".SetupActivity" />
         <activity android:name=".CommentsActivity" />
-        <activity android:name=".PostActivity" />
-        <activity android:name=".ClickPostActivity" />
+        <activity android:name=".PostActivity"
+            android:parentActivityName=".NavActivity"/>
+        <activity android:name=".ClickPostActivity"/>
         <activity
             android:name=".NavActivity"
             android:label="@string/title_activity_nav" />

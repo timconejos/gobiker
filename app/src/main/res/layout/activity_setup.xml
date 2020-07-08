@@ -130,7 +130,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/setup_height"
-        android:text="Age (years old)"
+        android:text="Age"
         android:layout_marginTop="10dp" />
 
     <EditText
