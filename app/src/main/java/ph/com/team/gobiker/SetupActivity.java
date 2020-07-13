@@ -35,24 +35,26 @@ import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class SetupActivity extends AppCompatActivity {
-    private EditText FullName, weight, height, age, province_city;
+    private EditText FullName, weight, height, age;
     private Button SaveInformationbutton;
     private CircleImageView ProfileImage;
-    private CheckBox checkBike, checkMotor;
+    private CheckBox checkBike, checkMotor, checkPhone, checkAddress;
 
     private FirebaseAuth mAuth;
     private Uri ImageUri;
-    private DatabaseReference UsersRef;
+    private DatabaseReference UsersRef, ProvinceRef, CityRef;
     private ProgressDialog loadingBar;
     private StorageReference UserProfileImageRef;
-    private Spinner Gender, WUnit, HUnit;
+    private Spinner Gender, WUnit, HUnit, province, city, active_ride;
 
-    private TextView wt, ht, at, bn;
+    private TextView wt, ht, at, bn, bioinfo, aclabel;
+    private View divider;
 
     String currentUserID;
     final static int Gallery_Pick = 1;
@@ -68,6 +70,8 @@ public class SetupActivity extends AppCompatActivity {
         checkMotor = findViewById(R.id.setup_checkBoxMotor);
         UsersRef = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserID);
         UserProfileImageRef = FirebaseStorage.getInstance().getReference().child("profileimage");
+        ProvinceRef = FirebaseDatabase.getInstance().getReference().child("Province");
+        CityRef = FirebaseDatabase.getInstance().getReference().child("City");
 
         wt = findViewById(R.id.setup_weight_text);
         ht = findViewById(R.id.setup_height_text);
@@ -76,7 +80,82 @@ public class SetupActivity extends AppCompatActivity {
         weight = findViewById(R.id.setup_weight);
         height = findViewById(R.id.setup_height);
         age = findViewById(R.id.setup_age);
-        province_city = findViewById(R.id.setup_address);
+
+        checkAddress = findViewById(R.id.setup_checkAddress);
+        //checkPhone = findViewById(R.id.setup_checkPhone);
+
+        divider = findViewById(R.id.divider2);
+        bioinfo = findViewById(R.id.biometrics_info2);
+
+        active_ride = findViewById(R.id.setup_active_ride);
+        String[] itemsActiveRide = new String[]{"Bicycle", "Motorcycle"};
+        ArrayAdapter<String> adapterActiveRide = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, itemsActiveRide);
+        active_ride.setAdapter(adapterActiveRide);
+
+        aclabel = findViewById(R.id.active_ride_label2);
+
+        //province_city = findViewById(R.id.setup_address);
+
+        province = findViewById(R.id.setup_province);
+        city = findViewById(R.id.setup_city);
+
+        ArrayList<String> itemsP = new ArrayList<String>();
+        itemsP.add("");
+
+        ProvinceRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (long i=0; i<dataSnapshot.getChildrenCount(); i++) {
+                    itemsP.add(dataSnapshot.child(String.valueOf(i)).getValue().toString());
+                }
+                itemsP.remove(0);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        ArrayAdapter<String> adapterP = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, itemsP);
+        province.setAdapter(adapterP);
+
+        ArrayList<String> itemsC = new ArrayList<String>();
+
+        province.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                if (!province.getSelectedItem().toString().equals("")) {
+                    CityRef.child(province.getSelectedItem().toString()).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            itemsC.clear();
+                            for (long i = 0; i < dataSnapshot.getChildrenCount(); i++) {
+                                itemsC.add(dataSnapshot.child(String.valueOf(i)).getValue().toString());
+                            }
+                            ArrayAdapter<String> adapterC = new ArrayAdapter<String>(SetupActivity.this, android.R.layout.simple_spinner_dropdown_item, itemsC);
+                            city.setAdapter(adapterC);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+                }
+                else{
+                    itemsC.clear();
+                    itemsC.add("");
+                    ArrayAdapter<String> adapterC = new ArrayAdapter<String>(SetupActivity.this, android.R.layout.simple_spinner_dropdown_item, itemsC);
+                    city.setAdapter(adapterC);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
 
         WUnit = findViewById(R.id.setup_weight_unit);
         String[] itemsW = new String[]{"kgs", "lbs"};
@@ -97,6 +176,10 @@ public class SetupActivity extends AppCompatActivity {
         age.setVisibility(View.GONE);
         WUnit.setVisibility(View.GONE);
         HUnit.setVisibility(View.GONE);
+        divider.setVisibility(View.GONE);
+        bioinfo.setVisibility(View.GONE);
+        active_ride.setVisibility(View.GONE);
+        aclabel.setVisibility(View.GONE);
 
         checkBike.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -111,6 +194,8 @@ public class SetupActivity extends AppCompatActivity {
                     age.setVisibility(View.VISIBLE);
                     WUnit.setVisibility(View.VISIBLE);
                     HUnit.setVisibility(View.VISIBLE);
+                    divider.setVisibility(View.VISIBLE);
+                    bioinfo.setVisibility(View.VISIBLE);
                 }
                 else{
                     wt.setVisibility(View.GONE);
@@ -122,6 +207,31 @@ public class SetupActivity extends AppCompatActivity {
                     age.setVisibility(View.GONE);
                     WUnit.setVisibility(View.GONE);
                     HUnit.setVisibility(View.GONE);
+                    divider.setVisibility(View.GONE);
+                    bioinfo.setVisibility(View.GONE);
+                }
+
+                if (checkBike.isChecked() && checkMotor.isChecked()){
+                    active_ride.setVisibility(View.VISIBLE);
+                    aclabel.setVisibility(View.VISIBLE);
+                }
+                else{
+                    active_ride.setVisibility(View.GONE);
+                    aclabel.setVisibility(View.GONE);
+                }
+            }
+        });
+
+        checkMotor.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (checkBike.isChecked() && checkMotor.isChecked()){
+                    active_ride.setVisibility(View.VISIBLE);
+                    aclabel.setVisibility(View.VISIBLE);
+                }
+                else{
+                    active_ride.setVisibility(View.GONE);
+                    aclabel.setVisibility(View.GONE);
                 }
             }
         });
@@ -274,19 +384,31 @@ public class SetupActivity extends AppCompatActivity {
         String fullname = FullName.getText().toString();
         Boolean checkm = checkMotor.isChecked();
         Boolean checkb = checkBike.isChecked();
-        String prov_city = province_city.getText().toString();
+        String Province = province.getSelectedItem().toString();
+        String City = city.getSelectedItem().toString();
+        //String prov_city = province_city.getText().toString();
+        //Boolean ckPhone = checkPhone.isChecked();
+        Boolean ckAdd = checkAddress.isChecked();
 
         if (TextUtils.isEmpty(fullname)) {
-            Toast.makeText(this, "Please write your fullname...", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please write your fullname.", Toast.LENGTH_SHORT).show();
         }
-        else if (TextUtils.isEmpty(prov_city)) {
-            Toast.makeText(this, "Please write your province or city...", Toast.LENGTH_SHORT).show();
+        else if (TextUtils.isEmpty(Province)) {
+            Toast.makeText(this, "Please write your province.", Toast.LENGTH_SHORT).show();
         }
         else if (!checkm && !checkb){
             Toast.makeText(this, "Please select bicycle or motorcycle.",Toast.LENGTH_SHORT).show();
         }
         else{
-            String hei="", wei="", yo="", hUnit="", wUnit="", sh="", sw="";
+            String hei="0", wei="0", yo="0", hUnit="0", wUnit="0", sh="0", sw="0";
+            String acRide = "Bicycle";
+
+            if (checkm && checkb){
+                acRide = active_ride.getSelectedItem().toString();
+            }
+            else if (checkm){
+                acRide = "Motorcycle";
+            }
             if (checkb){
                 sh = height.getText().toString();
                 sw = weight.getText().toString();
@@ -302,6 +424,11 @@ public class SetupActivity extends AppCompatActivity {
                     else
                         hei = Double.toString((Double.parseDouble(sh)*2.54));
                 }
+                else{
+                    hei = "0";
+                    sh = "0";
+                    hUnit = "0";
+                }
 
                 if (!sw.equals("")){
                     wUnit = WUnit.getSelectedItem().toString();
@@ -310,6 +437,11 @@ public class SetupActivity extends AppCompatActivity {
                         wei = sw;
                     else
                         wei = Double.toString((Double.parseDouble(sw)/2.205));
+                }
+                else{
+                    wei = "0";
+                    sw = "0";
+                    wUnit = "0";
                 }
             }
             loadingBar.setTitle("Saving Information");
@@ -328,16 +460,22 @@ public class SetupActivity extends AppCompatActivity {
             userMap.put("savedweight",sw);
             userMap.put("savedwunit",wUnit);
             userMap.put("age",yo);
-            userMap.put("level","1");
-            userMap.put("overall_distance","0");
-            userMap.put("address",prov_city);
+            userMap.put("bike_level","1");
+            userMap.put("bike_overall_distance","0");
+            userMap.put("motor_level","1");
+            userMap.put("motor_overall_distance","0");
+            userMap.put("province",Province);
+            userMap.put("city",City);
+            userMap.put("active_ride",acRide);
+            userMap.put("check_address",ckAdd);
+            userMap.put("check_phone","true");
 
             UsersRef.updateChildren(userMap).addOnCompleteListener(new OnCompleteListener() {
                 @Override
                 public void onComplete(@NonNull Task task) {
                     if (task.isSuccessful()){
                         SendUserToMainActivity();
-                        Toast.makeText(SetupActivity.this,"Your Account is created successfully",Toast.LENGTH_LONG).show();
+                        Toast.makeText(SetupActivity.this,"Your account is created successfully.",Toast.LENGTH_LONG).show();
                     }
                     else{
                         String message = task.getException().getMessage();

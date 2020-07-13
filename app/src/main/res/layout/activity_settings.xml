@@ -106,21 +106,46 @@
                     android:layout_marginTop="6dp"/>
 
                 <TextView
-                    android:id="@+id/profile_address_label"
+                    android:id="@+id/profile_province_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Province or City"
+                    android:text="Province"
                     android:layout_marginTop="10dp"/>
-                <EditText
+                <Spinner
+                    android:id="@+id/settings_province"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/settings_profile_address"
-                    android:hint="Province or City"
-                    android:padding="20dp"
-                    android:textColor="@android:color/background_dark"
-                    android:textSize="20sp"
-                    android:inputType="textCapWords"
-                    android:layout_marginTop="6dp"/>
+                    android:background="@android:drawable/btn_dropdown"
+                    android:spinnerMode="dropdown"
+                    android:paddingTop="3dp"
+                    android:paddingBottom="3dp"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    />
+
+                <TextView
+                    android:id="@+id/profile_city_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="City or Municipality"
+                    android:layout_marginTop="10dp"/>
+                <Spinner
+                    android:id="@+id/settings_city"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:drawable/btn_dropdown"
+                    android:spinnerMode="dropdown"
+                    android:paddingTop="3dp"
+                    android:paddingBottom="3dp"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    />
+
+                <CheckBox
+                    android:id="@+id/settings_checkAddress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Show Address in Profile" />
 
                 <TextView
                     android:id="@+id/gender_name_label"
@@ -157,7 +182,11 @@
                     android:textSize="20sp"
                     android:layout_marginTop="6dp"/>
 
-
+                <CheckBox
+                    android:id="@+id/settings_checkPhone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Show Phone in Profile" />
 
                 <TextView
                     android:id="@+id/ride_label"
@@ -179,6 +208,25 @@
                     android:layout_below="@+id/settings_phone"
                     android:layout_toEndOf="@+id/settings_checkBoxBike"
                     android:text="Motorcycle" />
+
+                <TextView
+                    android:id="@+id/active_ride_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Active Ride"
+                    android:layout_marginTop="10dp"/>
+                <Spinner
+                    android:id="@+id/settings_active_ride"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:drawable/btn_dropdown"
+                    android:spinnerMode="dropdown"
+                    android:paddingTop="3dp"
+                    android:paddingBottom="3dp"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    />
+
             </LinearLayout>
 
                 <View

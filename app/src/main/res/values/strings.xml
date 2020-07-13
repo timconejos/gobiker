@@ -108,5 +108,6 @@
     <string name="note_account_info">NOTE: For accurate results, please enter your HEIGHT, WEIGHT, and AGE.</string>
     <string name="add_pic">Add picture</string>
     <string name="ride">Ride</string>
+    <string name="create_profile">Create Profile</string>
 
 </resources>

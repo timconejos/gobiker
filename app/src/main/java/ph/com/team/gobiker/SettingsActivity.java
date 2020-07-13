@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -31,28 +32,27 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
-import com.theartofdev.edmodo.cropper.CropImage;
-import com.theartofdev.edmodo.cropper.CropImageView;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-import ph.com.team.gobiker.ui.dashboard.DashboardFragment;
 
 public class SettingsActivity extends AppCompatActivity {
-    private EditText userProfName, userPhone, weight, height, age, province_city;
-    private CheckBox checkBike, checkMotor;
+    private EditText userProfName, userPhone, weight, height, age;
+    private CheckBox checkBike, checkMotor, checkPhone, checkAddress;
     private Button UpdateAccountSettingsButton, CancelUpdateButton;
     private CircleImageView userProfImage;
-    private DatabaseReference SettingsUserRef;
+    private DatabaseReference SettingsUserRef, ProvinceRef, CityRef;
     private FirebaseAuth mAuth;
     private String currentUserId;
     private Uri ImageUri;
     private ProgressDialog loadingBar;
     private StorageReference UserProfileImageRef;
-    private Spinner Gender, WUnit, HUnit;
+    private Spinner Gender, WUnit, HUnit, province, city, active_ride;
     final static int Gallery_Pick = 1;
-    private TextView wt, ht, at, bn;
+    private TextView wt, ht, at, bn, aclabel, bioinfo;
+    private View divider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +63,11 @@ public class SettingsActivity extends AppCompatActivity {
         currentUserId = mAuth.getCurrentUser().getUid();
         SettingsUserRef = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId);
         UserProfileImageRef = FirebaseStorage.getInstance().getReference().child("profileimage");
+        ProvinceRef = FirebaseDatabase.getInstance().getReference().child("Province");
+        CityRef = FirebaseDatabase.getInstance().getReference().child("City");
+
+        divider = findViewById(R.id.divider);
+        bioinfo = findViewById(R.id.biometrics_info);
 
         userProfName = findViewById(R.id.settings_profile_full_name);
         userPhone = findViewById(R.id.settings_phone);
@@ -71,8 +76,16 @@ public class SettingsActivity extends AppCompatActivity {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items);
         Gender.setAdapter(adapter);
 
+        active_ride = findViewById(R.id.settings_active_ride);
+        String[] itemsActiveRide = new String[]{"Bicycle", "Motorcycle"};
+        ArrayAdapter<String> adapterActiveRide = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, itemsActiveRide);
+        active_ride.setAdapter(adapterActiveRide);
+
+        aclabel = findViewById(R.id.active_ride_label);
         checkBike = findViewById(R.id.settings_checkBoxBike);
         checkMotor = findViewById(R.id.settings_checkBoxMotor);
+        checkAddress = findViewById(R.id.settings_checkAddress);
+        checkPhone = findViewById(R.id.settings_checkPhone);
 
         UpdateAccountSettingsButton = findViewById(R.id.update_account_settings_button);
         CancelUpdateButton = findViewById(R.id.cancel_action);
@@ -86,7 +99,66 @@ public class SettingsActivity extends AppCompatActivity {
         weight = findViewById(R.id.settings_weight);
         height = findViewById(R.id.settings_height);
         age = findViewById(R.id.settings_age);
-        province_city = findViewById(R.id.settings_profile_address);
+        province = findViewById(R.id.settings_province);
+        city = findViewById(R.id.settings_city);
+
+        ArrayList<String> itemsP = new ArrayList<String>();
+        itemsP.add("");
+
+        ProvinceRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (long i=0; i<dataSnapshot.getChildrenCount(); i++) {
+                    itemsP.add(dataSnapshot.child(String.valueOf(i)).getValue().toString());
+                }
+                itemsP.remove(0);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        ArrayAdapter<String> adapterP = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, itemsP);
+        province.setAdapter(adapterP);
+
+        ArrayList<String> itemsC = new ArrayList<String>();
+
+        province.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                if (!province.getSelectedItem().toString().equals("")) {
+                    CityRef.child(province.getSelectedItem().toString()).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            itemsC.clear();
+                            for (long i = 0; i < dataSnapshot.getChildrenCount(); i++) {
+                                itemsC.add(dataSnapshot.child(String.valueOf(i)).getValue().toString());
+                            }
+                            ArrayAdapter<String> adapterC = new ArrayAdapter<String>(SettingsActivity.this, android.R.layout.simple_spinner_dropdown_item, itemsC);
+                            city.setAdapter(adapterC);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+                }
+                else{
+                    itemsC.clear();
+                    itemsC.add("");
+                    ArrayAdapter<String> adapterC = new ArrayAdapter<String>(SettingsActivity.this, android.R.layout.simple_spinner_dropdown_item, itemsC);
+                    city.setAdapter(adapterC);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
 
         WUnit = findViewById(R.id.settings_weight_unit);
         String[] itemsW = new String[]{"kgs", "lbs"};
@@ -107,6 +179,10 @@ public class SettingsActivity extends AppCompatActivity {
         age.setVisibility(View.GONE);
         WUnit.setVisibility(View.GONE);
         HUnit.setVisibility(View.GONE);
+        active_ride.setVisibility(View.GONE);
+        aclabel.setVisibility(View.GONE);
+        divider.setVisibility(View.GONE);
+        bioinfo.setVisibility(View.GONE);
 
         checkBike.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -121,6 +197,8 @@ public class SettingsActivity extends AppCompatActivity {
                     age.setVisibility(View.VISIBLE);
                     WUnit.setVisibility(View.VISIBLE);
                     HUnit.setVisibility(View.VISIBLE);
+                    divider.setVisibility(View.VISIBLE);
+                    bioinfo.setVisibility(View.VISIBLE);
                 }
                 else{
                     wt.setVisibility(View.GONE);
@@ -132,6 +210,31 @@ public class SettingsActivity extends AppCompatActivity {
                     age.setVisibility(View.GONE);
                     WUnit.setVisibility(View.GONE);
                     HUnit.setVisibility(View.GONE);
+                    divider.setVisibility(View.GONE);
+                    bioinfo.setVisibility(View.GONE);
+                }
+
+                if (checkBike.isChecked() && checkMotor.isChecked()){
+                    active_ride.setVisibility(View.VISIBLE);
+                    aclabel.setVisibility(View.VISIBLE);
+                }
+                else{
+                    active_ride.setVisibility(View.GONE);
+                    aclabel.setVisibility(View.GONE);
+                }
+            }
+        });
+
+        checkMotor.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (checkBike.isChecked() && checkMotor.isChecked()){
+                    active_ride.setVisibility(View.VISIBLE);
+                    aclabel.setVisibility(View.VISIBLE);
+                }
+                else{
+                    active_ride.setVisibility(View.GONE);
+                    aclabel.setVisibility(View.GONE);
                 }
             }
         });
@@ -154,9 +257,30 @@ public class SettingsActivity extends AppCompatActivity {
                         Picasso.with(SettingsActivity.this).load(R.drawable.profile).into(userProfImage);
                     }
 
-                    if (dataSnapshot.hasChild("address")){
-                        province_city.setText(dataSnapshot.child("address").getValue().toString());
+                    if (dataSnapshot.hasChild("check_address")){
+                        if (dataSnapshot.child("check_address").getValue().toString().equals("true")){
+                            checkAddress.setChecked(true);
+                        }
+                        else{
+                            checkAddress.setChecked(false);
+                        }
                     }
+                    else{
+                        checkAddress.setChecked(true);
+                    }
+
+                    if (dataSnapshot.hasChild("check_phone")){
+                        if (dataSnapshot.child("check_phone").getValue().toString().equals("true")){
+                            checkPhone.setChecked(true);
+                        }
+                        else{
+                            checkPhone.setChecked(false);
+                        }
+                    }
+                    else{
+                        checkPhone.setChecked(true);
+                    }
+
 
                     userProfName.setText(myProfileName);
                     if (myGender.equals("Male"))
@@ -181,9 +305,11 @@ public class SettingsActivity extends AppCompatActivity {
                         age.setVisibility(View.VISIBLE);
                         WUnit.setVisibility(View.VISIBLE);
                         HUnit.setVisibility(View.VISIBLE);
+                        divider.setVisibility(View.VISIBLE);
+                        bioinfo.setVisibility(View.VISIBLE);
                         String myWeight="", myHeight="",myAge="";
                         if (dataSnapshot.hasChild("savedweight")) {
-                            if (dataSnapshot.child("savedweight").getValue().toString().equals("")) {
+                            if (dataSnapshot.child("savedweight").getValue().toString().equals("0")) {
                                 WUnit.setSelection(0);
                             }
                             else{
@@ -196,7 +322,7 @@ public class SettingsActivity extends AppCompatActivity {
                         }
 
                         if (dataSnapshot.hasChild("savedheight")) {
-                            if (dataSnapshot.child("savedheight").getValue().toString().equals("")) {
+                            if (dataSnapshot.child("savedheight").getValue().toString().equals("0")) {
                                 HUnit.setSelection(0);
                             }
                             else{
@@ -220,6 +346,22 @@ public class SettingsActivity extends AppCompatActivity {
                         weight.setText(myWeight);
                         height.setText(myHeight);
                         age.setText(myAge);
+                    }
+
+                    if (myBike.equals("true") && myMotor.equals("true")){
+                        aclabel.setVisibility(View.VISIBLE);
+                        active_ride.setVisibility(View.VISIBLE);
+                        if (dataSnapshot.hasChild("active_ride")){
+                            String aride = dataSnapshot.child("active_ride").getValue().toString();
+                            if (aride.equals("Bicycle"))
+                                active_ride.setSelection(0);
+                            else
+                                active_ride.setSelection(1);
+                        }
+                    }
+                    else{
+                        aclabel.setVisibility(View.GONE);
+                        active_ride.setVisibility(View.GONE);
                     }
                 }
             }
@@ -356,7 +498,10 @@ public class SettingsActivity extends AppCompatActivity {
         String phone = userPhone.getText().toString();
         Boolean checkm = checkMotor.isChecked();
         Boolean checkb = checkBike.isChecked();
-        String prov_city = province_city.getText().toString();
+        String Province = province.getSelectedItem().toString();
+        String City = city.getSelectedItem().toString();
+        Boolean ckPhone = checkPhone.isChecked();
+        Boolean ckAdd = checkAddress.isChecked();
 
         if (TextUtils.isEmpty(fullname)) {
             Toast.makeText(this, "Please write your fullname...", Toast.LENGTH_SHORT).show();
@@ -365,7 +510,7 @@ public class SettingsActivity extends AppCompatActivity {
             Toast.makeText(this, "Please select bicycle or motorcycle.",Toast.LENGTH_SHORT).show();
         }
         else{
-            String hei="", wei="", yo="", hUnit="", wUnit="", sh="", sw="";
+            String hei="0", wei="0", yo="0", hUnit="0", wUnit="0", sh="0", sw="0";
             if (checkb){
                 sh = height.getText().toString();
                 sw = weight.getText().toString();
@@ -381,6 +526,11 @@ public class SettingsActivity extends AppCompatActivity {
                     else
                         hei = Double.toString((Double.parseDouble(sh)*2.54));
                 }
+                else{
+                    hei = "0";
+                    sh = "0";
+                    hUnit = "0";
+                }
 
                 if (!sw.equals("")){
                     wUnit = WUnit.getSelectedItem().toString();
@@ -390,7 +540,22 @@ public class SettingsActivity extends AppCompatActivity {
                     else
                         wei = Double.toString((Double.parseDouble(sw)/2.205));
                 }
+                else{
+                    wei = "0";
+                    sw = "0";
+                    wUnit = "0";
+                }
             }
+
+            String acRide = "Bicycle";
+
+            if (checkm && checkb){
+                acRide = active_ride.getSelectedItem().toString();
+            }
+            else if (checkm){
+                acRide = "Motorcycle";
+            }
+
             loadingBar.setTitle("Saving Information");
             loadingBar.setMessage("Please wait, while we are updating your account...");
             loadingBar.show();
@@ -408,7 +573,11 @@ public class SettingsActivity extends AppCompatActivity {
             userMap.put("savedweight",sw);
             userMap.put("savedwunit",wUnit);
             userMap.put("age",yo);
-            userMap.put("address",prov_city);
+            userMap.put("province",Province);
+            userMap.put("city",City);
+            userMap.put("active_ride",acRide);
+            userMap.put("check_address",ckAdd);
+            userMap.put("check_phone",ckPhone);
 
             SettingsUserRef.updateChildren(userMap).addOnCompleteListener(new OnCompleteListener() {
                 @Override
