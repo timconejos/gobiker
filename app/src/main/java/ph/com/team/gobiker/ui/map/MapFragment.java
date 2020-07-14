@@ -39,7 +39,6 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -65,6 +64,7 @@ import ph.com.team.gobiker.NavActivity;
 import ph.com.team.gobiker.R;
 import ph.com.team.gobiker.maputils.MapService;
 import ph.com.team.gobiker.maputils.MapStateManager;
+import ph.com.team.gobiker.settings.SettingsService;
 import ph.com.team.gobiker.user.User;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener, GoogleMap.OnMyLocationClickListener, ActivityCompat.OnRequestPermissionsResultCallback, GoogleMap.OnPolylineClickListener, GoogleMap.OnPolygonClickListener, LocationListener {
@@ -77,6 +77,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     private static DecimalFormat df = new DecimalFormat("0.00");
     private static boolean isDirectionalTravel = false;
     private static boolean isFreeTravel = false;
+    private static double prevDistance = 0;
+    private static Double lat1 = null;
+    private static Double lon1 = null;
+    private static Double lat2 = null;
+    private static Double lon2 = null;
     private MapViewModel mViewModel;
     private GoogleMap mMap;
     private boolean mPermissionDenied = false;
@@ -90,14 +95,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     private User currentUserData;
     private double speed;
     private double calories;
-    private static double prevDistance = 0;
     private int secondsTime = 0;
-
     private int toggleChecker = 0;
-    private static Double lat1 = null;
-    private static Double lon1 = null;
-    private static Double lat2 = null;
-    private static Double lon2 = null;
 
     public static MapFragment newInstance() {
         return new MapFragment();
@@ -330,6 +329,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
 
     @Override
     public void onLocationChanged(Location location) {
+        if (currentLocation == null) currentLocation = location;
         speed = 0;
 //        if (currentLocation != null)
 //            speed = Math.sqrt(
@@ -345,6 +345,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         }*/
 
         if (isFreeTravel) {
+            moveCamToLocation();
             /*
             needs fixing
              */
@@ -362,14 +363,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
             }
             toggleChecker++;
 
-//            float distanceTraveled = currentLocation == null ? 0 : currentLocation.distanceTo(location);
-//            moveCamToLocation();
-//
-//            distanceTotal += currentLocation != null ? distanceTraveled : 0;
-//            currentLocation = location;
-//            speed = distanceTraveled == 0 ? 0 : location.hasSpeed() ? location.getSpeed() : 0;
-//            infoSpeed.setText(df.format(speed) + " m/s ");
-
             if (distanceTotal / 1000 >= 1) {
                 infoDistance.setText(df.format(distanceTotal / 1000) + " km");
             } else {
@@ -377,7 +370,20 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
             }
 
 
-            Log.d("MapLocationManager", "location updated ");
+            /**
+             * speed calculation
+             */
+            float distanceTraveled = currentLocation == null ? 0 : currentLocation.distanceTo(location);
+            distanceTotal += currentLocation != null ? distanceTraveled : 0;
+            currentLocation = location;
+            speed = distanceTraveled == 0 ? 0 : location.hasSpeed() ? location.getSpeed() : 0;
+            if (SettingsService.isKphFlag()) {
+                speed = speed * 18 / 5;
+                infoSpeed.setText(df.format(speed) + " kph");
+            } else {
+                infoSpeed.setText(df.format(speed) + " m/s ");
+            }
+            Log.d("MapLocationManager", "speed: ");
         } else {
             //location
         }
@@ -462,7 +468,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                 if (isFreeTravel || isDirectionalTravel) {
                     secondsTime++;
                     Log.d("MapLocationManager", "ddiff: " + prevDistance + " - dtotal: " + distanceTotal);
-                    if(prevDistance != distanceTotal) {
+                    if (prevDistance != distanceTotal) {
                         calories += MapService.handleCaloriesComputation(speed, currentUserData.getWeight());
                         if (calories / 1000 >= 1) {
                             infoCalories.setText(df.format(calories / 1000) + " kCal");
