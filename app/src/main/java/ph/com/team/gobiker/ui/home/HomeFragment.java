@@ -246,8 +246,8 @@ public class HomeFragment extends Fragment {
 
     public static class PostsViewHolder extends RecyclerView.ViewHolder{
         View mView;
-        ImageButton LikepostButton, CommentPostButton;
-        Button LikeBtn, CommentBtn;
+        ImageButton LikeBtn;
+        Button CommentBtn;
         TextView DisplayNoOfLikes;
         int countLikes;
         String currentUserId;
@@ -262,13 +262,36 @@ public class HomeFragment extends Fragment {
             lp = mView.findViewById(R.id.linear_posts);
 //            LikepostButton = mView.findViewById(R.id.like_button);
 //            CommentPostButton = mView.findViewById(R.id.comment_button);
-//            DisplayNoOfLikes = mView.findViewById(R.id.like_button);
+            DisplayNoOfLikes = mView.findViewById(R.id.display_no_of_likes);
 
             LikesRef = FirebaseDatabase.getInstance().getReference().child("Likes");
             currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         }
 
         public void setLikeButtonStatus(final String PostKey){
+            LikesRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if(dataSnapshot.child(PostKey).hasChild(currentUserId)){
+                        countLikes = (int) dataSnapshot.child(PostKey).getChildrenCount();
+                        LikeBtn.setImageResource(R.drawable.ic_favorite_border_red_24dp);
+                        DisplayNoOfLikes.setText(Integer.toString(countLikes));
+                    }
+                    else{
+                        countLikes = (int) dataSnapshot.child(PostKey).getChildrenCount();
+                        LikeBtn.setImageResource(R.drawable.ic_favorite_border_black_24dp);
+                        DisplayNoOfLikes.setText(Integer.toString(countLikes));
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }
+
+        /*public void setLikeButtonStatus(final String PostKey){
             LikesRef.addValueEventListener(new ValueEventListener() {
                 @RequiresApi(api = Build.VERSION_CODES.M)
                 @Override
@@ -296,7 +319,7 @@ public class HomeFragment extends Fragment {
 
                 }
             });
-        }
+        }*/
 
         public void setFullname(String fullname) {
             TextView username = (TextView) mView.findViewById(R.id.post_user_name);
