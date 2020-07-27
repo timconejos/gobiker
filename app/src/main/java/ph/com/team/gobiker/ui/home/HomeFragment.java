@@ -46,6 +46,7 @@ import ph.com.team.gobiker.ClickPostActivity;
 import ph.com.team.gobiker.CommentsActivity;
 import ph.com.team.gobiker.CreateAccount;
 import ph.com.team.gobiker.FindFriendsActivity;
+import ph.com.team.gobiker.LikesActivity;
 import ph.com.team.gobiker.PostActivity;
 import ph.com.team.gobiker.R;
 import ph.com.team.gobiker.ui.login.MainLoginActivity;
@@ -96,7 +97,7 @@ public class HomeFragment extends Fragment {
 
         UsersRef = FirebaseDatabase.getInstance().getReference().child("Users");
         PostsRef = FirebaseDatabase.getInstance().getReference().child("Posts");
-        LikesRef = FirebaseDatabase.getInstance().getReference().child("Likes");
+        //LikesRef = FirebaseDatabase.getInstance().getReference().child("Likes");
 
         postList = root.findViewById(R.id.all_users_post_list);
         postList.setHasFixedSize(true);
@@ -193,19 +194,28 @@ public class HomeFragment extends Fragment {
                                 }
                             });
 
+                            viewHolder.DisplayNoOfLikes.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    Intent likesIntent = new Intent(getActivity(), LikesActivity.class);
+                                    likesIntent.putExtra("PostKey", PostKey);
+                                    startActivity(likesIntent);
+                                }
+                            });
+
                             viewHolder.LikeBtn.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
                                     LikeChecker = true;
-                                    LikesRef.addValueEventListener(new ValueEventListener() {
+                                    PostsRef.child(PostKey).child("Likes").addValueEventListener(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                             if (LikeChecker.equals(true)) {
-                                                if (dataSnapshot.child(PostKey).hasChild(currentUserID)) {
-                                                    LikesRef.child(PostKey).child(currentUserID).removeValue();
+                                                if (dataSnapshot.hasChild(currentUserID)) {
+                                                    PostsRef.child(PostKey).child("Likes").child(currentUserID).child(currentUserID).removeValue();
                                                     LikeChecker = false;
                                                 } else {
-                                                    LikesRef.child(PostKey).child(currentUserID).setValue(true);
+                                                    PostsRef.child(PostKey).child("Likes").child(currentUserID).child(currentUserID).setValue(true);
                                                     LikeChecker = false;
                                                 }
                                             }
@@ -264,7 +274,7 @@ public class HomeFragment extends Fragment {
 //            CommentPostButton = mView.findViewById(R.id.comment_button);
             DisplayNoOfLikes = mView.findViewById(R.id.display_no_of_likes);
 
-            LikesRef = FirebaseDatabase.getInstance().getReference().child("Likes");
+            LikesRef = FirebaseDatabase.getInstance().getReference().child("Posts");
             currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         }
 
@@ -272,13 +282,13 @@ public class HomeFragment extends Fragment {
             LikesRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    if(dataSnapshot.child(PostKey).hasChild(currentUserId)){
-                        countLikes = (int) dataSnapshot.child(PostKey).getChildrenCount();
+                    if(dataSnapshot.child(PostKey).child("Likes").hasChild(currentUserId)){
+                        countLikes = (int) dataSnapshot.child(PostKey).child("Likes").getChildrenCount();
                         LikeBtn.setImageResource(R.drawable.ic_favorite_border_red_24dp);
                         DisplayNoOfLikes.setText(Integer.toString(countLikes));
                     }
                     else{
-                        countLikes = (int) dataSnapshot.child(PostKey).getChildrenCount();
+                        countLikes = (int) dataSnapshot.child(PostKey).child("Likes").getChildrenCount();
                         LikeBtn.setImageResource(R.drawable.ic_favorite_border_black_24dp);
                         DisplayNoOfLikes.setText(Integer.toString(countLikes));
                     }

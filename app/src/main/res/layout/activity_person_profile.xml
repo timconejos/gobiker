@@ -62,7 +62,7 @@
                 android:layout_marginTop="45dp"
                 android:background="@color/colorPrimaryDark"
                 android:text="Follow"
-                android:textColor="@android:color/background_light"
+                android:textColor="@android:color/black"
                 android:textSize="16sp"
                 android:layout_centerHorizontal="true"
                 />
@@ -75,7 +75,7 @@
                 android:layout_marginTop="5dp"
                 android:background="@color/colorPrimaryDark"
                 android:text="Send Message"
-                android:textColor="@android:color/background_light"
+                android:textColor="@android:color/black"
                 android:textSize="16sp"
                 android:layout_centerHorizontal="true"
                 />
