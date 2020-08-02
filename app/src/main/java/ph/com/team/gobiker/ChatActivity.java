@@ -66,7 +66,10 @@ public class ChatActivity extends AppCompatActivity {
         messageSenderID = mAuth.getCurrentUser().getUid();
 
         messageReceiverID = getIntent().getExtras().get("visit_user_id").toString();
-        messageReceiverName = getIntent().getExtras().get("userName").toString();
+
+
+
+        //messageReceiverName = getIntent().getExtras().get("userName").toString();
 
         InitializeFields();
 
@@ -185,11 +188,12 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void DisplayReceiverInfo() {
-        receiverName.setText(messageReceiverName);
+
         RootRef.child("Users").child(messageReceiverID).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()){
+                    receiverName.setText(dataSnapshot.child("fullname").getValue().toString());
 
                     if (dataSnapshot.hasChild("userState")) {
                         final String type = dataSnapshot.child("userState").child("type").getValue().toString();

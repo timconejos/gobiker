@@ -33,6 +33,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import ph.com.team.gobiker.ChatActivity;
 import ph.com.team.gobiker.ClickPostActivity;
 import ph.com.team.gobiker.CommentsActivity;
 import ph.com.team.gobiker.FindFriends;
@@ -48,6 +49,7 @@ public class ChatFragment extends Fragment {
     private FirebaseAuth mAuth;
     private RecyclerView postList;
     private DatabaseReference MessagesRef,UsersRef;
+    private String currentUserID, vid;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -63,12 +65,15 @@ public class ChatFragment extends Fragment {
         });
 
         mAuth = FirebaseAuth.getInstance();
+        currentUserID = mAuth.getCurrentUser().getUid();
         UsersRef = FirebaseDatabase.getInstance().getReference().child("Users");
-        //MessagesRef = FirebaseDatabase.getInstance().getReference().child("Messages").child(mAuth.getCurrentUser().getUid());
+        MessagesRef = FirebaseDatabase.getInstance().getReference().child("Messages").child(currentUserID);
 
         postList = root.findViewById(R.id.all_users_msgs_list);
         postList.setHasFixedSize(true);
         postList.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        vid = "";
 
         DisplayAllUsersMsgs();
 
@@ -79,15 +84,58 @@ public class ChatFragment extends Fragment {
         FirebaseRecyclerAdapter<FindChat, FindChatViewHolder> firebaseRecyclerAdapter
                 = new FirebaseRecyclerAdapter<FindChat, FindChatViewHolder>(
                 FindChat.class,
-                R.layout.all_users_display_layout,
+                R.layout.all_chat_layout,
                 FindChatViewHolder.class,
-                UsersRef
+                MessagesRef
         ) {
             @Override
             protected void populateViewHolder(final FindChatViewHolder findChatViewHolder, final FindChat findChat, int i) {
-                findChatViewHolder.setFullname(findChat.getFullname());
+                UsersRef.child(getRef(i).getKey()).addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            findChatViewHolder.setFullname(dataSnapshot.child("fullname").getValue().toString());
 
-                findChatViewHolder.setProfileimage(getActivity().getApplicationContext(), findChat.getProfileimage());
+                            if (dataSnapshot.hasChild("profileimage"))
+                                findChatViewHolder.setProfileimage(getActivity().getApplicationContext(), dataSnapshot.child("profileimage").getValue().toString());
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+                MessagesRef.child(getRef(i).getKey()).addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        String msg = "", dt="";
+                        for(DataSnapshot ds : snapshot.getChildren()) {
+                            for(DataSnapshot dSnapshot : ds.getChildren()) {
+                                msg = ds.child("message").getValue().toString();
+                                dt = ds.child("date").getValue().toString()+" "+ds.child("time").getValue().toString();
+                            }
+                        }
+                        findChatViewHolder.setMessage(msg);
+                        findChatViewHolder.setDatetime(dt);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+
+                findChatViewHolder.mView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent profileIntent =  new Intent(getActivity().getApplicationContext(),ChatActivity.class);
+                        profileIntent.putExtra("visit_user_id",getRef(i).getKey());
+                        startActivity(profileIntent);
+                    }
+                });
+
             }
         };
         postList.setAdapter(firebaseRecyclerAdapter);
@@ -101,13 +149,23 @@ public class ChatFragment extends Fragment {
         }
 
         public void setProfileimage(Context ctx, String profileimage){
-            CircleImageView myImage = mView.findViewById(R.id.all_users_profile_image);
+            CircleImageView myImage = mView.findViewById(R.id.all_chat_profile_image);
             Picasso.with(ctx).load(profileimage).placeholder(R.drawable.profile).into(myImage);
         }
 
         public void setFullname(String fullname) {
-            TextView myName = mView.findViewById(R.id.all_users_profile_name);
+            TextView myName = mView.findViewById(R.id.all_chat_profile_name);
             myName.setText(fullname);
+        }
+
+        public void setMessage(String message) {
+            TextView myMessage = mView.findViewById(R.id.all_chat_text);
+            myMessage.setText(message);
+        }
+
+        public void setDatetime(String datetime) {
+            TextView myDateTime = mView.findViewById(R.id.all_chat_time);
+            myDateTime.setText(datetime);
         }
     }
 }
