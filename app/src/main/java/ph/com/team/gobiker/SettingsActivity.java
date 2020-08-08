@@ -35,6 +35,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -53,6 +54,7 @@ public class SettingsActivity extends AppCompatActivity {
     final static int Gallery_Pick = 1;
     private TextView wt, ht, at, bn, aclabel, bioinfo;
     private View divider;
+    private ArrayList<String> itemsC_Cebu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,9 +105,54 @@ public class SettingsActivity extends AppCompatActivity {
         city = findViewById(R.id.settings_city);
 
         ArrayList<String> itemsP = new ArrayList<String>();
-        itemsP.add("");
+        itemsP.add("Cebu");
+        itemsP.add("Ilocos Norte");
+        itemsP.add("Metro Manila");
+        ArrayAdapter<String> adapterP = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, itemsP);
+        province.setAdapter(adapterP);
 
-        ProvinceRef.addValueEventListener(new ValueEventListener() {
+        itemsC_Cebu = new ArrayList<String>();
+        itemsC_Cebu.add("C1");
+        itemsC_Cebu.add("C2");
+        itemsC_Cebu.add("C3");
+        itemsC_Cebu.add("C4");
+
+        ArrayList<String> itemsC_Ilocos_Norte = new ArrayList<String>();
+        itemsC_Ilocos_Norte.add("I1");
+        itemsC_Ilocos_Norte.add("I2");
+        itemsC_Ilocos_Norte.add("I3");
+        itemsC_Ilocos_Norte.add("I4");
+
+        ArrayList<String> itemsC_Metro_Manila = new ArrayList<String>();
+        itemsC_Metro_Manila.add("M1");
+        itemsC_Metro_Manila.add("M2");
+        itemsC_Metro_Manila.add("M3");
+        itemsC_Metro_Manila.add("M4");
+
+        //ArrayAdapter<String> adapterC = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, itemsC_Metro_Manila);
+        //city.setAdapter(adapterC);
+
+        province.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                String pr = province.getSelectedItem().toString();
+                if (!pr.equals("")) {
+                    if (pr.equals("Cebu"))
+                        setCity(itemsC_Cebu);
+                    if (pr.equals("Ilocos Norte"))
+                        setCity(itemsC_Ilocos_Norte);
+                    if (pr.equals("Metro Manila"))
+                        setCity(itemsC_Metro_Manila);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        /*ProvinceRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (long i=0; i<dataSnapshot.getChildrenCount(); i++) {
@@ -123,7 +170,7 @@ public class SettingsActivity extends AppCompatActivity {
         ArrayAdapter<String> adapterP = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, itemsP);
         province.setAdapter(adapterP);
 
-        ArrayList<String> itemsC = new ArrayList<String>();
+        /*ArrayList<String> itemsC = new ArrayList<String>();
 
         province.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -158,7 +205,7 @@ public class SettingsActivity extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> adapterView) {
 
             }
-        });
+        });*/
 
         WUnit = findViewById(R.id.settings_weight_unit);
         String[] itemsW = new String[]{"kgs", "lbs"};
@@ -248,6 +295,8 @@ public class SettingsActivity extends AppCompatActivity {
                     String myPhone = dataSnapshot.child("phone").getValue().toString();
                     String myBike = dataSnapshot.child("bike").getValue().toString();
                     String myMotor = dataSnapshot.child("motor").getValue().toString();
+                    String myProvince = dataSnapshot.child("province").getValue().toString();
+                    String myCity = dataSnapshot.child("city").getValue().toString();
 
                     if (dataSnapshot.hasChild("profileimage")){
                         String myProfileImage = dataSnapshot.child("profileimage").getValue().toString();
@@ -287,6 +336,22 @@ public class SettingsActivity extends AppCompatActivity {
                         Gender.setSelection(0);
                     else
                         Gender.setSelection(1);
+
+                    province.setSelection(adapterP.getPosition(myProvince));
+
+
+
+                    if (myProvince.equals("Cebu")){
+                        setCity(itemsC_Cebu,myCity);
+                    }
+
+                    if (myProvince.equals("Ilocos Norte")){
+                        setCity(itemsC_Ilocos_Norte,myCity);
+                    }
+
+                    if (myProvince.equals("Metro Manila")){
+                        setCity(itemsC_Metro_Manila,myCity);
+                    }
 
                     userPhone.setText(myPhone);
 
@@ -603,5 +668,16 @@ public class SettingsActivity extends AppCompatActivity {
         //mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(mainIntent);
         //finish();
+    }
+
+    private void setCity(ArrayList<String> itemsC){
+        ArrayAdapter<String> adapterC = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, itemsC);
+        city.setAdapter(adapterC);
+    }
+
+    private void setCity(ArrayList<String> itemsC, String sel){
+        ArrayAdapter<String> adapterC = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, itemsC);
+        city.setAdapter(adapterC);
+        city.setSelection(adapterC.getPosition(sel));
     }
 }

@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -120,6 +121,20 @@ import de.hdodenhof.circleimageview.CircleImageView;
                             commentsViewHolder.setComments(comments.getComments());
                             //commentsViewHolder.setDate(comments.getDate()+" "+comments.getTime());
                             commentsViewHolder.setTime(comments.getDate()+" "+comments.getTime());
+                            final String CommentsKey = getRef(i).getKey();
+
+                            if (comments.getUid().equals(current_user_id)) {
+                                commentsViewHolder.mView.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        //Toast.makeText(CommentsActivity.this,"AA",Toast.LENGTH_SHORT).show();
+                                        Intent clickPostIntent = new Intent(CommentsActivity.this, ClickCommentActivity.class);
+                                        clickPostIntent.putExtra("PostKey", Post_Key);
+                                        clickPostIntent.putExtra("CommentsKey", CommentsKey);
+                                        startActivity(clickPostIntent);
+                                    }
+                                });
+                            }
                         }
                     };
 

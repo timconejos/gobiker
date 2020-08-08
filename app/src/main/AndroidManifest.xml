@@ -15,7 +15,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".LikesActivity"></activity>
+        <activity android:name=".ClickCommentActivity"></activity>
+        <activity android:name=".LikesActivity" />
         <activity android:name=".LogoutActivity" />
         <activity android:name=".ChatActivity" />
         <activity android:name=".PersonProfileActivity" />
@@ -24,7 +25,8 @@
             android:name=".SettingsActivity"
             android:parentActivityName=".NavActivity" />
         <activity android:name=".SetupActivity" />
-        <activity android:name=".CommentsActivity" />
+        <activity android:name=".CommentsActivity"
+            android:parentActivityName=".NavActivity" />
         <activity
             android:name=".PostActivity"
             android:parentActivityName=".NavActivity" />
