@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,6 +28,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -71,6 +73,8 @@ public class HomeFragment extends Fragment {
     private EditText SearchInputText;
     private String currentUserID;
     private View root;
+
+    private SwipeRefreshLayout swipe;
     Boolean LikeChecker = false;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -119,6 +123,18 @@ public class HomeFragment extends Fragment {
             }
         });
         DisplayAllUsersPosts();
+
+        swipe = root.findViewById(R.id.swiperefresh);
+        swipe.setOnRefreshListener(() -> {
+
+            new Handler().postDelayed(new Runnable() {
+                @Override public void run() {
+                    // Stop animation (This will be after 3 seconds)
+                    DisplayAllUsersPosts();
+                    swipe.setRefreshing(false);
+                }
+            }, 2500);
+        });
 
         return root;
     }

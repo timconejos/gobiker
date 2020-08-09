@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.home.HomeFragment">
-
     <TextView
         android:id="@+id/text_home"
         android:layout_width="match_parent"
@@ -77,6 +76,10 @@
                 android:src="@drawable/search" />
         </RelativeLayout>
 
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swiperefresh"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
         <FrameLayout
           android:layout_width="match_parent"
           android:layout_height="match_parent">
@@ -95,6 +98,7 @@
               app:srcCompat="@drawable/ic_add_white_24dp"
               />
       </FrameLayout>
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
     </LinearLayout>
 
 
