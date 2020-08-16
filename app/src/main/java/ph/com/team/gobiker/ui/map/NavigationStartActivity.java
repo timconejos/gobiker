@@ -24,6 +24,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 
@@ -48,6 +49,7 @@ public class NavigationStartActivity extends AppCompatActivity implements OnMapR
     private Marker end;
 
     private static Location currentLocation;
+    private Place startPlace;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -61,9 +63,9 @@ public class NavigationStartActivity extends AppCompatActivity implements OnMapR
         currentLocation = (Location)getIntent().getExtras().get("currentLocation");
         Log.d("marker ", "location: " + currentLocation);
         Places.initialize(getApplicationContext(), getString(R.string.google_maps_key));
-
-        List<Place.Field> fieldStart = Arrays.asList(Place.Field.ID, Place.Field.NAME);
-        List<Place.Field> fieldEnd = Arrays.asList(Place.Field.ID, Place.Field.NAME);
+        PlacesClient placesClient = Places.createClient(this);
+        List<Place.Field> fieldStart = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG);
+        List<Place.Field> fieldEnd = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG);
 
         startPoint = findViewById(R.id.startPointNav);
         startPoint.setText(R.string.current_location);
@@ -110,13 +112,15 @@ public class NavigationStartActivity extends AppCompatActivity implements OnMapR
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == -1){
+        if (resultCode == RESULT_OK) {
             Place startPlace, endPlace;
             switch (requestCode) {
                 case START_DIRECTION_REQUEST_CODE:
                     startPlace = Autocomplete.getPlaceFromIntent(data);
-                    if(startPlace.getLatLng() != null){
+                    startPoint.setText(startPlace.getName());
+                    startPlace.getId();
+                    Log.d("getPlace", "splace: " + startPlace.getLatLng());
+                    if (startPlace.getLatLng() != null) {
                         startLatLng = startPlace.getLatLng();
                         start.setPosition(startLatLng);
                         startPoint.setText(startPlace.getName());
@@ -124,7 +128,9 @@ public class NavigationStartActivity extends AppCompatActivity implements OnMapR
                     break;
                 case END_DIRECTION_REQUEST_CODE:
                     endPlace = Autocomplete.getPlaceFromIntent(data);
-                    if(endPlace.getLatLng() != null){
+                    endPoint.setText(endPlace.getName());
+                    Log.d("getPlace", "eplace: " + endPlace.getLatLng());
+                    if (endPlace.getLatLng() != null) {
                         endLatLng = endPlace.getLatLng();
                         end.setPosition(endLatLng);
                         endPoint.setText(endPlace.getName());
@@ -133,7 +139,9 @@ public class NavigationStartActivity extends AppCompatActivity implements OnMapR
                 default:
                     break;
             }
+            updateCamera();
         }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
