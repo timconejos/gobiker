@@ -218,6 +218,13 @@
     </style>
 
 
+
+        <style name="CustomFloatPlainBtn" parent="Widget.MaterialComponents.FloatingActionButton">
+        <item name="android:textColor">@color/white</item>
+        <item name="backgroundTint">@color/primaryText</item>
+    </style>
+
+
     <style name="CustomFloatBtn" parent="Widget.MaterialComponents.ExtendedFloatingActionButton">
 
         <item name="android:textSize">15dp</item>

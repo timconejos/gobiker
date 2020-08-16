@@ -11,14 +11,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/ToolbarTheme"
-        android:minHeight="?attr/actionBarSize">
+        android:minHeight="?attr/actionBarSize"
+        android:background="@color/colorPrimary">
 
         <TextView
             android:id="@+id/create_post"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="@string/create_post" />
+            android:text="@string/create_post"
+            android:textColor="@color/white"
+            style="@style/Toolbar.TitleText"/>
 
         <Button
             style="@style/TransparentBtn"
@@ -27,6 +30,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="@string/save"
+            android:textColor="@color/white"
             android:id="@+id/update_post_button"/>
 
 

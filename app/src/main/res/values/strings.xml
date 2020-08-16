@@ -17,6 +17,7 @@
     <string name="rides">Rides</string>
     <string name="challenges">Challenges</string>
     <string name="profile">Profile</string>
+    <string name="find_friends">Find Friends</string>
 
 
     <!--    MAP -->
@@ -81,6 +82,7 @@
     <string name="title_message">Messages</string>
     <string name="title_map">Map</string>
     <string name="create_post">Create Post</string>
+    <string name="update_post">Update Post</string>
     <string name="update_profile">Update Profile</string>
     <string name="save">Save</string>
 
