@@ -1,5 +1,8 @@
 package ph.com.team.gobiker.maputils;
 
+import com.google.android.gms.maps.model.LatLng;
+import com.google.maps.android.SphericalUtil;
+
 /**
  * a couple of map services
  *
@@ -45,4 +48,14 @@ public final class MapService {
         return (((met * weight * 3.5) / 200) / 60);
     }
 
+    public static double getDistanceFromStartLocation(LatLng current, LatLng marker){
+        double distance = SphericalUtil.computeDistanceBetween(current, marker);
+        return distance;
+    }
+    /*function getDistance(source, destination) {
+        return google.maps.geometry.spherical.computeDistanceBetween(
+                new google.maps.LatLng(source.lat, source.lng),
+                new google.maps.LatLng(destination.lat, destination.lng)
+        );
+    }*/
 }
