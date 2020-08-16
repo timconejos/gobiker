@@ -13,6 +13,7 @@
     <!--    HOME    -->
     <string name="feed">Feed</string>
     <string name="home">Home</string>
+    <string name="chat">Chat</string>
     <string name="rides">Rides</string>
     <string name="challenges">Challenges</string>
     <string name="profile">Profile</string>
@@ -108,6 +109,11 @@
     <string name="note_account_info">NOTE: For accurate results, please enter your HEIGHT, WEIGHT, and AGE.</string>
     <string name="add_pic">Add picture</string>
     <string name="ride">Ride</string>
+    <string name="ride_s">Ride(s)</string>
+    <string name="type">Type</string>
+    <string name="ride_type">Bike / Motor</string>
+    <string name="level">Level</string>
+    <string name="distance_traveled">Distance Traveled</string>
     <string name="create_profile">Create Profile</string>
     <string name="current_location">Current Location</string>
 

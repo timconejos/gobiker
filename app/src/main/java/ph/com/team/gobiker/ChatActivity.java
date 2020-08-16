@@ -203,7 +203,7 @@ public class ChatActivity extends AppCompatActivity {
                         if (type.equals("online")) {
                             userLastSeen.setText("online");
                         } else {
-                            userLastSeen.setText("last seen: " + lastDate + " " + lastTime);
+                            userLastSeen.setText("Last seen: " + lastDate + " " + lastTime);
                         }
                     }
                     else{

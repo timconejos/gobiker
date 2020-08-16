@@ -234,39 +234,100 @@
                         </RelativeLayout>
                     </LinearLayout>
                 </FrameLayout>
-
-                <TextView
+                <TextView android:id="@+id/ride_lbl"
+                    android:text="@string/ride_s"
+                    android:textAllCaps="true"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    style="@style/Headings.H4"
+                    android:textColor="@color/black"
+                    android:textAlignment="textStart"
+                    android:layout_marginStart="20dp"/>
+                <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Bike / Motor"
-                    android:id="@+id/my_bike_motor"
-                    android:textAlignment="center"
-                    android:layout_marginTop="2dp"
-                    android:textAllCaps="false"
-                    android:textColor="@color/colorAccent"
-                    android:textSize="18sp"/>
+                    android:background="@drawable/round_shape"
+                    android:layout_margin="20dp"
+                    android:padding="15dp">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Level"
-                    android:id="@+id/my_level"
-                    android:textAlignment="center"
-                    android:layout_marginTop="2dp"
-                    android:textAllCaps="false"
-                    android:textColor="@color/colorAccent"
-                    android:textSize="18sp"/>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Distance Traveled"
-                    android:id="@+id/my_distance_traveled"
-                    android:textAlignment="center"
-                    android:layout_marginTop="2dp"
-                    android:textAllCaps="false"
-                    android:textColor="@color/colorAccent"
-                    android:textSize="18sp"/>
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+                            <TextView
+                                android:id="@+id/ride_type_lbl"
+                                android:text="@string/type"
+                                android:layout_height="wrap_content"
+                                android:layout_width="wrap_content"
+                                android:layout_alignParentLeft="true"
+                                android:drawableLeft="@drawable/ic_directions_bike_dark"
+                                android:drawablePadding="5dp"
+                                android:gravity="center"
+                                style="@style/Subtitle.H5"
+                                android:textColor="@color/black"/>
+                            <TextView
+                                android:id="@+id/my_bike_motor"
+                                android:text="@string/ride_type"
+                                android:layout_height="wrap_content"
+                                android:layout_width="wrap_content"
+                                android:gravity="end"
+                                android:layout_alignParentRight="true"
+                                style="@style/Headings.H3"
+                                android:textColor="@color/black"/>
+                        </RelativeLayout>
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+                            <TextView
+                                android:id="@+id/level_lbl"
+                                android:text="@string/level"
+                                android:layout_height="wrap_content"
+                                android:layout_width="wrap_content"
+                                android:layout_alignParentLeft="true"
+                                android:gravity="center"
+                                android:drawableLeft="@drawable/ic_timeline_dark"
+                                android:drawablePadding="5dp"
+                                style="@style/Subtitle.H5"
+                                android:textColor="@color/black"/>
+                            <TextView
+                                android:id="@+id/my_level"
+                                android:text="@string/level"
+                                android:layout_height="wrap_content"
+                                android:layout_width="wrap_content"
+                                android:gravity="end"
+                                android:layout_alignParentRight="true"
+                                style="@style/Headings.H3"
+                                android:textColor="@color/black"/>
+                        </RelativeLayout>
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+                            <TextView
+                                android:id="@+id/distance_tvld_lbl"
+                                android:text="@string/distance_traveled"
+                                android:layout_height="wrap_content"
+                                android:layout_width="wrap_content"
+                                android:layout_alignParentLeft="true"
+                                android:gravity="center"
+                                android:drawableLeft="@drawable/ic_map_dark"
+                                android:drawablePadding="5dp"
+                                style="@style/Subtitle.H5"
+                                android:textColor="@color/black"/>
+                            <TextView
+                                android:id="@+id/my_distance_traveled"
+                                android:text="@string/distance_traveled"
+                                android:layout_height="wrap_content"
+                                android:layout_width="wrap_content"
+                                android:gravity="end"
+                                android:layout_alignParentRight="true"
+                                style="@style/Headings.H3"
+                                android:textColor="@color/black"/>
+                        </RelativeLayout>
+                    </LinearLayout>
+                </FrameLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
