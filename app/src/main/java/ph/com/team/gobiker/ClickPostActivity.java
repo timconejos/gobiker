@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -113,7 +114,7 @@ public class ClickPostActivity extends AppCompatActivity {
         inputField.setText(description);
         builder.setView(inputField);
 
-        builder.setPositiveButton("Update", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(Html.fromHtml("<font color='#3F6634'>Update</font>"), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 ClickPostRef.child("description").setValue(inputField.getText().toString());
@@ -121,7 +122,7 @@ public class ClickPostActivity extends AppCompatActivity {
             }
         });
 
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(Html.fromHtml("<font color='#757575'>Cancel</font>"), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 dialogInterface.cancel();
@@ -130,7 +131,8 @@ public class ClickPostActivity extends AppCompatActivity {
 
         Dialog dialog = builder.create();
         dialog.show();
-        dialog.getWindow().setBackgroundDrawableResource(android.R.color.holo_green_dark);
+
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.white);
     }
 
     private void DeleteCurrentPost() {

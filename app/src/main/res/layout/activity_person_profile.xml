@@ -4,20 +4,45 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".PersonProfileActivity">
+    tools:context=".PersonProfileActivity"
+    android:background="@color/lighterColor">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        android:theme="@style/ToolbarTheme"
+        app:titleTextAppearance="@style/Toolbar.TitleText"
+        >
+        <TextView
+            android:id="@+id/create_post"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            style="@style/Toolbar.TitleText"
+            android:text="@string/find_friends" />
+    </androidx.appcompat.widget.Toolbar>
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:padding="40dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="130dp"
+            android:background="@drawable/white_rounded_box">
             <de.hdodenhof.circleimageview.CircleImageView
-                android:layout_width="300dp"
-                android:layout_height="300dp"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="15dp"
+
                 android:src="@drawable/profile"
                 android:id="@+id/person_profile_pic" />
             <TextView
@@ -26,11 +51,10 @@
                 android:text="Profile Name"
                 android:id="@+id/person_full_name"
                 android:layout_below="@+id/person_profile_pic"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="15dp"
                 android:textAlignment="center"
                 android:textAllCaps="false"
-                android:textSize="20sp"
-                android:textStyle="bold"/>
+                style="@style/Headings.H2"/>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -41,7 +65,7 @@
                 android:layout_marginTop="2dp"
                 android:textAllCaps="false"
                 android:textColor="@color/colorAccent"
-                android:textSize="18sp"/>
+                style="@style/Subtitle.H5"/>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -60,25 +84,23 @@
                 android:id="@+id/person_send_friend_request_btn"
                 android:layout_below="@+id/person_gender"
                 android:layout_marginTop="45dp"
-                android:background="@color/colorPrimaryDark"
+                android:background="@drawable/rounded_float_btn"
                 android:text="Follow"
-                android:textColor="@android:color/black"
-                android:textSize="16sp"
                 android:layout_centerHorizontal="true"
+                style="@style/SecondaryBtn.Positive"
                 />
 
             <Button
+                android:id="@+id/person_send_msg_btn"
                 android:layout_width="230dp"
                 android:layout_height="wrap_content"
-                android:id="@+id/person_send_msg_btn"
                 android:layout_below="@+id/person_send_friend_request_btn"
-                android:layout_marginTop="5dp"
-                android:background="@color/colorPrimaryDark"
-                android:text="Send Message"
-                android:textColor="@android:color/black"
-                android:textSize="16sp"
                 android:layout_centerHorizontal="true"
-                />
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/button"
+                style="@style/SecondaryBtn.Negative"
+                android:text="Send Message" />
         </RelativeLayout>
     </ScrollView>
 </RelativeLayout>

@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -24,7 +25,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class FindFriendsActivity extends AppCompatActivity {
     private Toolbar mToolbar;
-    private ImageButton searchButton;
+    private Button searchButton;
     private EditText SearchInputText;
 
     private RecyclerView SearchResultList;
@@ -47,6 +48,8 @@ public class FindFriendsActivity extends AppCompatActivity {
 
         SearchInputText.setText(getIntent().getExtras().get("searchKey").toString());
         SearchPeopleAndFriends(getIntent().getExtras().get("searchKey").toString());
+
+
 
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override

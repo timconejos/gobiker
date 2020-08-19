@@ -42,17 +42,25 @@
             android:background="@drawable/edittxt_pos"
             android:ems="10"
             android:hint="Search Here"
-            android:inputType="textMultiLine"
+            android:inputType="textCapWords"
             android:padding="10dp"
             />
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:paddingStart="20dp"
-            android:paddingEnd="20dp"
-            android:layout_height="match_parent"
+<!--        <ImageButton-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:padding="20dp"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:id="@+id/search_people_friends_button"-->
+<!--            android:background="@drawable/inputs"-->
+<!--            android:src="@drawable/search"/>-->
+
+        <Button
             android:id="@+id/search_people_friends_button"
-            android:background="@drawable/inputs"
-            android:src="@drawable/ic_search"/>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/ic_search"
+            style="@style/TransparentBtn.Positive"
+            android:textColor="@color/black"
+            android:text="Search"/>
     </LinearLayout>
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
