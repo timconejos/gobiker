@@ -52,6 +52,7 @@ import ph.com.team.gobiker.LikesActivity;
 import ph.com.team.gobiker.PostActivity;
 import ph.com.team.gobiker.R;
 import ph.com.team.gobiker.ui.login.MainLoginActivity;
+import uk.co.senab.photoview.PhotoViewAttacher;
 
 public class HomeFragment extends Fragment {
 
@@ -76,6 +77,7 @@ public class HomeFragment extends Fragment {
 
     private SwipeRefreshLayout swipe;
     Boolean LikeChecker = false;
+    private PhotoViewAttacher pAttacher;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -192,6 +194,16 @@ public class HomeFragment extends Fragment {
 
                             viewHolder.setLikeButtonStatus(PostKey);
 
+                            viewHolder.PostImage.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    pAttacher = new PhotoViewAttacher(viewHolder.PostImage);
+                                    pAttacher.setZoomable(true);
+                                    pAttacher.update();
+
+                                }
+                            });
+
                             viewHolder.mView.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
@@ -279,10 +291,12 @@ public class HomeFragment extends Fragment {
         String currentUserId;
         LinearLayout lp;
         DatabaseReference LikesRef;
+        ImageView PostImage;
 
         public PostsViewHolder(View itemView){
             super(itemView);
             mView = itemView;
+            PostImage = (ImageView) mView.findViewById(R.id.post_image);
             LikeBtn = mView.findViewById(R.id.like_button);
             CommentBtn = mView.findViewById(R.id.comment_button);
             lp = mView.findViewById(R.id.linear_posts);
