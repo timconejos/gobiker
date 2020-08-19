@@ -83,6 +83,7 @@
     <string name="title_map">Map</string>
     <string name="create_post">Create Post</string>
     <string name="update_post">Update Post</string>
+    <string name="post">Post</string>
     <string name="update_profile">Update Profile</string>
     <string name="save">Save</string>
 

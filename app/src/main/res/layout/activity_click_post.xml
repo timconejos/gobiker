@@ -19,7 +19,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="@string/update_post"
+            android:text="@string/post"
             android:textColor="@color/white"
             style="@style/Toolbar.TitleText"/>
 
@@ -52,9 +52,8 @@
             android:background="@drawable/inputs"
             android:text="Post description"
             android:textAlignment="textStart"
-            android:textColor="@android:color/background_dark"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            style="@style/Subtitle.H3"
+            />
 
 <!--        <Button-->
 <!--            android:id="@+id/edit_post_button"-->
