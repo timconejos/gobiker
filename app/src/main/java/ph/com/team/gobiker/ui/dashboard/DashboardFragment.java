@@ -224,26 +224,26 @@ public class DashboardFragment extends Fragment {
 
                             if (dataSnapshot.hasChild("bike_level")) {
                                 if (dataSnapshot.child("bike_level").getValue().toString().equals("")) {
-                                    level.setText("Level: 1");
+                                    level.setText("1");
                                 }
                                 else{
-                                    level.setText("Level: "+dataSnapshot.child("bike_level").getValue().toString());
+                                    level.setText(dataSnapshot.child("bike_level").getValue().toString());
                                 }
                             }
                             else{
-                                level.setText("Level: 1");
+                                level.setText("1");
                             }
 
                             if (dataSnapshot.hasChild("bike_overall_distance")) {
                                 if (dataSnapshot.child("bike_overall_distance").getValue().toString().equals("")) {
-                                    overall_distance.setText("Distance Traveled: 0 m");
+                                    overall_distance.setText("0 m");
                                 }
                                 else{
-                                    overall_distance.setText("Distance Traveled: "+dataSnapshot.child("bike_overall_distance").getValue().toString()+" m");
+                                    overall_distance.setText(dataSnapshot.child("bike_overall_distance").getValue().toString()+" m");
                                 }
                             }
                             else{
-                                overall_distance.setText("Distance Traveled: 0 m");
+                                overall_distance.setText("0 m");
                             }
                         }
                         else{
@@ -256,26 +256,26 @@ public class DashboardFragment extends Fragment {
 
                             if (dataSnapshot.hasChild("motor_level")) {
                                 if (dataSnapshot.child("motor_level").getValue().toString().equals("")) {
-                                    level.setText("Level: 1");
+                                    level.setText("1");
                                 }
                                 else{
-                                    level.setText("Level: "+dataSnapshot.child("motor_level").getValue().toString());
+                                    level.setText(dataSnapshot.child("motor_level").getValue().toString());
                                 }
                             }
                             else{
-                                level.setText("Level: 1");
+                                level.setText("1");
                             }
 
                             if (dataSnapshot.hasChild("motor_overall_distance")) {
                                 if (dataSnapshot.child("motor_overall_distance").getValue().toString().equals("")) {
-                                    overall_distance.setText("Distance Traveled: 0 m");
+                                    overall_distance.setText("0 m");
                                 }
                                 else{
-                                    overall_distance.setText("Distance Traveled: "+dataSnapshot.child("motor_overall_distance").getValue().toString()+" m");
+                                    overall_distance.setText(dataSnapshot.child("motor_overall_distance").getValue().toString()+" m");
                                 }
                             }
                             else{
-                                overall_distance.setText("Distance Traveled: 0 m");
+                                overall_distance.setText("0 m");
                             }
                         }
                     }

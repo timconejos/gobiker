@@ -66,7 +66,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
         usersDatabaseRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()){
+                if (dataSnapshot.exists() &&  dataSnapshot.child("profileimage").getValue() !=null){
                     String image = dataSnapshot.child("profileimage").getValue().toString();
 
                     Picasso.with(holder.receiverProfileImage.getContext()).load(image)
@@ -86,7 +86,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
 
             if (fromUserID.equals(messageSenderID)){
                 holder.SenderMessageText.setBackgroundResource(R.drawable.sender_message_text_background);
-                holder.SenderMessageText.setTextColor(Color.WHITE);
+                holder.SenderMessageText.setTextColor(Color.rgb(74, 74, 74));
                 holder.SenderMessageText.setGravity(Gravity.LEFT);
                 holder.SenderMessageText.setText(messages.getMessage()+"\n"+messages.getDate()+" "+messages.getTime());
             }

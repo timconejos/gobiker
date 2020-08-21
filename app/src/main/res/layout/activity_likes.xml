@@ -13,6 +13,7 @@
         android:layout_marginTop="5dp"
         android:layout_marginEnd="5dp"
         android:layout_marginBottom="5dp"
+        android:paddingTop="20dp"
         android:text="People who liked this post"
         android:textColor="@android:color/black"
         android:textSize="24sp"

@@ -3,53 +3,66 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
+    android:background="@color/lighterColor"
     tools:context=".ClickCommentActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_margin="7dp"
-        android:background="@drawable/post_border">
+        android:layout_margin="15dp"
+        android:id="@+id/comment_box"
+        android:background="@drawable/white_rounded_box">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_margin="10dp">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/Headings.H2"
+                android:text="Update Comment"/>
             <EditText
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/edit_comment_text"
                 android:text="Comment text will display here..."
-                android:textStyle="bold"
-                android:textSize="16sp"/>
+                android:layout_marginTop="20dp"
+                style="@style/Subtitle.H4"/>
 
         </LinearLayout>
+
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/comment_box"
+        android:orientation="horizontal"
+        android:layout_margin="15dp"
+        android:gravity="end|bottom">
         <Button
             android:id="@+id/edit_comment_button"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="10dp"
             android:layout_marginRight="10dp"
             android:text="Update"
-            android:textColor="@android:color/black"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            style="@style/SecondaryBtn.Positive"/>
 
         <Button
             android:id="@+id/delete_comment_button"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="10dp"
             android:layout_marginRight="10dp"
-            android:background="@drawable/button"
+
             android:text="Delete"
-            android:textColor="@android:color/black"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            style="@style/TransparentBtn.Positive" />
 
     </LinearLayout>
 

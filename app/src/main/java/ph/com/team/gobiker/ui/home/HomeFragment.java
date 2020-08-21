@@ -70,7 +70,7 @@ public class HomeFragment extends Fragment {
 
     private FirebaseAuth mAuth;
     private DatabaseReference UsersRef, PostsRef, LikesRef;
-    private ImageButton searchButton;
+    private Button searchButton;
     private EditText SearchInputText;
     private String currentUserID;
     private View root;

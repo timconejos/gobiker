@@ -6,10 +6,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginBottom="6dp"
+        android:layout_marginTop="3dp"
+        android:layout_marginBottom="3dp"
         android:id="@+id/linear_posts"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
+        android:layout_marginLeft="6dp"
+        android:layout_marginRight="6dp"
         android:background="@color/white">
         <LinearLayout
             android:layout_width="match_parent"
