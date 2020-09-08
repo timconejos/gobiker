@@ -25,7 +25,7 @@ import java.util.HashMap;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class PersonProfileActivity extends AppCompatActivity {
-    private TextView userBM, userProfName, userGender;
+    private TextView userBM, userProfName, userGender,address, userPhone;
     private CircleImageView userProfileImage;
     private Button SendFriendReqButton, SendMsgButton;
     private DatabaseReference UsersRef;
@@ -49,6 +49,8 @@ public class PersonProfileActivity extends AppCompatActivity {
         userProfileImage = findViewById(R.id.person_profile_pic);
         SendFriendReqButton = findViewById(R.id.person_send_friend_request_btn);
         SendMsgButton = findViewById(R.id.person_send_msg_btn);
+        address = findViewById(R.id.person_address);
+        userPhone = findViewById(R.id.person_phone);
 
         SendMsgButton.setOnClickListener(view -> {
             SendUserToChatActivity();
@@ -66,11 +68,15 @@ public class PersonProfileActivity extends AppCompatActivity {
 
                     myProfileName = dataSnapshot.child("fullname").getValue().toString();
                     String myGender = dataSnapshot.child("gender").getValue().toString();
+                    String myPhone = dataSnapshot.child("phone").getValue().toString();
                     String myBike = dataSnapshot.child("bike").getValue().toString();
                     String myMotor = dataSnapshot.child("motor").getValue().toString();
 
                     userProfName.setText(myProfileName);
-                    userGender.setText(myGender);
+                    if (!myGender.equals("Rather Not Say"))
+                        userGender.setText(myGender);
+                    else
+                        userGender.setVisibility(View.GONE);
                     if (myBike.equals("true"))
                         userBM.setText("Bicycle");
 
@@ -81,7 +87,27 @@ public class PersonProfileActivity extends AppCompatActivity {
                             userBM.setText("Bicycle and Motorcycle");
                     }
 
+                    if (dataSnapshot.child("check_address").getValue().toString().equals("true")){
+                        address.setVisibility(View.VISIBLE);
+                        if (dataSnapshot.child("province").getValue().toString().equals("")) {
+                            address.setText("");
+                        }
+                        else{
+                            address.setText(dataSnapshot.child("city").getValue().toString()+" "+dataSnapshot.child("province").getValue().toString());
+                        }
+                    }
+                    else{
+                        address.setVisibility(View.GONE);
+                    }
 
+                    if (dataSnapshot.child("check_phone").getValue().toString().equals("true")){
+                        userPhone.setText(myPhone);
+                        userPhone.setVisibility(View.VISIBLE);
+                    }
+                    else{
+                        userPhone.setText("");
+                        userPhone.setVisibility(View.GONE);
+                    }
                 }
             }
 

@@ -75,7 +75,6 @@ public class HomeFragment extends Fragment {
     private String currentUserID;
     private View root;
 
-    private SwipeRefreshLayout swipe;
     Boolean LikeChecker = false;
     private PhotoViewAttacher pAttacher;
 
@@ -125,18 +124,6 @@ public class HomeFragment extends Fragment {
             }
         });
         DisplayAllUsersPosts();
-
-        swipe = root.findViewById(R.id.swiperefresh);
-        swipe.setOnRefreshListener(() -> {
-
-            new Handler().postDelayed(new Runnable() {
-                @Override public void run() {
-                    // Stop animation (This will be after 3 seconds)
-                    DisplayAllUsersPosts();
-                    swipe.setRefreshing(false);
-                }
-            }, 2500);
-        });
 
         return root;
     }
@@ -194,7 +181,7 @@ public class HomeFragment extends Fragment {
 
                             viewHolder.setLikeButtonStatus(PostKey);
 
-                            viewHolder.PostImage.setOnClickListener(new View.OnClickListener() {
+                           viewHolder.PostImage.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
                                     pAttacher = new PhotoViewAttacher(viewHolder.PostImage);

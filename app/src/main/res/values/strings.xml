@@ -116,7 +116,7 @@
     <string name="type">Type</string>
     <string name="ride_type">Bike / Motor</string>
     <string name="level">Level</string>
-    <string name="distance_traveled">Distance Traveled</string>
+    <string name="distance_traveled">Distance Travelled</string>
     <string name="create_profile">Create Profile</string>
     <string name="current_location">Current Location</string>
 

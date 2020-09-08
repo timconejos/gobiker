@@ -73,7 +73,7 @@ public class SettingsActivity extends AppCompatActivity {
         userProfName = findViewById(R.id.settings_profile_full_name);
         userPhone = findViewById(R.id.settings_phone);
         Gender = findViewById(R.id.settings_gender);
-        String[] items = new String[]{"Male", "Female"};
+        String[] items = new String[]{"Male", "Female","Rather Not Say"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items);
         Gender.setAdapter(adapter);
 
@@ -2191,8 +2191,10 @@ public class SettingsActivity extends AppCompatActivity {
                     userProfName.setText(myProfileName);
                     if (myGender.equals("Male"))
                         Gender.setSelection(0);
-                    else
+                    if (myGender.equals("Female"))
                         Gender.setSelection(1);
+                    if (myGender.equals("Rather Not Say"))
+                        Gender.setSelection(2);
 
                     province.setSelection(adapterP.getPosition(myProvince));
 

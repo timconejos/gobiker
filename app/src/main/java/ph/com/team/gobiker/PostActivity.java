@@ -104,6 +104,7 @@ public class PostActivity extends AppCompatActivity {
 
         SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm:ss");
         saveCurrentTime = currentTime.format(calForDate.getTime());
+        postRandomName = saveCurrentDate+saveCurrentTime;
         if(ImageUri==null){
             SavingPostInformationToDatabase();
         }
@@ -117,7 +118,7 @@ public class PostActivity extends AppCompatActivity {
     private void StoringImageToFirebaseStorage() {
 
 
-        postRandomName = saveCurrentDate+saveCurrentTime;
+
 
         final StorageReference filePath = PostsImageReference.child("post_images").child(ImageUri.getLastPathSegment() + postRandomName + ".jpg");
         /*filePath.putFile(ImageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {

@@ -2104,7 +2104,7 @@ public class SetupActivity extends AppCompatActivity {
         });
 
         Gender = findViewById(R.id.setup_gender);
-        String[] items = new String[]{"Male", "Female"};
+        String[] items = new String[]{"Male", "Female","Rather Not Say"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items);
         Gender.setAdapter(adapter);
 

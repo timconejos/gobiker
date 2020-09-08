@@ -20,7 +20,8 @@
         <activity android:name=".ClickCommentActivity"></activity>
         <activity android:name=".LikesActivity" />
         <activity android:name=".LogoutActivity" />
-        <activity android:name=".ChatActivity" />
+        <activity android:name=".ChatActivity"
+            android:parentActivityName=".PersonProfileActivity" />
         <activity android:name=".PersonProfileActivity" />
         <activity android:name=".FindFriendsActivity" />
         <activity
