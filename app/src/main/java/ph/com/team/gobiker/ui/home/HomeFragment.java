@@ -102,7 +102,7 @@ public class HomeFragment extends Fragment {
 
         UsersRef = FirebaseDatabase.getInstance().getReference().child("Users");
         PostsRef = FirebaseDatabase.getInstance().getReference().child("Posts");
-        //LikesRef = FirebaseDatabase.getInstance().getReference().child("Likes");
+        LikesRef = FirebaseDatabase.getInstance().getReference().child("Likes");
 
         postList = root.findViewById(R.id.all_users_post_list);
         postList.setHasFixedSize(true);
@@ -222,15 +222,15 @@ public class HomeFragment extends Fragment {
                                 @Override
                                 public void onClick(View view) {
                                     LikeChecker = true;
-                                    PostsRef.child(PostKey).child("Likes").addValueEventListener(new ValueEventListener() {
+                                   LikesRef.child(PostKey).child("Likes").addValueEventListener(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                             if (LikeChecker.equals(true)) {
                                                 if (dataSnapshot.hasChild(currentUserID)) {
-                                                    PostsRef.child(PostKey).child("Likes").child(currentUserID).child(currentUserID).removeValue();
+                                                    LikesRef.child(PostKey).child("Likes").child(currentUserID).child(currentUserID).removeValue();
                                                     LikeChecker = false;
                                                 } else {
-                                                    PostsRef.child(PostKey).child("Likes").child(currentUserID).child(currentUserID).setValue(true);
+                                                    LikesRef.child(PostKey).child("Likes").child(currentUserID).child(currentUserID).setValue(true);
                                                     LikeChecker = false;
                                                 }
                                             }
@@ -291,7 +291,7 @@ public class HomeFragment extends Fragment {
 //            CommentPostButton = mView.findViewById(R.id.comment_button);
             DisplayNoOfLikes = mView.findViewById(R.id.display_no_of_likes);
 
-            LikesRef = FirebaseDatabase.getInstance().getReference().child("Posts");
+            LikesRef = FirebaseDatabase.getInstance().getReference().child("Likes");
             currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         }
 

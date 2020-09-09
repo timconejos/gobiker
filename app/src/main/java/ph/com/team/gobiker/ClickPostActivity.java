@@ -23,19 +23,22 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
 import com.squareup.picasso.Picasso;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+import ph.com.team.gobiker.user.User;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
 public class ClickPostActivity extends AppCompatActivity {
 
     private ImageView PostImage;
-    private TextView PostDescription;
+    private TextView PostDescription, user, datetime_post;
     private Button DeletePostButton, EditPostButton;
-    private DatabaseReference ClickPostRef;
+    private DatabaseReference ClickPostRef, UsersRef;
     private String PostKey, currentUserID, databaseUserID, description, image;
+    private CircleImageView click_post_profile_image;
     private FirebaseAuth mAuth;
-    private Drawable img;
     private PhotoViewAttacher pAttacher;
 
     @Override
@@ -48,11 +51,15 @@ public class ClickPostActivity extends AppCompatActivity {
 
         PostKey = getIntent().getExtras().get("PostKey").toString();
         ClickPostRef = FirebaseDatabase.getInstance().getReference().child("Posts").child(PostKey);
+        UsersRef = FirebaseDatabase.getInstance().getReference().child("Users");
 
         PostImage = findViewById(R.id.click_post_image);
         PostDescription = findViewById(R.id.click_post_description);
         DeletePostButton = findViewById(R.id.delete_post_button);
         EditPostButton = findViewById(R.id.edit_post_button);
+        click_post_profile_image = findViewById(R.id.click_post_profile_image);
+        user = findViewById(R.id.click_post_user_name);
+        datetime_post = findViewById(R.id.click_post_time);
 
         DeletePostButton.setVisibility(View.INVISIBLE);
         EditPostButton.setVisibility(View.INVISIBLE);
@@ -73,16 +80,46 @@ public class ClickPostActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     description = dataSnapshot.child("description").getValue().toString();
-                    image = dataSnapshot.child("postimage").getValue().toString();
+                    if (dataSnapshot.hasChild("postimage")) {
+                        image = dataSnapshot.child("postimage").getValue().toString();
+                        Picasso.with(ClickPostActivity.this).load(image).into(PostImage);
+                        PostImage.setVisibility(View.VISIBLE);
+                    }
+                    else{
+                        PostImage.setVisibility(View.GONE);
+                    }
                     databaseUserID = dataSnapshot.child("uid").getValue().toString();
 
+                    datetime_post.setText(dataSnapshot.child("date").getValue().toString()+" "+dataSnapshot.child("time").getValue().toString());
+
                     PostDescription.setText(description);
-                    Picasso.with(ClickPostActivity.this).load(image).into(PostImage);
 
                     if (currentUserID.equals(databaseUserID)) {
                         DeletePostButton.setVisibility(View.VISIBLE);
                         EditPostButton.setVisibility(View.VISIBLE);
                     }
+
+                    UsersRef.child(databaseUserID).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if (snapshot.exists()){
+                                user.setText(snapshot.child("fullname").getValue().toString());
+                                if (snapshot.hasChild("profileimage")) {
+                                    image = snapshot.child("profileimage").getValue().toString();
+                                    Picasso.with(ClickPostActivity.this).load(image).into(click_post_profile_image);
+                                    click_post_profile_image.setVisibility(View.VISIBLE);
+                                }
+                                else{
+                                    click_post_profile_image.setVisibility(View.GONE);
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
                 }
             }
 
