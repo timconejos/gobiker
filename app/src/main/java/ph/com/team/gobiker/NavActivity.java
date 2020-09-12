@@ -1,7 +1,9 @@
 package ph.com.team.gobiker;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.PowerManager;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -32,6 +34,7 @@ public class NavActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private DatabaseReference UsersRef;
     public static GeoApiContext context;
+    protected PowerManager.WakeLock mWakeLock;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +54,9 @@ public class NavActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         //NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
+        final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        this.mWakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "MyTag:");
+        this.mWakeLock.acquire();
     }
 
     @Override
@@ -130,5 +136,11 @@ public class NavActivity extends AppCompatActivity {
 
         UsersRef.child(mAuth.getCurrentUser().getUid()).child("userState")
                 .updateChildren(currentStateMap);
+    }
+
+    @Override
+    protected void onDestroy() {
+        this.mWakeLock.release();
+        super.onDestroy();
     }
 }

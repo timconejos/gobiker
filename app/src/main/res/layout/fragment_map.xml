@@ -67,9 +67,6 @@
                 style="@style/Headings.H2"
                 android:textColor="@color/black"/>
         </LinearLayout>
-
-
-
         <LinearLayout
             android:id="@+id/speed_lo"
             android:layout_width="wrap_content"
@@ -119,10 +116,23 @@
                 style="@style/Headings.H2"
                 android:textColor="@color/black"/>
         </LinearLayout>
-
-
-
     </RelativeLayout>
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/info_distanceRemain"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/nav_info"
+        android:layout_gravity="center"
+        android:layout_centerInParent="true"
+        android:elevation="8dp"
+        app:rippleColor="@color/colorPrimary"
+        android:text="Distance: "
+        android:backgroundTint="@color/white"
+        android:textColor="@color/colorPrimary"
+        map:iconTint="@color/white"
+        android:textSize="10sp"
+        android:visibility="gone"/>
 
     <androidx.fragment.app.FragmentContainerView
         android:layout_below="@+id/nav_info"
@@ -130,6 +140,7 @@
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/startFree"

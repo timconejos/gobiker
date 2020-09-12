@@ -1,5 +1,6 @@
 package ph.com.team.gobiker.ui.login;
 
+import android.Manifest;
 import android.app.Activity;
 
 import androidx.annotation.NonNull;
@@ -52,9 +53,10 @@ import ph.com.team.gobiker.SetupActivity;
 import ph.com.team.gobiker.login;
 import ph.com.team.gobiker.ui.login.LoginViewModel;
 import ph.com.team.gobiker.ui.login.LoginViewModelFactory;
+import ph.com.team.gobiker.ui.map.PermissionUtils;
 
 public class MainLoginActivity extends AppCompatActivity {
-
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private LoginViewModel loginViewModel;
     private Button noAccBtn, forgotPassBtn, loginButton;
     private EditText UserEmail, UserPassword;
@@ -102,7 +104,7 @@ public class MainLoginActivity extends AppCompatActivity {
             }
         });
 
-
+        askPermission();
         /*loginViewModel.getLoginFormState().observe(this, new Observer<LoginFormState>() {
             @Override
             public void onChanged(@Nullable LoginFormState loginFormState) {
@@ -179,6 +181,11 @@ public class MainLoginActivity extends AppCompatActivity {
                         passwordEditText.getText().toString());
             }
         });*/
+    }
+
+    private void askPermission() {
+        PermissionUtils.requestPermission(this, LOCATION_PERMISSION_REQUEST_CODE,
+                Manifest.permission.ACCESS_FINE_LOCATION, true);
     }
 
     /*private void updateUiWithUser(LoggedInUserView model) {

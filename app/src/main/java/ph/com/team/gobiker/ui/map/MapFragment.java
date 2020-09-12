@@ -42,7 +42,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.android.libraries.places.api.model.Place;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -50,7 +49,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.maps.DirectionsApi;
-import com.google.maps.DirectionsApiRequest;
 import com.google.maps.errors.ApiException;
 import com.google.maps.errors.NotFoundException;
 import com.google.maps.model.DirectionsLeg;
@@ -76,11 +74,13 @@ import ph.com.team.gobiker.user.User;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener, GoogleMap.OnMyLocationClickListener, ActivityCompat.OnRequestPermissionsResultCallback, GoogleMap.OnPolylineClickListener, GoogleMap.OnPolygonClickListener, LocationListener {
 
+    final static Handler handler = new Handler();
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private static LatLng navTo;
     private static LatLng navFrom;
     private static Location currentLocation;
     private static double distanceTotal;
+    private static double distanceRemain;
     private static DecimalFormat df = new DecimalFormat("0.00");
     private static boolean isDirectionalTravel = false;
     private static boolean isFreeTravel = false;
@@ -90,12 +90,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     private static Double lon1 = null;
     private static Double lat2 = null;
     private static Double lon2 = null;
+    private static double pinDirectionDistance;
     private MapViewModel mViewModel;
     private GoogleMap mMap;
     private boolean mPermissionDenied = false;
     private LocationManager locationManager;
     private ExtendedFloatingActionButton startNav;
     private ExtendedFloatingActionButton startFreeRide;
+    private ExtendedFloatingActionButton tipDistanceRemain;
     private TextView infoSpeed;
     private TextView infoCalories;
     private TextView infoTime;
@@ -115,16 +117,19 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                              @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_map, container, false);
         locationManager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
+        tipDistanceRemain = v.findViewById(R.id.info_distanceRemain);
         startNav = v.findViewById(R.id.startNav);
         startNav.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!isDirectionalTravel)
+                if (!isDirectionalTravel) {
                     startActivityForResult(new Intent(getContext(), NavigationStartActivity.class).putExtra("currentLocation", currentLocation), 1);
-                else{
+                }
+                else {
                     startNav.setText("Add Direction");
                     isDirectionalTravel = false;
                     startFreeRide.setVisibility(View.VISIBLE);
+                    tipDistanceRemain.setVisibility(View.GONE);
                     mMap.clear();
                 }
             }
@@ -140,8 +145,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                     speed = 0;
                     startNav.setVisibility(View.GONE);
                     startFreeRide.setText("Stop");
-                }
-                else{
+                } else {
                     startNav.setVisibility(View.VISIBLE);
                     startFreeRide.setText("Start");
                 }
@@ -154,6 +158,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         infoTime = v.findViewById(R.id.nav_info_time);
 
         distanceTotal = 0;
+        distanceRemain = 0;
         setupUser();
         setupMapIfNeeded();
         setUpLocationManager();
@@ -300,12 +305,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     }
 
     private void drawDirection(DirectionsResult result) {
+        pinDirectionDistance = 0;
         List<LatLng> path = new ArrayList();
         if (result.routes != null && result.routes.length > 0) {
             DirectionsRoute route = result.routes[0];
-
             if (route.legs != null) {
                 for (int i = 0; i < route.legs.length; i++) {
+                    pinDirectionDistance = route.legs[i].distance.inMeters;
                     DirectionsLeg leg = route.legs[i];
                     if (leg.steps != null) {
                         for (int j = 0; j < leg.steps.length; j++) {
@@ -341,6 +347,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
             PolylineOptions opts = new PolylineOptions().addAll(path).color(Color.GREEN).width(5);
             mMap.addPolyline(opts);
         }
+
     }
 
     @Override
@@ -357,11 +364,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     public void onLocationChanged(Location location) {
         if (currentLocation == null) currentLocation = location;
         speed = 0;
-        if (isFreeTravel) {
-            moveCamToLocation();
-            /*
-            needs fixing
-             */
+        if(isFreeTravel || isDirectionalTravel){
             if (toggleChecker == 0) {
                 lat1 = location.getLatitude();
                 lon1 = location.getLongitude();
@@ -381,6 +384,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
             } else {
                 infoDistance.setText(df.format(distanceTotal) + " m");
             }
+        }
+        if (isFreeTravel) {
+            moveCamToLocation();
+            /*
+            needs fixing
+             */
+
 
 
             /**
@@ -397,29 +407,30 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                 infoSpeed.setText(df.format(speed) + " m/s ");
             }
             Log.d("MapLocationManager", "speed: ");
-        } else if(isDirectionalTravel){
+        } else if (isDirectionalTravel) {
+            Log.d("map", "still on directional");
             moveCamToLocation();
             Log.d("startNav", "isbehind? :" + isBehindStartPoint);
-            if(isBehindStartPoint){
-                distanceTotal = MapService.getDistanceFromStartLocation(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()), navFrom) * -1;
-                if(distanceTotal >= -60){
+
+            if (isBehindStartPoint) {
+                distanceRemain = MapService.getDistanceFromStartLocation(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()), navFrom) * -1;
+                if (distanceRemain >= -60) {
                     isBehindStartPoint = false;
                     Toast.makeText(getContext(), "You made it to the start. You're on your way!", Toast.LENGTH_SHORT).show();
                 }
-                if (distanceTotal / 1000 <= -1) {
-                    infoDistance.setText(df.format(distanceTotal / 1000) + " km");
+                if (distanceRemain / 1000 <= -1) {
+                    tipDistanceRemain.setText(df.format(distanceRemain / 1000) + " km");
                 } else {
-                    infoDistance.setText(df.format(distanceTotal) + " m");
+                    tipDistanceRemain.setText(df.format(distanceRemain) + " m");
                 }
-            }
-            else{
-                distanceTotal = MapService.getDistanceFromStartLocation(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()), navTo);
-                if (distanceTotal / 1000 >= 1) {
-                    infoDistance.setText(df.format(distanceTotal / 1000) + " km");
+            } else {
+                distanceRemain = MapService.getDistanceFromStartLocation(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()), navTo);
+                if (distanceRemain / 1000 >= 1) {
+                    tipDistanceRemain.setText(df.format(distanceRemain / 1000) + " km");
                 } else {
-                    infoDistance.setText(df.format(distanceTotal) + " m");
+                    tipDistanceRemain.setText(df.format(distanceRemain) + " m");
                 }
-                if(distanceTotal <= 10){
+                if (distanceRemain <= 10) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                     builder.setMessage("You have reached your destination. Details: ").setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         @Override
@@ -474,6 +485,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                 navTo = (LatLng) data.getExtras().get("navTo");
                 Log.d("marker ", "navFrom: " + navFrom);
                 Log.d("marker ", "navTo: " + navTo);
+                tipDistanceRemain.setVisibility(View.VISIBLE);
                 startNavRide();
             }
 
@@ -490,29 +502,32 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     private void setUpLocationManager() {
         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, this);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 500, 0, this);
             Log.d("MapLocationManager", "location Manager started");
         }
     }
 
     private void moveCamToLocation() {
-        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
+        if (getActivity() != null) {
+            if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
+                    == PackageManager.PERMISSION_GRANTED) {
+            } else {
+                // Permission to access the location is missing. Show rationale and request permission
+                PermissionUtils.requestPermission((AppCompatActivity) getContext(), LOCATION_PERMISSION_REQUEST_CODE,
+                        Manifest.permission.ACCESS_FINE_LOCATION, true);
+                return;
+            }
             if (mMap != null) {
                 currentLocation = locationManager.getLastKnownLocation(locationManager.getBestProvider(new Criteria(), false));
                 if (currentLocation != null) {
                     mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()), 17));
                 }
             }
-        } else {
-            // Permission to access the location is missing. Show rationale and request permission
-            PermissionUtils.requestPermission((AppCompatActivity) getContext(), LOCATION_PERMISSION_REQUEST_CODE,
-                    Manifest.permission.ACCESS_FINE_LOCATION, true);
         }
     }
 
     private void runTimer() {
-        final Handler handler = new Handler();
+
         handler.post(new Runnable() {
             @Override
             public void run() {
@@ -540,8 +555,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     }
 
 
-
-    private void startNavRide(){
+    private void startNavRide() {
         //hide other button
         detectLocationToStartNav();
         DirectionsResult res;
@@ -552,20 +566,18 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                     .avoid(DirectionsApi.RouteRestriction.TOLLS, DirectionsApi.RouteRestriction.FERRIES)
                     .await();
             drawDirection(res);
-            mMap.addMarker(new MarkerOptions().position(navFrom).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)).title("Start"));
+            mMap.addMarker(new MarkerOptions().position(navFrom).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)).title(pinDirectionDistance + " m")).showInfoWindow();
             mMap.addMarker(new MarkerOptions().position(navTo).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)).title("END"));
             isDirectionalTravel = true;
-        }
-        catch(NotFoundException e){
+        } catch (NotFoundException e) {
             Toast.makeText(getContext(), "Route not found", Toast.LENGTH_SHORT).show();
             Log.d("marker", e.getMessage());
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             Toast.makeText(getContext(), "Error on setting direction", Toast.LENGTH_SHORT).show();
             Log.d("marker", e.getMessage());
         }
 
-        if(isDirectionalTravel){
+        if (isDirectionalTravel) {
             startNav.setText("Stop Nav");
             startFreeRide.setVisibility(View.GONE);
         }
@@ -575,7 +587,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
 
     private void detectLocationToStartNav() {
         double d = MapService.distanceBetweenTwoPoint(navFrom.latitude, navFrom.longitude, currentLocation.getLatitude(), currentLocation.getLongitude());
-        if(d > 10){
+        if (d > 10) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
             builder.setMessage("You are currently " + d + " meters away from starting point. Go near to the start point to start the stats and navigation.").setPositiveButton("OK", new DialogInterface.OnClickListener() {
                 @Override
@@ -587,11 +599,20 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
             Button positive = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
             positive.setTextColor(Color.BLACK);
             isBehindStartPoint = true;
-        }
-        else{
+        } else {
             isBehindStartPoint = false;
         }
         Log.d("startNav", "isbehind init? :" + isBehindStartPoint);
         Log.d("marker", "distance: " + d);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
     }
 }
