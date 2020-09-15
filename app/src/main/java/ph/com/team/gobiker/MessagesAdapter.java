@@ -18,6 +18,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -84,22 +87,31 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
             holder.ReceiverMessageText.setVisibility(View.INVISIBLE);
             holder.receiverProfileImage.setVisibility(View.INVISIBLE);
 
-            if (fromUserID.equals(messageSenderID)){
-                holder.SenderMessageText.setBackgroundResource(R.drawable.sender_message_text_background);
-                holder.SenderMessageText.setTextColor(Color.rgb(74, 74, 74));
-                holder.SenderMessageText.setGravity(Gravity.LEFT);
-                holder.SenderMessageText.setText(messages.getMessage()+"\n"+messages.getDate()+" "+messages.getTime());
-            }
-            else{
-                holder.SenderMessageText.setVisibility(View.INVISIBLE);
-                holder.ReceiverMessageText.setVisibility(View.VISIBLE);
-                holder.receiverProfileImage.setVisibility(View.VISIBLE);
+            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+            try{
+                Date date3 = sdf.parse(messages.getTime());
+                SimpleDateFormat sdf2 = new SimpleDateFormat("hh:mm aa");
+                if (fromUserID.equals(messageSenderID)){
+                    holder.SenderMessageText.setBackgroundResource(R.drawable.sender_message_text_background);
+                    holder.SenderMessageText.setTextColor(Color.rgb(74, 74, 74));
+                    holder.SenderMessageText.setGravity(Gravity.LEFT);
+                    holder.SenderMessageText.setText(messages.getMessage()+"\n"+messages.getDate()+" "+sdf2.format(date3));
+                }
+                else{
+                    holder.SenderMessageText.setVisibility(View.INVISIBLE);
+                    holder.ReceiverMessageText.setVisibility(View.VISIBLE);
+                    holder.receiverProfileImage.setVisibility(View.VISIBLE);
 
-                holder.ReceiverMessageText.setBackgroundResource(R.drawable.receiver_message_text_background);
-                holder.ReceiverMessageText.setTextColor(Color.WHITE);
-                holder.ReceiverMessageText.setGravity(Gravity.LEFT);
-                holder.ReceiverMessageText.setText(messages.getMessage()+"\n"+messages.getDate()+" "+messages.getTime());
+                    holder.ReceiverMessageText.setBackgroundResource(R.drawable.receiver_message_text_background);
+                    holder.ReceiverMessageText.setTextColor(Color.WHITE);
+                    holder.ReceiverMessageText.setGravity(Gravity.LEFT);
+                    holder.ReceiverMessageText.setText(messages.getMessage()+"\n"+messages.getDate()+" "+sdf2.format(date3));
+                }
+            }catch(ParseException e){
+                e.printStackTrace();
             }
+
+
         }
     }
 

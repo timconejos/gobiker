@@ -43,6 +43,10 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 import ph.com.team.gobiker.ClickPostActivity;
 import ph.com.team.gobiker.CommentsActivity;
@@ -74,6 +78,7 @@ public class HomeFragment extends Fragment {
     private EditText SearchInputText;
     private String currentUserID;
     private View root;
+    private SwipeRefreshLayout swipe;
 
     Boolean LikeChecker = false;
     private PhotoViewAttacher pAttacher;
@@ -124,6 +129,18 @@ public class HomeFragment extends Fragment {
             }
         });
         DisplayAllUsersPosts();
+
+        swipe = root.findViewById(R.id.swiperefresh);
+        swipe.setOnRefreshListener(() -> {
+
+            new Handler().postDelayed(new Runnable() {
+                @Override public void run() {
+                    // Stop animation (This will be after 3 seconds)
+                    DisplayAllUsersPosts();
+                    swipe.setRefreshing(false);
+                }
+            }, 2500);
+        });
 
         return root;
     }
@@ -362,7 +379,14 @@ public class HomeFragment extends Fragment {
         }
         public void setTime(String time, String date) {
             TextView PostTime = (TextView) mView.findViewById(R.id.post_time);
-            PostTime.setText(date+" "+time);
+            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+            try{
+                Date date3 = sdf.parse(time);
+                SimpleDateFormat sdf2 = new SimpleDateFormat("hh:mm aa");
+                PostTime.setText(date+" "+sdf2.format(date3));
+            }catch(ParseException e){
+                e.printStackTrace();
+            }
         }
 //        public void setDate(String date) {
 //            TextView PostDate = (TextView) mView.findViewById(R.id.post_date);

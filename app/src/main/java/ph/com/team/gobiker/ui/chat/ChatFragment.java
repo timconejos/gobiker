@@ -32,6 +32,10 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 import ph.com.team.gobiker.ChatActivity;
 import ph.com.team.gobiker.ClickPostActivity;
@@ -114,7 +118,15 @@ public class ChatFragment extends Fragment {
                         for(DataSnapshot ds : snapshot.getChildren()) {
                             for(DataSnapshot dSnapshot : ds.getChildren()) {
                                 msg = ds.child("message").getValue().toString();
-                                dt = ds.child("date").getValue().toString()+" "+ds.child("time").getValue().toString();
+                                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+                                try{
+                                    Date date3 = sdf.parse(ds.child("time").getValue().toString());
+                                    SimpleDateFormat sdf2 = new SimpleDateFormat("hh:mm aa");
+                                    dt = ds.child("date").getValue().toString()+" "+sdf2.format(date3);
+                                }catch(ParseException e){
+                                    e.printStackTrace();
+                                }
+
                             }
                         }
                         findChatViewHolder.setMessage(msg);

@@ -29,9 +29,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -200,11 +202,20 @@ public class ChatActivity extends AppCompatActivity {
                         final String lastDate = dataSnapshot.child("userState").child("date").getValue().toString();
                         final String lastTime = dataSnapshot.child("userState").child("time").getValue().toString();
 
-                        if (type.equals("online")) {
-                            userLastSeen.setText("online");
-                        } else {
-                            userLastSeen.setText("Last seen: " + lastDate + " " + lastTime);
+                        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+                        try{
+                            Date date3 = sdf.parse(lastTime);
+                            SimpleDateFormat sdf2 = new SimpleDateFormat("hh:mm aa");
+                            if (type.equals("online")) {
+                                userLastSeen.setText("online");
+                            } else {
+                                userLastSeen.setText("Last seen: " + lastDate + " " + sdf2.format(date3));
+                            }
+                        }catch(ParseException e){
+                            e.printStackTrace();
                         }
+
+
                     }
                     else{
                         userLastSeen.setText("");
@@ -225,6 +236,12 @@ public class ChatActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 
     private void InitializeFields() {

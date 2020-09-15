@@ -36,7 +36,7 @@ public class LikesActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         UsersRef = FirebaseDatabase.getInstance().getReference().child("Users");
-        postRef = FirebaseDatabase.getInstance().getReference().child("Posts").child(Post_Key).child("Likes");
+        postRef = FirebaseDatabase.getInstance().getReference().child("Likes").child(Post_Key).child("Likes");
 
         LikesList = findViewById(R.id.likes_list);
         LikesList.setHasFixedSize(true);
