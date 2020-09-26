@@ -27,42 +27,54 @@
                 android:layout_marginLeft="4dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginRight="4dp"/>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="297dp"
+                android:layout_height="wrap_content">
+
                 <TextView
+                    android:id="@+id/post_user_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="user_name"
-                    android:id="@+id/post_user_name"
                     android:layout_marginTop="8dp"
+                    android:text="user_name"
                     android:textAlignment="textStart"
+                    android:textColor="@android:color/black"
                     android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:textColor="@android:color/black"/>
+                    android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/post_options"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:text="&#8942;"
+                    android:textColor="@android:color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/post_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/post_user_name"
                     android:text="Date"
                     android:textColor="@color/subtitleText"
-                    android:textSize="12sp"
-                    android:id="@+id/post_time"/>
-<!--                <LinearLayout-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:orientation="horizontal">-->
+                    android:textSize="12sp" />
+                <!--                <LinearLayout-->
+                <!--                    android:layout_width="match_parent"-->
+                <!--                    android:layout_height="wrap_content"-->
+                <!--                    android:orientation="horizontal">-->
 
-<!--                    <TextView-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:text="Time"-->
-<!--                        android:textColor="@android:color/black"-->
-<!--                        android:textSize="13sp"-->
-<!--                        android:id="@+id/post_time"/>-->
-<!--                </LinearLayout>-->
-            </LinearLayout>
+                <!--                    <TextView-->
+                <!--                        android:layout_width="wrap_content"-->
+                <!--                        android:layout_height="wrap_content"-->
+                <!--                        android:text="Time"-->
+                <!--                        android:textColor="@android:color/black"-->
+                <!--                        android:textSize="13sp"-->
+                <!--                        android:id="@+id/post_time"/>-->
+                <!--                </LinearLayout>-->
+            </RelativeLayout>
         </LinearLayout>
 
         <TextView

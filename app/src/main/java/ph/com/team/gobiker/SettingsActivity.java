@@ -8,6 +8,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
@@ -2074,7 +2075,7 @@ public class SettingsActivity extends AppCompatActivity {
         ArrayAdapter<String> adapterH = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, itemsH);
         HUnit.setAdapter(adapterH);
 
-        wt.setVisibility(View.GONE);
+        /*wt.setVisibility(View.GONE);
         ht.setVisibility(View.GONE);
         at.setVisibility(View.GONE);
         bn.setVisibility(View.GONE);
@@ -2086,12 +2087,12 @@ public class SettingsActivity extends AppCompatActivity {
         active_ride.setVisibility(View.GONE);
         aclabel.setVisibility(View.GONE);
         divider.setVisibility(View.GONE);
-        bioinfo.setVisibility(View.GONE);
+        bioinfo.setVisibility(View.GONE);*/
 
         checkBike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (checkBike.isChecked()){
+                /*if (checkBike.isChecked()){
                     wt.setVisibility(View.VISIBLE);
                     ht.setVisibility(View.VISIBLE);
                     at.setVisibility(View.VISIBLE);
@@ -2116,7 +2117,7 @@ public class SettingsActivity extends AppCompatActivity {
                     HUnit.setVisibility(View.GONE);
                     divider.setVisibility(View.GONE);
                     bioinfo.setVisibility(View.GONE);
-                }
+                }*/
 
                 if (checkBike.isChecked() && checkMotor.isChecked()){
                     active_ride.setVisibility(View.VISIBLE);
@@ -2198,19 +2199,88 @@ public class SettingsActivity extends AppCompatActivity {
 
                     province.setSelection(adapterP.getPosition(myProvince));
 
-
-
-                    if (myProvince.equals("Cebu")){
-                        setCity(itemsC_Cebu,myCity);
-                    }
-
-                    if (myProvince.equals("Ilocos Norte")){
-                        setCity(itemsC_Ilocos_Norte,myCity);
-                    }
-
-                    if (myProvince.equals("Metro Manila")){
-                        setCity(itemsC_Metro_Manila,myCity);
-                    }
+                    if (myProvince.equals("Abra")) setCity(itemsC_Abra,myCity);
+                    if (myProvince.equals("Agusan del Norte")) setCity(itemsC_Agusan_del_Norte,myCity);
+                    if (myProvince.equals("Agusan del Sur")) setCity(itemsC_Agusan_del_Sur,myCity);
+                    if (myProvince.equals("Aklan")) setCity(itemsC_Aklan,myCity);
+                    if (myProvince.equals("Albay")) setCity(itemsC_Albay,myCity);
+                    if (myProvince.equals("Antique")) setCity(itemsC_Antique,myCity);
+                    if (myProvince.equals("Apayao")) setCity(itemsC_Apayao,myCity);
+                    if (myProvince.equals("Aurora")) setCity(itemsC_Aurora,myCity);
+                    if (myProvince.equals("Basilan")) setCity(itemsC_Basilan,myCity);
+                    if (myProvince.equals("Bataan")) setCity(itemsC_Bataan,myCity);
+                    if (myProvince.equals("Batanes")) setCity(itemsC_Batanes,myCity);
+                    if (myProvince.equals("Batangas")) setCity(itemsC_Batangas,myCity);
+                    if (myProvince.equals("Benguet")) setCity(itemsC_Benguet,myCity);
+                    if (myProvince.equals("Biliran")) setCity(itemsC_Biliran,myCity);
+                    if (myProvince.equals("Bohol")) setCity(itemsC_Bohol,myCity);
+                    if (myProvince.equals("Bukidnon")) setCity(itemsC_Bukidnon,myCity);
+                    if (myProvince.equals("Bulacan")) setCity(itemsC_Bulacan,myCity);
+                    if (myProvince.equals("Cagayan")) setCity(itemsC_Cagayan,myCity);
+                    if (myProvince.equals("Camarines Norte")) setCity(itemsC_Camarines_Norte,myCity);
+                    if (myProvince.equals("Camarines Sur")) setCity(itemsC_Camarines_Sur,myCity);
+                    if (myProvince.equals("Camiguin")) setCity(itemsC_Camiguin,myCity);
+                    if (myProvince.equals("Capiz")) setCity(itemsC_Capiz,myCity);
+                    if (myProvince.equals("Catanduanes")) setCity(itemsC_Catanduanes,myCity);
+                    if (myProvince.equals("Cavite")) setCity(itemsC_Cavite,myCity);
+                    if (myProvince.equals("Cebu")) setCity(itemsC_Cebu,myCity);
+                    if (myProvince.equals("Cotabato")) setCity(itemsC_Cotabato,myCity);
+                    if (myProvince.equals("Davao de Oro")) setCity(itemsC_Davao_de_Oro,myCity);
+                    if (myProvince.equals("Davao del Norte")) setCity(itemsC_Davao_del_Norte,myCity);
+                    if (myProvince.equals("Davao del Sur")) setCity(itemsC_Davao_del_Sur,myCity);
+                    if (myProvince.equals("Davao Occidental")) setCity(itemsC_Davao_Occidental,myCity);
+                    if (myProvince.equals("Davao Oriental")) setCity(itemsC_Davao_Oriental,myCity);
+                    if (myProvince.equals("Dinagat Islands")) setCity(itemsC_Dinagat_Islands,myCity);
+                    if (myProvince.equals("Eastern Samar")) setCity(itemsC_Eastern_Samar,myCity);
+                    if (myProvince.equals("Guimaras")) setCity(itemsC_Guimaras,myCity);
+                    if (myProvince.equals("Ifugao")) setCity(itemsC_Ifugao,myCity);
+                    if (myProvince.equals("Ilocos Norte")) setCity(itemsC_Ilocos_Norte,myCity);
+                    if (myProvince.equals("Ilocos Sur")) setCity(itemsC_Ilocos_Sur,myCity);
+                    if (myProvince.equals("Iloilo")) setCity(itemsC_Iloilo,myCity);
+                    if (myProvince.equals("Isabela")) setCity(itemsC_Isabela,myCity);
+                    if (myProvince.equals("Kalinga")) setCity(itemsC_Kalinga,myCity);
+                    if (myProvince.equals("La Union")) setCity(itemsC_La_Union,myCity);
+                    if (myProvince.equals("Laguna")) setCity(itemsC_Laguna,myCity);
+                    if (myProvince.equals("Lanao del Norte")) setCity(itemsC_Lanao_del_Norte,myCity);
+                    if (myProvince.equals("Lanao del Sur")) setCity(itemsC_Lanao_del_Sur,myCity);
+                    if (myProvince.equals("Leyte")) setCity(itemsC_Leyte,myCity);
+                    if (myProvince.equals("Maguindanao")) setCity(itemsC_Maguindanao,myCity);
+                    if (myProvince.equals("Marinduque")) setCity(itemsC_Marinduque,myCity);
+                    if (myProvince.equals("Masbate")) setCity(itemsC_Masbate,myCity);
+                    if (myProvince.equals("Metro Manila")) setCity(itemsC_Metro_Manila,myCity);
+                    if (myProvince.equals("Misamis Occidental")) setCity(itemsC_Misamis_Occidental,myCity);
+                    if (myProvince.equals("Misamis Oriental")) setCity(itemsC_Misamis_Oriental,myCity);
+                    if (myProvince.equals("Mountain Province")) setCity(itemsC_Mountain_Province,myCity);
+                    if (myProvince.equals("Negros Occidental")) setCity(itemsC_Negros_Occidental,myCity);
+                    if (myProvince.equals("Negros Oriental")) setCity(itemsC_Negros_Oriental,myCity);
+                    if (myProvince.equals("Northern Samar")) setCity(itemsC_Northern_Samar,myCity);
+                    if (myProvince.equals("Nueva Ecija")) setCity(itemsC_Nueva_Ecija,myCity);
+                    if (myProvince.equals("Nueva Vizcaya")) setCity(itemsC_Nueva_Vizcaya,myCity);
+                    if (myProvince.equals("Occidental Mindoro")) setCity(itemsC_Occidental_Mindoro,myCity);
+                    if (myProvince.equals("Oriental Mindoro")) setCity(itemsC_Oriental_Mindoro,myCity);
+                    if (myProvince.equals("Palawan")) setCity(itemsC_Palawan,myCity);
+                    if (myProvince.equals("Pampanga")) setCity(itemsC_Pampanga,myCity);
+                    if (myProvince.equals("Pangasinan")) setCity(itemsC_Pangasinan,myCity);
+                    if (myProvince.equals("Quezon")) setCity(itemsC_Quezon,myCity);
+                    if (myProvince.equals("Quirino")) setCity(itemsC_Quirino,myCity);
+                    if (myProvince.equals("Rizal")) setCity(itemsC_Rizal,myCity);
+                    if (myProvince.equals("Romblon")) setCity(itemsC_Romblon,myCity);
+                    if (myProvince.equals("Samar")) setCity(itemsC_Samar,myCity);
+                    if (myProvince.equals("Sarangani")) setCity(itemsC_Sarangani,myCity);
+                    if (myProvince.equals("Siquijor")) setCity(itemsC_Siquijor,myCity);
+                    if (myProvince.equals("Sorsogon")) setCity(itemsC_Sorsogon,myCity);
+                    if (myProvince.equals("South Cotabato")) setCity(itemsC_South_Cotabato,myCity);
+                    if (myProvince.equals("Southern Leyte")) setCity(itemsC_Southern_Leyte,myCity);
+                    if (myProvince.equals("Sultan Kudarat")) setCity(itemsC_Sultan_Kudarat,myCity);
+                    if (myProvince.equals("Sulu")) setCity(itemsC_Sulu,myCity);
+                    if (myProvince.equals("Surigao del Norte")) setCity(itemsC_Surigao_del_Norte,myCity);
+                    if (myProvince.equals("Surigao del Sur")) setCity(itemsC_Surigao_del_Sur,myCity);
+                    if (myProvince.equals("Tarlac")) setCity(itemsC_Tarlac,myCity);
+                    if (myProvince.equals("Tawi-Tawi")) setCity(itemsC_Tawi_Tawi,myCity);
+                    if (myProvince.equals("Zambales")) setCity(itemsC_Zambales,myCity);
+                    if (myProvince.equals("Zamboanga del Norte")) setCity(itemsC_Zamboanga_del_Norte,myCity);
+                    if (myProvince.equals("Zamboanga del Sur")) setCity(itemsC_Zamboanga_del_Sur,myCity);
+                    if (myProvince.equals("Zamboanga Sibugay")) setCity(itemsC_Zamboanga_Sibugay,myCity);
 
                     userPhone.setText(myPhone);
 
@@ -2219,7 +2289,7 @@ public class SettingsActivity extends AppCompatActivity {
                     if (myMotor.equals("true"))
                         checkMotor.setChecked(true);
 
-                    if (myBike.equals("true")){
+                    //if (myBike.equals("true")){
                         wt.setVisibility(View.VISIBLE);
                         ht.setVisibility(View.VISIBLE);
                         at.setVisibility(View.VISIBLE);
@@ -2270,7 +2340,7 @@ public class SettingsActivity extends AppCompatActivity {
                         weight.setText(myWeight);
                         height.setText(myHeight);
                         age.setText(myAge);
-                    }
+                    //}
 
                     if (myBike.equals("true") && myMotor.equals("true")){
                         aclabel.setVisibility(View.VISIBLE);
@@ -2435,7 +2505,7 @@ public class SettingsActivity extends AppCompatActivity {
         }
         else{
             String hei="0", wei="0", yo="0", hUnit="0", wUnit="0", sh="0", sw="0";
-            if (checkb){
+            //if (checkb){
                 sh = height.getText().toString();
                 sw = weight.getText().toString();
                 yo = age.getText().toString();
@@ -2469,7 +2539,7 @@ public class SettingsActivity extends AppCompatActivity {
                     sw = "0";
                     wUnit = "0";
                 }
-            }
+           //}
 
             String acRide = "Bicycle";
 
@@ -2537,6 +2607,12 @@ public class SettingsActivity extends AppCompatActivity {
     private void setCity(ArrayList<String> itemsC, String sel){
         ArrayAdapter<String> adapterC = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, itemsC);
         city.setAdapter(adapterC);
-        city.setSelection(adapterC.getPosition(sel));
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                city.setSelection(adapterC.getPosition(sel));
+            }
+        }, 1000);
+
     }
 }

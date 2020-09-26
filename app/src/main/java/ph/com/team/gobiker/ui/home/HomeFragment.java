@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,6 +15,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -122,10 +124,12 @@ public class HomeFragment extends Fragment {
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String searchBoxInput = SearchInputText.getText().toString();
-                Intent intent = new Intent(getActivity(), FindFriendsActivity.class);
-                intent.putExtra("searchKey",searchBoxInput);
-                startActivity(intent);
+                if (!SearchInputText.getText().toString().equals("")) {
+                    String searchBoxInput = SearchInputText.getText().toString();
+                    Intent intent = new Intent(getActivity(), FindFriendsActivity.class);
+                    intent.putExtra("searchKey", searchBoxInput);
+                    startActivity(intent);
+                }
             }
         });
         DisplayAllUsersPosts();
@@ -208,14 +212,14 @@ public class HomeFragment extends Fragment {
                                 }
                             });
 
-                            viewHolder.mView.setOnClickListener(new View.OnClickListener() {
+                            /*viewHolder.mView.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
                                     Intent clickPostIntent = new Intent(getActivity(), ClickPostActivity.class);
                                     clickPostIntent.putExtra("PostKey", PostKey);
                                     startActivity(clickPostIntent);
                                 }
-                            });
+                            });*/
 
                             viewHolder.CommentBtn.setOnClickListener(new View.OnClickListener() {
                                 @Override
@@ -280,6 +284,12 @@ public class HomeFragment extends Fragment {
                                 }
                             });
 
+                            viewHolder.optionMenuP.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    Toast.makeText(getContext(),"A",Toast.LENGTH_SHORT).show();
+                                }
+                            });
 
                     }
                 };
@@ -290,7 +300,7 @@ public class HomeFragment extends Fragment {
         View mView;
         ImageButton LikeBtn;
         Button CommentBtn;
-        TextView DisplayNoOfLikes;
+        TextView DisplayNoOfLikes, optionMenuP;
         int countLikes;
         String currentUserId;
         LinearLayout lp;
@@ -303,6 +313,7 @@ public class HomeFragment extends Fragment {
             PostImage = (ImageView) mView.findViewById(R.id.post_image);
             LikeBtn = mView.findViewById(R.id.like_button);
             CommentBtn = mView.findViewById(R.id.comment_button);
+            optionMenuP = mView.findViewById(R.id.post_options);
             lp = mView.findViewById(R.id.linear_posts);
 //            LikepostButton = mView.findViewById(R.id.like_button);
 //            CommentPostButton = mView.findViewById(R.id.comment_button);

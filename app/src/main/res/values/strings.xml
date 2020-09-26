@@ -109,7 +109,7 @@
     <string name="age">Age</string>
     <string name="biometrics">Biometrics</string>
     <string name="personal_info">Personal Info</string>
-    <string name="note_account_info">NOTE: For accurate results, please enter your HEIGHT, WEIGHT, and AGE.</string>
+    <string name="note_account_info">NOTE: For accurate results, please enter your HEIGHT, WEIGHT, and AGE. This is for calorie counter for bicycle use.</string>
     <string name="add_pic">Add picture</string>
     <string name="ride">Ride</string>
     <string name="ride_s">Ride(s)</string>

@@ -159,68 +159,70 @@ public class DashboardFragment extends Fragment {
                     userBM.setText(bm);
                     */
 
+                    String myWeight="", myHeight="",myAge="";
+                    if (dataSnapshot.hasChild("savedweight")) {
+                        if (dataSnapshot.child("savedweight").getValue().toString().equals("0")) {
+                            userWeight.setText("");
+                            userWeight.setVisibility(View.GONE);
+                        }
+                        else{
+                            myWeight = dataSnapshot.child("savedweight").getValue().toString();
+                            String wunit = dataSnapshot.child("savedwunit").getValue().toString();
+                            userWeight.setText(myWeight + " " + wunit);
+                            userWeight.setVisibility(View.VISIBLE);
+                        }
+                    }
+                    else{
+                        userWeight.setText("");
+                        userWeight.setVisibility(View.GONE);
+                    }
+
+                    if (dataSnapshot.hasChild("savedheight")) {
+                        if (dataSnapshot.child("savedheight").getValue().toString().equals("0")) {
+                            userHeight.setText("");
+                            userHeight.setVisibility(View.GONE);
+                        }
+                        else{
+                            myHeight = dataSnapshot.child("savedheight").getValue().toString();
+                            String hunit = dataSnapshot.child("savedhunit").getValue().toString();
+                            userHeight.setText(myHeight + " " + hunit);
+                            userHeight.setVisibility(View.VISIBLE);
+                        }
+                    }
+                    else{
+                        userHeight.setText("");
+                        userHeight.setVisibility(View.GONE);
+                    }
+
+                    if (dataSnapshot.hasChild("age")) {
+                        if (dataSnapshot.child("age").getValue().toString().equals("0")) {
+                            userAge.setText("");
+                            userAge.setVisibility(View.GONE);
+                        }
+                        else{
+                            myAge = dataSnapshot.child("age").getValue().toString();
+                            userAge.setText(myAge + " years old");
+                            userAge.setVisibility(View.VISIBLE);
+                        }
+
+
+                    }
+                    else{
+                        userAge.setText("");
+                        userAge.setVisibility(View.GONE);
+                    }
+
                     if (dataSnapshot.hasChild("active_ride")){
                         userBM.setText(dataSnapshot.child("active_ride").getValue().toString());
                         if (myBike.equals("true") && dataSnapshot.child("active_ride").getValue().toString().equals("Bicycle")) {
-                            userHeight.setVisibility(View.GONE);
+                            /*userHeight.setVisibility(View.GONE);
                             userWeight.setVisibility(View.GONE);
                             userAge.setVisibility(View.GONE);
                             heightlabel.setVisibility(View.VISIBLE);
                             weightlabel.setVisibility(View.VISIBLE);
-                            agelabel.setVisibility(View.VISIBLE);
-
-                            String myWeight="", myHeight="",myAge="";
-                            if (dataSnapshot.hasChild("savedweight")) {
-                                if (dataSnapshot.child("savedweight").getValue().toString().equals("0")) {
-                                    userWeight.setText("");
-                                    userWeight.setVisibility(View.GONE);
-                                }
-                                else{
-                                    myWeight = dataSnapshot.child("savedweight").getValue().toString();
-                                    String wunit = dataSnapshot.child("savedwunit").getValue().toString();
-                                    userWeight.setText(myWeight + " " + wunit);
-                                    userWeight.setVisibility(View.VISIBLE);
-                                }
-                            }
-                            else{
-                                userWeight.setText("");
-                                userWeight.setVisibility(View.GONE);
-                            }
-
-                            if (dataSnapshot.hasChild("savedheight")) {
-                                if (dataSnapshot.child("savedheight").getValue().toString().equals("0")) {
-                                    userHeight.setText("");
-                                    userHeight.setVisibility(View.GONE);
-                                }
-                                else{
-                                    myHeight = dataSnapshot.child("savedheight").getValue().toString();
-                                    String hunit = dataSnapshot.child("savedhunit").getValue().toString();
-                                    userHeight.setText(myHeight + " " + hunit);
-                                    userHeight.setVisibility(View.VISIBLE);
-                                }
-                            }
-                            else{
-                                userHeight.setText("");
-                                userHeight.setVisibility(View.GONE);
-                            }
-
-                            if (dataSnapshot.hasChild("age")) {
-                                if (dataSnapshot.child("age").getValue().toString().equals("0")) {
-                                    userAge.setText("");
-                                    userAge.setVisibility(View.GONE);
-                                }
-                                else{
-                                    myAge = dataSnapshot.child("age").getValue().toString();
-                                    userAge.setText(myAge + " years old");
-                                    userAge.setVisibility(View.VISIBLE);
-                                }
+                            agelabel.setVisibility(View.VISIBLE);*/
 
 
-                            }
-                            else{
-                                userAge.setText("");
-                                userAge.setVisibility(View.GONE);
-                            }
 
                             if (dataSnapshot.hasChild("bike_level")) {
                                 if (dataSnapshot.child("bike_level").getValue().toString().equals("")) {
@@ -247,13 +249,6 @@ public class DashboardFragment extends Fragment {
                             }
                         }
                         else{
-                            userHeight.setVisibility(View.GONE);
-                            userWeight.setVisibility(View.GONE);
-                            userAge.setVisibility(View.GONE);
-                            heightlabel.setVisibility(View.GONE);
-                            weightlabel.setVisibility(View.GONE);
-                            agelabel.setVisibility(View.GONE);
-
                             if (dataSnapshot.hasChild("motor_level")) {
                                 if (dataSnapshot.child("motor_level").getValue().toString().equals("")) {
                                     level.setText("1");
