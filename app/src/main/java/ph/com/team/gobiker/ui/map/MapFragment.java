@@ -1,6 +1,7 @@
 package ph.com.team.gobiker.ui.map;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -10,6 +11,7 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -123,7 +125,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
             @Override
             public void onClick(View v) {
                 if (!isDirectionalTravel) {
-                    startActivityForResult(new Intent(getContext(), NavigationStartActivity.class).putExtra("currentLocation", currentLocation), 1);
+                    if(currentLocation != null)
+                        startActivityForResult(new Intent(getContext(), NavigationStartActivity.class).putExtra("currentLocation", currentLocation), 1);
+                    else{
+
+                    }
                 }
                 else {
                     startNav.setText("Add Direction");
@@ -430,17 +436,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                 } else {
                     tipDistanceRemain.setText(df.format(distanceRemain) + " m");
                 }
-                if (distanceRemain <= 10) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                    builder.setMessage("You have reached your destination. Details: ").setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                        }
-                    });
-                    AlertDialog dialog = builder.create();
-                    dialog.show();
-                    Button positive = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
-                    positive.setTextColor(Color.BLACK);
+                if (distanceRemain <= 20) {
+                    finishRide();
                     //move function to reset
                     startNav.setText("Add Direction");
                     isDirectionalTravel = false;
@@ -450,6 +447,18 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
             }
 
         }
+    }
+
+    private void finishRide() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setMessage("You have reached your destination. Details: ").setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        }).setPositiveButton("OK", null);
+        AlertDialog dialog = builder.create();
+        dialog.setTitle("FINISH");
+        dialog.show();
     }
 
     @Override
@@ -554,7 +563,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         });
     }
 
-
     private void startNavRide() {
         //hide other button
         detectLocationToStartNav();
@@ -615,4 +623,32 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     public void onDetach() {
         super.onDetach();
     }
+
+
+    private class WaitForLocationRunner extends AsyncTask<Void, Void, Void> {
+
+        private String resp;
+        ProgressDialog progressDialog;
+
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            progressDialog.dismiss();
+            super.onPostExecute(aVoid);
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            return null;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            progressDialog = ProgressDialog.show(getContext(),
+                    "ProgressDialog",
+                    "Getting your location");
+        }
+
+    }
+
 }
