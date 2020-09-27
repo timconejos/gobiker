@@ -27,7 +27,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class PersonProfileActivity extends AppCompatActivity {
     private TextView userBM, userProfName, userGender,address, userPhone;
     private CircleImageView userProfileImage;
-    private Button SendFriendReqButton, SendMsgButton;
+    private Button SendFriendReqButton, SendMsgButton,seeallfollowerButton, seeallfollowingButton;;
     private DatabaseReference UsersRef;
     private FirebaseAuth mAuth;
     private String senderUserId, receiverUserId, CURRENT_STATE, myProfileName;
@@ -51,6 +51,24 @@ public class PersonProfileActivity extends AppCompatActivity {
         SendMsgButton = findViewById(R.id.person_send_msg_btn);
         address = findViewById(R.id.person_address);
         userPhone = findViewById(R.id.person_phone);
+
+        seeallfollowerButton = findViewById(R.id.followers_btn);
+
+        seeallfollowerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SendUserToFollowersActivity();
+            }
+        });
+
+        seeallfollowingButton = findViewById(R.id.following_btn);
+
+        seeallfollowingButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SendUserToFollowingActivity();
+            }
+        });
 
         SendMsgButton.setOnClickListener(view -> {
             SendUserToChatActivity();
@@ -173,5 +191,15 @@ public class PersonProfileActivity extends AppCompatActivity {
         startActivity(chatIntent);
     }
 
+    private void SendUserToFollowersActivity() {
+        Intent loginIntent = new Intent(PersonProfileActivity.this, FollowersActivity.class);
+        loginIntent.putExtra("visit_user_id",receiverUserId);
+        startActivity(loginIntent);
+    }
 
+    private void SendUserToFollowingActivity() {
+        Intent loginIntent = new Intent(PersonProfileActivity.this, FollowingActivity.class);
+        loginIntent.putExtra("visit_user_id",receiverUserId);
+        startActivity(loginIntent);
+    }
 }

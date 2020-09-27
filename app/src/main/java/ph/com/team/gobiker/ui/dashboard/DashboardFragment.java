@@ -31,6 +31,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import ph.com.team.gobiker.FollowersActivity;
+import ph.com.team.gobiker.FollowingActivity;
 import ph.com.team.gobiker.LogoutActivity;
 import ph.com.team.gobiker.R;
 import ph.com.team.gobiker.SettingsActivity;
@@ -40,7 +42,7 @@ public class DashboardFragment extends Fragment {
 
     private DashboardViewModel dashboardViewModel;
     private FirebaseAuth mAuth;
-    private Button signOutButton, updateProfileButton;
+    private Button signOutButton, updateProfileButton, seeallfollowerButton, seeallfollowingButton;
     private TextView userProfName,userGender, userBM, userEmail, userPhone, userWeight, userHeight, userAge, level, overall_distance, address, weightlabel, heightlabel, agelabel, addrlabel;
     private CircleImageView userProfileImage;
     private DatabaseReference profileUserRef,UsersRef;
@@ -85,6 +87,24 @@ public class DashboardFragment extends Fragment {
         updateProfileButton = root.findViewById(R.id.myUpdateProfileButton);
 
         signOutButton = root.findViewById(R.id.signOutButton);
+
+        seeallfollowerButton = root.findViewById(R.id.seeAllFollowersButton);
+
+        seeallfollowerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SendUserToFollowersActivity();
+            }
+        });
+
+        seeallfollowingButton = root.findViewById(R.id.seeAllFollowingButton);
+
+        seeallfollowingButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SendUserToFollowingActivity();
+            }
+        });
 
         signOutButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -304,6 +324,18 @@ public class DashboardFragment extends Fragment {
 
     private void SendUserToLogoutActivity() {
         Intent loginIntent = new Intent(getActivity(), LogoutActivity.class);
+        startActivity(loginIntent);
+    }
+
+    private void SendUserToFollowersActivity() {
+        Intent loginIntent = new Intent(getActivity(), FollowersActivity.class);
+        loginIntent.putExtra("visit_user_id",mAuth.getCurrentUser().getUid());
+        startActivity(loginIntent);
+    }
+
+    private void SendUserToFollowingActivity() {
+        Intent loginIntent = new Intent(getActivity(), FollowingActivity.class);
+        loginIntent.putExtra("visit_user_id",mAuth.getCurrentUser().getUid());
         startActivity(loginIntent);
     }
 }

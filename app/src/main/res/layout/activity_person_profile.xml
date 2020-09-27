@@ -101,10 +101,34 @@
                 android:textSize="18sp"/>
 
             <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/following_btn"
+                android:layout_below="@+id/person_bm"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="20dp"
+                android:background="@drawable/rounded_float_btn"
+                android:text="Following"
+                style="@style/SecondaryBtn.Positive"
+                />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/followers_btn"
+                android:layout_below="@+id/person_bm"
+                android:layout_toEndOf="@+id/following_btn"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/rounded_float_btn"
+                android:text="Followers"
+                style="@style/SecondaryBtn.Positive"
+                />
+
+            <Button
                 android:layout_width="230dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/person_send_friend_request_btn"
-                android:layout_below="@+id/person_bm"
+                android:layout_below="@+id/following_btn"
                 android:layout_marginTop="45dp"
                 android:background="@drawable/rounded_float_btn"
                 android:text="Follow"
