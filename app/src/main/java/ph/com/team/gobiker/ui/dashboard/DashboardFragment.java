@@ -43,7 +43,7 @@ public class DashboardFragment extends Fragment {
     private DashboardViewModel dashboardViewModel;
     private FirebaseAuth mAuth;
     private Button signOutButton, updateProfileButton, seeallfollowerButton, seeallfollowingButton;
-    private TextView userProfName,userGender, userBM, userEmail, userPhone, userWeight, userHeight, userAge, level, overall_distance, address, weightlabel, heightlabel, agelabel, addrlabel;
+    private TextView userProfName,userGender, userBM, userEmail, userPhone, userWeight, userHeight, userAge, level, overall_distance, address, weightlabel, heightlabel, agelabel, addrlabel, numRides;
     private CircleImageView userProfileImage;
     private DatabaseReference profileUserRef,UsersRef;
     private String currentUserId;
@@ -66,6 +66,8 @@ public class DashboardFragment extends Fragment {
         profileUserRef = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId);
         UsersRef = FirebaseDatabase.getInstance().getReference().child("Users");
 
+
+
         userProfName = root.findViewById(R.id.my_profile_full_name);
         userGender = root.findViewById(R.id.my_gender);
         userBM = root.findViewById(R.id.my_bike_motor);
@@ -77,6 +79,7 @@ public class DashboardFragment extends Fragment {
         userAge = root.findViewById(R.id.my_bike_age);
         level = root.findViewById(R.id.my_level);
         overall_distance = root.findViewById(R.id.my_distance_traveled);
+        numRides = root.findViewById(R.id.my_no_rides);
         address = root.findViewById(R.id.my_address);
         addrlabel = root.findViewById(R.id.address_lbl);
 
@@ -99,6 +102,8 @@ public class DashboardFragment extends Fragment {
 
         seeallfollowingButton = root.findViewById(R.id.seeAllFollowingButton);
 
+
+
         seeallfollowingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -120,10 +125,37 @@ public class DashboardFragment extends Fragment {
             }
         });
 
+        UsersRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                int f = 0;
+                if (dataSnapshot.exists()) {
+                    for(DataSnapshot snapshot: dataSnapshot.getChildren()){
+                        if (snapshot.hasChild("following")) {
+                            if (snapshot.child("following").hasChild(currentUserId)) {
+                                f++;
+                            }
+                        }
+                    }
+                }
+                if (f==1)
+                    seeallfollowerButton.setText(f+" follower");
+                else
+                    seeallfollowerButton.setText(f+" followers");
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
         profileUserRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()){
+
+                    long numFollowing = 0;
 
                     String myProfileName = dataSnapshot.child("fullname").getValue().toString();
                     String myGender = dataSnapshot.child("gender").getValue().toString();
@@ -132,6 +164,12 @@ public class DashboardFragment extends Fragment {
                     String myBike = dataSnapshot.child("bike").getValue().toString();
                     String myMotor = dataSnapshot.child("motor").getValue().toString();
                     String bm = "";
+
+                    if (dataSnapshot.hasChild("following")){
+                        numFollowing = dataSnapshot.child("following").getChildrenCount();
+                    }
+
+                    seeallfollowingButton.setText(numFollowing+" following");
 
                     if (dataSnapshot.hasChild("profileimage")){
                         String myProfileImage = dataSnapshot.child("profileimage").getValue().toString();
@@ -256,6 +294,16 @@ public class DashboardFragment extends Fragment {
                                 level.setText("1");
                             }
 
+                            if (dataSnapshot.hasChild("bike_number_of_rides")){
+                                if (dataSnapshot.child("bike_number_of_rides").getValue().toString().equals(""))
+                                    numRides.setText("0");
+                                else
+                                    numRides.setText(dataSnapshot.child("bike_number_of_rides").getValue().toString());
+                            }
+                            else{
+                                numRides.setText("0");
+                            }
+
                             if (dataSnapshot.hasChild("bike_overall_distance")) {
                                 if (dataSnapshot.child("bike_overall_distance").getValue().toString().equals("")) {
                                     overall_distance.setText("0 m");
@@ -279,6 +327,16 @@ public class DashboardFragment extends Fragment {
                             }
                             else{
                                 level.setText("1");
+                            }
+
+                            if (dataSnapshot.hasChild("motor_number_of_rides")){
+                                if (dataSnapshot.child("motor_number_of_rides").getValue().toString().equals(""))
+                                    numRides.setText("0");
+                                else
+                                    numRides.setText(dataSnapshot.child("motor_number_of_rides").getValue().toString());
+                            }
+                            else{
+                                numRides.setText("0");
                             }
 
                             if (dataSnapshot.hasChild("motor_overall_distance")) {

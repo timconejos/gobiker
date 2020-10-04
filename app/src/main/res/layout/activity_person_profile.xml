@@ -33,8 +33,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:padding="40dp"
-            android:layout_marginRight="30dp"
-            android:layout_marginLeft="30dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginLeft="20dp"
             android:layout_marginTop="130dp"
             android:background="@drawable/white_rounded_box">
             <de.hdodenhof.circleimageview.CircleImageView
@@ -99,14 +99,50 @@
                 android:textAllCaps="false"
                 android:textColor="@color/colorAccent"
                 android:textSize="18sp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Level"
+                android:id="@+id/person_level"
+                android:layout_below="@+id/person_bm"
+                android:textAlignment="center"
+                android:layout_marginTop="2dp"
+                android:textAllCaps="false"
+                android:textColor="@color/colorAccent"
+                android:textSize="18sp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Distance Travelled"
+                android:id="@+id/person_dt"
+                android:layout_below="@+id/person_level"
+                android:textAlignment="center"
+                android:layout_marginTop="2dp"
+                android:textAllCaps="false"
+                android:textColor="@color/colorAccent"
+                android:textSize="18sp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="No. of Rides"
+                android:id="@+id/person_nr"
+                android:layout_below="@+id/person_dt"
+                android:textAlignment="center"
+                android:layout_marginTop="2dp"
+                android:textAllCaps="false"
+                android:textColor="@color/colorAccent"
+                android:textSize="18sp"/>
 
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/following_btn"
-                android:layout_below="@+id/person_bm"
+                android:layout_below="@+id/person_nr"
                 android:layout_marginTop="5dp"
-                android:layout_marginRight="20dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="10dp"
                 android:background="@drawable/rounded_float_btn"
                 android:text="Following"
                 style="@style/SecondaryBtn.Positive"
@@ -116,7 +152,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/followers_btn"
-                android:layout_below="@+id/person_bm"
+                android:layout_below="@+id/person_nr"
                 android:layout_toEndOf="@+id/following_btn"
                 android:layout_marginTop="5dp"
                 android:background="@drawable/rounded_float_btn"

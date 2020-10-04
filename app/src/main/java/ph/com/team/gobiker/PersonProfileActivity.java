@@ -25,7 +25,7 @@ import java.util.HashMap;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class PersonProfileActivity extends AppCompatActivity {
-    private TextView userBM, userProfName, userGender,address, userPhone;
+    private TextView userBM, userProfName, userGender,address, userPhone, level, overall_distance, numRides;
     private CircleImageView userProfileImage;
     private Button SendFriendReqButton, SendMsgButton,seeallfollowerButton, seeallfollowingButton;;
     private DatabaseReference UsersRef;
@@ -51,6 +51,9 @@ public class PersonProfileActivity extends AppCompatActivity {
         SendMsgButton = findViewById(R.id.person_send_msg_btn);
         address = findViewById(R.id.person_address);
         userPhone = findViewById(R.id.person_phone);
+        level = findViewById(R.id.person_level);
+        numRides = findViewById(R.id.person_nr);
+        overall_distance = findViewById(R.id.person_dt);
 
         seeallfollowerButton = findViewById(R.id.followers_btn);
 
@@ -74,15 +77,47 @@ public class PersonProfileActivity extends AppCompatActivity {
             SendUserToChatActivity();
         });
 
+        UsersRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                int f = 0;
+                if (dataSnapshot.exists()) {
+                    for(DataSnapshot snapshot: dataSnapshot.getChildren()){
+                        if (snapshot.hasChild("following")) {
+                            if (snapshot.child("following").hasChild(receiverUserId)) {
+                                f++;
+                            }
+                        }
+                    }
+                }
+                if (f==1)
+                    seeallfollowerButton.setText(f+" follower");
+                else
+                    seeallfollowerButton.setText(f+" followers");
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
 
         UsersRef.child(receiverUserId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()){
+                    long numFollowing = 0;
                     if (dataSnapshot.hasChild("profileimage")){
                         String myProfileImage = dataSnapshot.child("profileimage").getValue().toString();
                         Picasso.with(PersonProfileActivity.this).load(myProfileImage).placeholder(R.drawable.profile).into(userProfileImage);
                     }
+
+                    if (dataSnapshot.hasChild("following")){
+                        numFollowing = dataSnapshot.child("following").getChildrenCount();
+                    }
+
+                    seeallfollowingButton.setText(numFollowing+" following");
 
                     myProfileName = dataSnapshot.child("fullname").getValue().toString();
                     String myGender = dataSnapshot.child("gender").getValue().toString();
@@ -95,14 +130,90 @@ public class PersonProfileActivity extends AppCompatActivity {
                         userGender.setText(myGender);
                     else
                         userGender.setVisibility(View.GONE);
-                    if (myBike.equals("true"))
-                        userBM.setText("Bicycle");
+                    if (dataSnapshot.hasChild("active_ride")){
+                        userBM.setText("Active Ride: "+dataSnapshot.child("active_ride").getValue().toString());
+                        if (myBike.equals("true") && dataSnapshot.child("active_ride").getValue().toString().equals("Bicycle")) {
+                            /*userHeight.setVisibility(View.GONE);
+                            userWeight.setVisibility(View.GONE);
+                            userAge.setVisibility(View.GONE);
+                            heightlabel.setVisibility(View.VISIBLE);
+                            weightlabel.setVisibility(View.VISIBLE);
+                            agelabel.setVisibility(View.VISIBLE);*/
 
-                    if (myMotor.equals("true")){
-                        if (userBM.getText().equals(""))
-                            userBM.setText("Motorcycle");
-                        else
-                            userBM.setText("Bicycle and Motorcycle");
+
+
+                            if (dataSnapshot.hasChild("bike_level")) {
+                                if (dataSnapshot.child("bike_level").getValue().toString().equals("")) {
+                                    level.setText("Level: 1");
+                                }
+                                else{
+                                    level.setText("Level: "+dataSnapshot.child("bike_level").getValue().toString());
+                                }
+                            }
+                            else{
+                                level.setText("Level: 1");
+                            }
+
+                            if (dataSnapshot.hasChild("bike_number_of_rides")){
+                                if (dataSnapshot.child("bike_number_of_rides").getValue().toString().equals(""))
+                                    numRides.setText("No. of Rides: 0");
+                                else
+                                    numRides.setText("No. of Rides: "+dataSnapshot.child("bike_number_of_rides").getValue().toString());
+                            }
+                            else{
+                                numRides.setText("No. of Rides: 0");
+                            }
+
+                            if (dataSnapshot.hasChild("bike_overall_distance")) {
+                                if (dataSnapshot.child("bike_overall_distance").getValue().toString().equals("")) {
+                                    overall_distance.setText("Distance Travelled: 0 m");
+                                }
+                                else{
+                                    overall_distance.setText("Distance Travelled: "+dataSnapshot.child("bike_overall_distance").getValue().toString()+" m");
+                                }
+                            }
+                            else{
+                                overall_distance.setText("Distance Travelled: 0 m");
+                            }
+                        }
+                        else{
+                            if (dataSnapshot.hasChild("motor_level")) {
+                                if (dataSnapshot.child("motor_level").getValue().toString().equals("")) {
+                                    level.setText("Level: 1");
+                                }
+                                else{
+                                    level.setText("Level: "+dataSnapshot.child("motor_level").getValue().toString());
+                                }
+                            }
+                            else{
+                                level.setText("Level: 1");
+                            }
+
+                            if (dataSnapshot.hasChild("motor_number_of_rides")){
+                                if (dataSnapshot.child("motor_number_of_rides").getValue().toString().equals(""))
+                                    numRides.setText("No. of Rides: 0");
+                                else
+                                    numRides.setText("No. of Rides: "+dataSnapshot.child("motor_number_of_rides").getValue().toString());
+                            }
+                            else{
+                                numRides.setText("No. of Rides: 0");
+                            }
+
+                            if (dataSnapshot.hasChild("motor_overall_distance")) {
+                                if (dataSnapshot.child("motor_overall_distance").getValue().toString().equals("")) {
+                                    overall_distance.setText("Distance Travelled: 0 m");
+                                }
+                                else{
+                                    overall_distance.setText("Distance Travelled: "+dataSnapshot.child("motor_overall_distance").getValue().toString()+" m");
+                                }
+                            }
+                            else{
+                                overall_distance.setText("Distance Travelled: 0 m");
+                            }
+                        }
+                    }
+                    else{
+                        userBM.setText("Active Ride: Bicycle");
                     }
 
                     if (dataSnapshot.child("check_address").getValue().toString().equals("true")){

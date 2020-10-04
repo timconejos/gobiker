@@ -2336,6 +2336,8 @@ public class SetupActivity extends AppCompatActivity {
             userMap.put("active_ride",acRide);
             userMap.put("check_address",ckAdd);
             userMap.put("check_phone","true");
+            userMap.put("bike_number_of_rides","0");
+            userMap.put("motor_number_of_rides","0");
 
             UsersRef.updateChildren(userMap).addOnCompleteListener(new OnCompleteListener() {
                 @Override
