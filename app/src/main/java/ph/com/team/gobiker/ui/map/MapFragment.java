@@ -13,6 +13,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -66,6 +67,9 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import ph.com.team.gobiker.NavActivity;
 import ph.com.team.gobiker.R;
@@ -125,11 +129,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
             @Override
             public void onClick(View v) {
                 if (!isDirectionalTravel) {
-                    if(currentLocation != null)
-                        startActivityForResult(new Intent(getContext(), NavigationStartActivity.class).putExtra("currentLocation", currentLocation), 1);
-                    else{
-
-                    }
+                    final WaitForLocationRunner executor = new WaitForLocationRunner();
+                    executor.execute();
                 }
                 else {
                     startNav.setText("Add Direction");
@@ -626,29 +627,46 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
 
 
     private class WaitForLocationRunner extends AsyncTask<Void, Void, Void> {
-
-        private String resp;
         ProgressDialog progressDialog;
 
 
         @Override
         protected void onPostExecute(Void aVoid) {
             progressDialog.dismiss();
-            super.onPostExecute(aVoid);
+            if(currentLocation != null){
+                startActivityForResult(new Intent(getContext(), NavigationStartActivity.class).putExtra("currentLocation", currentLocation), 1);
+            }
         }
 
         @Override
         protected Void doInBackground(Void... voids) {
+            while(currentLocation == null){
+
+            }
+
             return null;
         }
 
         @Override
         protected void onPreExecute() {
             progressDialog = ProgressDialog.show(getContext(),
-                    "ProgressDialog",
+                    "GoBiker",
                     "Getting your location");
+            progressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                @Override
+                public void onCancel(DialogInterface dialog) {
+                    WaitForLocationRunner.this.cancel(true);
+                }
+            });
+            progressDialog.setIndeterminate(true);
+            progressDialog.setCancelable(true);
+            moveCamToLocation();
         }
 
+        @Override
+        protected void onCancelled() {
+            progressDialog.dismiss();
+        }
     }
 
 }
