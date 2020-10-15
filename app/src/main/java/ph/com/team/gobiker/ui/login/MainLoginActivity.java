@@ -58,6 +58,7 @@ import ph.com.team.gobiker.HomeActivity;
 import ph.com.team.gobiker.NavActivity;
 import ph.com.team.gobiker.R;
 import ph.com.team.gobiker.SetupActivity;
+import ph.com.team.gobiker.SetupWithExistingActivity;
 import ph.com.team.gobiker.login;
 import ph.com.team.gobiker.ui.login.LoginViewModel;
 import ph.com.team.gobiker.ui.login.LoginViewModelFactory;
@@ -344,6 +345,8 @@ public class MainLoginActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d("gsignin", "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
+                            startActivity(new Intent(MainLoginActivity.this, SetupWithExistingActivity.class));
+                            finish();
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w("gsignin", "signInWithCredential:failure", task.getException());

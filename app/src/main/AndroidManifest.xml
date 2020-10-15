@@ -72,6 +72,7 @@
         <activity android:name=".MainActivity" />
         <activity android:name=".HomeActivity" />
         <activity android:name=".ui.map.NavigationStartActivity" />
+        <activity android:name=".SetupWithExistingActivity"/>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
