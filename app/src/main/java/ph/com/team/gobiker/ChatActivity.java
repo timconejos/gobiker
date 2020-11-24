@@ -264,7 +264,7 @@ public class ChatActivity extends AppCompatActivity {
         userLastSeen = findViewById(R.id.custom_user_last_seen);
         receiverProfileImage = findViewById(R.id.custom_profile_image);
 
-        messageAdapter = new MessagesAdapter(messagesList);
+        messageAdapter = new MessagesAdapter(messagesList, this);
         userMessagesList = findViewById(R.id.messages_list_users);
         linearLayoutManager = new LinearLayoutManager(this);
         userMessagesList.setHasFixedSize(true);

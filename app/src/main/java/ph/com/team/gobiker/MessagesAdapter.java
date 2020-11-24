@@ -71,6 +71,11 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
     ProgressDialog pd;
     private long downloadID;
 
+
+    public MessagesAdapter() {
+
+    }
+
     public MessagesAdapter(List<Messages> userMessagesList, Context context){
         this.userMessagesList = userMessagesList;
         this.context = context;
