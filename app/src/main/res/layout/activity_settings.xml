@@ -1,0 +1,405 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SettingsActivity"
+    >
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar_top"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/ToolbarTheme"
+        android:minHeight="?attr/actionBarSize"
+        android:background="@color/colorPrimary">
+
+        <Button
+            style="@style/TransparentBtn"
+            android:layout_gravity="start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/cancel"
+            android:textColor="@color/white"
+            android:id="@+id/cancel_action"/>
+
+        <TextView
+            android:id="@+id/create_post"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textColor="@color/white"
+            android:text="@string/update_profile" />
+
+        <Button
+            style="@style/TransparentBtn"
+            android:layout_gravity="end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/save"
+            android:textColor="@color/white"
+            android:id="@+id/update_account_settings_button"/>
+
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/toolbar_top"
+        android:layout_alignParentStart="true">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:src="@drawable/profile"
+                android:id="@+id/settings_profile_image"/>
+
+            <TextView
+                android:id="@+id/add_pic"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/settings_profile_image"
+                android:layout_marginTop="10dp"
+                android:text="@string/add_pic"
+                android:gravity="center"
+                android:layout_marginBottom="10dp"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/add_pic"
+                android:orientation="vertical"
+                android:id="@+id/personal_info_layout"
+                android:paddingTop="30dp"
+                android:paddingStart="30dp"
+                android:paddingEnd="30dp">
+                <TextView
+                    android:id="@+id/personal_info_lbl"
+                    android:text="@string/personal_info"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:gravity="start"
+                    style="@style/Headings.H3"
+                    android:textColor="@color/black"/>
+                <TextView
+                    android:id="@+id/profile_name_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Name"
+                    android:layout_marginTop="10dp"/>
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/settings_profile_full_name"
+                    android:hint="profile name"
+                    android:padding="20dp"
+                    android:textColor="@android:color/background_dark"
+                    android:textSize="20sp"
+                    android:inputType="textCapWords"
+                    android:layout_marginTop="6dp"/>
+
+                <TextView
+                    android:id="@+id/profile_province_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Province"
+                    android:layout_marginTop="10dp"/>
+                <Spinner
+                    android:id="@+id/settings_province"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:drawable/btn_dropdown"
+                    android:spinnerMode="dropdown"
+                    android:paddingTop="3dp"
+                    android:paddingBottom="3dp"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    />
+
+                <TextView
+                    android:id="@+id/profile_city_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="City or Municipality"
+                    android:layout_marginTop="10dp"/>
+                <Spinner
+                    android:id="@+id/settings_city"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:drawable/btn_dropdown"
+                    android:spinnerMode="dropdown"
+                    android:paddingTop="3dp"
+                    android:paddingBottom="3dp"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    />
+
+                <CheckBox
+                    android:id="@+id/settings_checkAddress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Show Address in Profile" />
+
+                <TextView
+                    android:id="@+id/gender_name_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Gender"
+                    android:layout_marginTop="10dp"/>
+                <Spinner
+                    android:id="@+id/settings_gender"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:drawable/btn_dropdown"
+                    android:spinnerMode="dropdown"
+                    android:paddingTop="3dp"
+                    android:paddingBottom="3dp"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    />
+
+                <TextView
+                    android:id="@+id/phone_name_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Phone"
+                    android:layout_marginTop="10dp"/>
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/settings_phone"
+                    android:layout_below="@+id/settings_gender"
+                    android:hint="Phone"
+                    android:padding="20dp"
+                    android:textColor="@android:color/background_dark"
+                    android:textSize="20sp"
+                    android:layout_marginTop="6dp"/>
+
+                <CheckBox
+                    android:id="@+id/settings_checkPhone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Show Phone in Profile" />
+
+                <TextView
+                    android:id="@+id/ride_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/ride"
+                    android:layout_marginTop="10dp"/>
+                <CheckBox
+                    android:id="@+id/settings_checkBoxBike"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/settings_phone"
+                    android:text="Bicycle" />
+
+                <CheckBox
+                    android:id="@+id/settings_checkBoxMotor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/settings_phone"
+                    android:layout_toEndOf="@+id/settings_checkBoxBike"
+                    android:text="Motorcycle" />
+
+                <TextView
+                    android:id="@+id/active_ride_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Active Ride"
+                    android:layout_marginTop="10dp"/>
+                <Spinner
+                    android:id="@+id/settings_active_ride"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:drawable/btn_dropdown"
+                    android:spinnerMode="dropdown"
+                    android:paddingTop="3dp"
+                    android:paddingBottom="3dp"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    />
+
+            </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="3dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:id="@+id/divider"
+                    android:layout_below="@id/personal_info_layout"
+                    android:background="@color/lighterColor"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/divider"
+                android:orientation="vertical"
+                android:id="@+id/biometrics_info_layout"
+                android:paddingBottom="40dp"
+                android:paddingEnd="30dp"
+                android:paddingStart="30dp">
+                <TextView
+                    android:id="@+id/biometrics_info"
+                    android:text="@string/biometrics"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:gravity="start"
+                    android:layout_marginTop="10dp"
+                    style="@style/Headings.H3"
+                    android:textColor="@color/black"/>
+                <TextView
+                    android:id="@+id/settings_bike_note"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/note_account_info"
+                    android:layout_marginBottom="10dp"
+                    android:gravity="start"
+                    style="@style/Subtitle.H6"
+                    android:textStyle="italic"
+                    android:textColor="@android:color/holo_red_dark"/>
+                <TextView
+                    android:id="@+id/settings_weight_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/settings_checkBoxBike"
+                    android:text="Weight"
+                    android:layout_marginTop="10dp"/>
+
+                <EditText
+                    android:id="@+id/settings_weight"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="numberDecimal"
+                    android:layout_toEndOf="@+id/settings_weight_text"
+                    />
+
+                <!-- <TextView
+                    android:id="@+id/settings_height_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Height (in cm)"
+                    android:layout_marginTop="10dp"/>
+
+                <EditText
+                    android:id="@+id/settings_height"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="numberDecimal"
+                    />
+
+                <TextView
+                    android:id="@+id/settings_age_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Age (years old)"
+                    android:layout_marginTop="10dp" />
+
+                <EditText
+                    android:id="@+id/settings_age"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="number"
+                    /> -->
+<!--            <TextView-->
+<!--                android:id="@+id/settings_weight_text"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_below="@+id/settings_checkBoxBike"-->
+<!--                android:text="Weight"-->
+<!--                android:layout_marginTop="20dp"/>-->
+
+<!--            <EditText-->
+<!--                android:id="@+id/settings_weight"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:ems="10"-->
+<!--                android:inputType="numberDecimal"-->
+<!--                android:layout_below="@+id/settings_checkBoxBike"-->
+<!--                android:layout_toEndOf="@+id/settings_weight_text"-->
+<!--                android:layout_marginTop="10dp"-->
+<!--                />-->
+
+
+            <Spinner
+                android:id="@+id/settings_weight_unit"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:background="@android:drawable/btn_dropdown"
+                android:spinnerMode="dropdown"
+                />
+
+            <TextView
+                android:id="@+id/settings_height_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Height"
+                android:layout_marginTop="20dp"/>
+
+            <EditText
+                android:id="@+id/settings_height"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="numberDecimal"
+                android:layout_below="@+id/settings_weight"
+                android:layout_toEndOf="@+id/settings_height_text"
+                android:layout_marginTop="10dp"
+                />
+
+            <Spinner
+                android:id="@+id/settings_height_unit"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:background="@android:drawable/btn_dropdown"
+                android:spinnerMode="dropdown"
+                />
+
+                <TextView
+                    android:id="@+id/settings_age_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Age"
+                    android:layout_marginTop="10dp" />
+
+                <EditText
+                    android:id="@+id/settings_age"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="number"
+                    />
+
+
+<!--                <Button-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="60dp"-->
+<!--                    android:id="@+id/update_account_settings_button"-->
+<!--                    android:text="Update Profile"-->
+<!--                    android:layout_margin="20dp"-->
+<!--                    android:background="@drawable/button"-->
+<!--                    android:textColor="@color/colorAccent"-->
+<!--                    android:textSize="20sp"-->
+<!--                    android:textStyle="bold"-->
+<!--                    android:textAllCaps="false"/>-->
+
+            </LinearLayout>
+
+        </RelativeLayout>
+    </ScrollView>
+</RelativeLayout>

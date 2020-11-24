@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".FindFriendsActivity"
+    android:background="@color/lightestColor">
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        android:theme="@style/ToolbarTheme"
+        app:titleTextAppearance="@style/Toolbar.TitleText"
+        >
+        <TextView
+            android:id="@+id/create_post"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            style="@style/Toolbar.TitleText"
+            android:text="@string/find_friends" />
+    </androidx.appcompat.widget.Toolbar>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/myLayout"
+        android:background="@color/white"
+        android:orientation="horizontal"
+        android:layout_below="@+id/toolbar"
+        android:padding="8dp">
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:id="@+id/search_box_input"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="5dp"
+            android:background="@drawable/edittxt_pos"
+            android:ems="10"
+            android:hint="Search Here"
+            android:inputType="textCapWords"
+            android:padding="10dp"
+            />
+<!--        <ImageButton-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:padding="20dp"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:id="@+id/search_people_friends_button"-->
+<!--            android:background="@drawable/inputs"-->
+<!--            android:src="@drawable/search"/>-->
+
+        <Button
+            android:id="@+id/search_people_friends_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/ic_search"
+            style="@style/TransparentBtn.Positive"
+            android:textColor="@color/black"
+            android:text="Search"/>
+    </LinearLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/myLayout"
+        android:layout_margin="10dp"
+        android:id="@+id/search_result_list">
+
+    </androidx.recyclerview.widget.RecyclerView>
+</RelativeLayout>

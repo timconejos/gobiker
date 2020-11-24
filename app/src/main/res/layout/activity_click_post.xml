@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context=".ClickPostActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar_top"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/ToolbarTheme"
+        android:minHeight="?attr/actionBarSize"
+        android:background="@color/colorPrimary">
+
+        <TextView
+            android:id="@+id/create_post"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/post"
+            android:textColor="@color/white"
+            style="@style/Toolbar.TitleText"/>
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <ScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/toolbar_top">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/toolbar_top"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="3dp"
+                android:layout_marginBottom="3dp"
+                android:id="@+id/linear_posts"
+                android:layout_marginLeft="6dp"
+                android:layout_marginRight="6dp"
+                android:background="@color/white">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1dp"
+                    android:padding="5dp"
+                    android:orientation="horizontal">
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:src="@drawable/profile"
+                        android:id="@+id/click_post_profile_image"
+                        android:scaleType="centerCrop"
+                        android:layout_marginLeft="4dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginRight="4dp"/>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="user_name"
+                            android:id="@+id/click_post_user_name"
+                            android:layout_marginTop="8dp"
+                            android:textAlignment="textStart"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:textColor="@android:color/black"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Date"
+                            android:textColor="@color/subtitleText"
+                            android:textSize="12sp"
+                            android:id="@+id/click_post_time"/>
+                        <!--                <LinearLayout-->
+                        <!--                    android:layout_width="match_parent"-->
+                        <!--                    android:layout_height="wrap_content"-->
+                        <!--                    android:orientation="horizontal">-->
+
+                        <!--                    <TextView-->
+                        <!--                        android:layout_width="wrap_content"-->
+                        <!--                        android:layout_height="wrap_content"-->
+                        <!--                        android:text="Time"-->
+                        <!--                        android:textColor="@android:color/black"-->
+                        <!--                        android:textSize="13sp"-->
+                        <!--                        android:id="@+id/post_time"/>-->
+                        <!--                </LinearLayout>-->
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+            <ImageView
+                android:id="@+id/click_post_image"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="10dp"
+                app:srcCompat="@drawable/select_image" />
+
+            <EditText
+                android:id="@+id/click_post_description"
+                android:layout_width="match_parent"
+                android:lines="3"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:padding="15dp"
+                android:background="@drawable/inputs"
+                android:text="Post description"
+                android:textAlignment="textStart"
+                style="@style/Subtitle.H3"
+                />
+
+            <!--        <Button-->
+            <!--            android:id="@+id/edit_post_button"-->
+            <!--            android:layout_width="match_parent"-->
+            <!--            android:layout_height="wrap_content"-->
+            <!--            android:layout_marginLeft="10dp"-->
+            <!--            android:layout_marginTop="10dp"-->
+            <!--            android:layout_below="@+id/click_post_description"-->
+            <!--            android:layout_marginRight="10dp"-->
+            <!--            android:background="@drawable/button"-->
+            <!--            android:text="Edit Post"-->
+            <!--            android:textColor="@android:color/black"-->
+            <!--            android:textSize="18sp"-->
+            <!--            android:textStyle="bold" />-->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center|bottom"
+                android:layout_marginBottom="50dp"
+                android:orientation="vertical">
+                <Button
+                    android:id="@+id/edit_post_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="10dp"
+                    style="@style/SecondaryBtn.Positive"
+                    android:background="@drawable/button"
+                    android:text="Update Post"
+
+
+                    />
+                <!--            <Button-->
+                <!--                android:id="@+id/delete_post_button"-->
+                <!--                android:layout_width="match_parent"-->
+                <!--                android:layout_height="wrap_content"-->
+                <!--                android:layout_marginLeft="10dp"-->
+                <!--                android:layout_marginTop="10dp"-->
+                <!--                android:layout_marginRight="10dp"-->
+
+                <!--                style="@style/TransparentBtn.Positive"-->
+                <!--                android:text="Delete Post"-->
+
+
+                <!--                />-->
+
+            </LinearLayout>
+
+            <!--        <ImageView-->
+            <!--            android:id="@+id/click_post_image"-->
+            <!--            android:layout_width="match_parent"-->
+            <!--            android:layout_height="300dp"-->
+            <!--            android:layout_marginStart="10dp"-->
+            <!--            android:layout_marginTop="10dp"-->
+            <!--            android:layout_marginEnd="10dp"-->
+            <!--            android:layout_marginBottom="10dp"-->
+            <!--            app:srcCompat="@drawable/select_image" />-->
+
+            <!--        <ImageView-->
+            <!--            android:id="@+id/expanded_image"-->
+            <!--            android:layout_width="match_parent"-->
+            <!--            android:layout_height="wrap_content"-->
+            <!--            android:visibility="invisible"-->
+            <!--            android:contentDescription="Touch Close" />-->
+
+            <!--        <TextView-->
+            <!--            android:id="@+id/click_post_description"-->
+            <!--            android:layout_width="match_parent"-->
+            <!--            android:layout_height="wrap_content"-->
+            <!--            android:layout_marginLeft="10dp"-->
+            <!--            android:layout_marginRight="10dp"-->
+            <!--            android:padding="15dp"-->
+            <!--            android:background="@drawable/inputs"-->
+            <!--            android:text="Post description"-->
+            <!--            android:textAlignment="textStart"-->
+            <!--            android:textColor="@android:color/background_dark"-->
+            <!--            android:textSize="18sp"-->
+            <!--            android:textStyle="bold" />-->
+            <!--        <Button-->
+            <!--            android:id="@+id/delete_post_button"-->
+            <!--            android:layout_width="match_parent"-->
+            <!--            android:layout_height="wrap_content"-->
+            <!--            android:layout_marginLeft="10dp"-->
+            <!--            android:layout_below="@+id/edit_post_button"-->
+            <!--            android:layout_marginTop="10dp"-->
+            <!--            android:layout_marginRight="10dp"-->
+            <!--            android:background="@drawable/button"-->
+            <!--            android:text="Delete Post"-->
+            <!--            android:textColor="@android:color/black"-->
+            <!--            android:textSize="18sp"-->
+            <!--            android:textStyle="bold" />-->
+
+        </LinearLayout>
+
+
+
+    </ScrollView>
+
+    <!--    <Button-->
+    <!--        android:id="@+id/edit_post_button"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginLeft="10dp"-->
+    <!--        android:layout_marginTop="10dp"-->
+    <!--        android:layout_below="@+id/click_post_description"-->
+    <!--        android:layout_marginRight="10dp"-->
+    <!--        android:background="@drawable/button"-->
+    <!--        android:text="Edit Post"-->
+    <!--        android:textColor="@android:color/black"-->
+    <!--        android:textSize="18sp"-->
+    <!--        android:textStyle="bold" />-->
+
+    <!--    <Button-->
+    <!--        android:id="@+id/delete_post_button"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginLeft="10dp"-->
+    <!--        android:layout_below="@+id/edit_post_button"-->
+    <!--        android:layout_marginTop="10dp"-->
+    <!--        android:layout_marginRight="10dp"-->
+    <!--        android:background="@drawable/button"-->
+    <!--        android:text="Delete Post"-->
+    <!--        android:textColor="@android:color/black"-->
+    <!--        android:textSize="18sp"-->
+    <!--        android:textStyle="bold" />-->
+</RelativeLayout>

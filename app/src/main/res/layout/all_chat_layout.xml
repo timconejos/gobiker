@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:id="@+id/chat_linearlayout"
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp"
+    android:orientation="horizontal"
+    android:background="@drawable/border_bottom">
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:layout_marginStart="10dp"
+        android:src="@drawable/profile"
+        android:id="@+id/all_chat_profile_image" />
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginTop="4dp">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:orientation="vertical"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="user full name"
+                android:textAlignment="textStart"
+                style="@style/Headings.H4"
+                android:id="@+id/all_chat_profile_name"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/all_chat_text"
+                android:text="Message here..."
+                style="@style/Subtitle.H5"
+                android:textColor="@color/subtitleText"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textSize="16sp"/>
+
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/all_chat_time"
+                android:text="@string/time"
+                android:textAlignment="viewEnd"
+                android:textColor="@color/subtitleText"
+                style="@style/Subtitle.H6"/>
+
+        </LinearLayout>
+    </RelativeLayout>
+
+<!--    <LinearLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:orientation="vertical">-->
+<!--     -->
+<!--        -->
+<!--        <LinearLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:orientation="horizontal"-->
+<!--            android:layout_margin="5dp">-->
+<!--            <TextView-->
+<!--                android:layout_width="190dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="user full name"-->
+<!--                android:textAlignment="textStart"-->
+<!--                android:textSize="18sp"-->
+<!--                android:textStyle="bold"-->
+<!--                android:id="@+id/all_chat_profile_name"/>-->
+
+<!--            <TextView-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:id="@+id/all_chat_time"-->
+<!--                android:text="Time: "-->
+<!--                android:textAlignment="viewEnd"-->
+<!--                android:textStyle="bold"-->
+<!--                android:textSize="14sp"/>-->
+
+<!--        </LinearLayout>-->
+<!--        <LinearLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:orientation="vertical"-->
+<!--            android:layout_margin="10dp">-->
+<!--            <TextView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:id="@+id/all_chat_text"-->
+<!--                android:text="Message here..."-->
+<!--                android:textStyle="bold"-->
+<!--                android:ellipsize="end"-->
+<!--                android:maxLines="1"-->
+<!--                android:textSize="16sp"/>-->
+
+<!--        </LinearLayout>-->
+
+<!--    </LinearLayout>-->
+</LinearLayout>

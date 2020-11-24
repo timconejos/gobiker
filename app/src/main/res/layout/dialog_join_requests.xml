@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:map="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.home.GroupDetailsActivity">
+    <TextView
+        android:id="@+id/text_home"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/main_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="?attr/actionBarSize"
+            android:background="@color/colorPrimary"
+            android:theme="@style/ToolbarTheme"
+            app:titleTextAppearance="@style/Toolbar.TitleText"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            >
+            <TextView
+                android:id="@+id/create_post"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                style="@style/Toolbar.TitleText"
+                android:text="Join Requests" />
+        </androidx.appcompat.widget.Toolbar>
+
+        <!--        <LinearLayout-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_below="@+id/create_post"-->
+        <!--            android:id="@+id/myLayout"-->
+        <!--            android:orientation="horizontal">-->
+        <!--            <AutoCompleteTextView-->
+        <!--                android:layout_width="wrap_content"-->
+        <!--                android:layout_weight="1"-->
+        <!--                android:layout_height="wrap_content"-->
+        <!--                android:id="@+id/search_box_input_fragment"-->
+        <!--                android:layout_alignParentStart="true"-->
+        <!--                android:layout_marginStart="5dp"-->
+        <!--                android:background="@drawable/edittxt_pos"-->
+        <!--                android:hint="Search for people"-->
+        <!--                android:inputType="textCapWords"-->
+        <!--                android:padding="7dp"-->
+        <!--                android:ems="10"-->
+        <!--                android:completionThreshold="1"-->
+        <!--                />-->
+        <!--        </LinearLayout>-->
+
+        <!--        <TextView-->
+        <!--            android:id="@+id/note_new"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_gravity="center"-->
+        <!--            android:padding="8dp"-->
+        <!--            android:textColor="@color/colorPrimary"-->
+        <!--            style="@style/TextAppearance.AppCompat"-->
+        <!--            android:text="You can also search users to invite to this group." />-->
+
+        <TextView
+            android:id="@+id/note_new"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:padding="8dp"
+            android:text="Tap on a user to either APPROVE or DISAPPROVE their join request."
+            android:textColor="@color/colorPrimary"
+            style="@style/TextAppearance.AppCompat"
+            />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/all_users_post_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+
+            <LinearLayout
+                android:id="@+id/linearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:background="@color/colorAccent"
+                android:paddingHorizontal="20dp"
+                android:paddingVertical="10dp"
+                android:orientation="horizontal"
+                android:layout_gravity="bottom">
+
+                <Button
+                    android:id="@+id/new_convo_close"
+                    style="@style/SecondaryBtn.Positive"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Close"
+                    android:layout_weight="1"/>
+
+                <!--                <View-->
+                <!--                    android:id="@+id/btndivider"-->
+                <!--                    android:layout_width="2dp"-->
+                <!--                    android:layout_height="match_parent"-->
+                <!--                    android:layout_weight="0.2" />-->
+
+                <!--                <Button-->
+                <!--                    android:id="@+id/new_convo_proceed"-->
+                <!--                    style="@style/SecondaryBtn.Negative"-->
+                <!--                    android:layout_width="0dp"-->
+                <!--                    android:layout_height="wrap_content"-->
+                <!--                    android:text="Save"-->
+                <!--                    android:layout_weight="0.8"-->
+                <!--                    ></Button>-->
+
+            </LinearLayout>
+        </FrameLayout>
+
+    </LinearLayout>
+
+
+</RelativeLayout>

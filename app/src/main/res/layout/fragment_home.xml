@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:map="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.home.HomeFragment">
+    <TextView
+        android:id="@+id/text_home"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+<!--    <Button-->
+<!--        android:id="@+id/add_new_post"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="Add New Post"-->
+<!--        tools:layout_editor_absoluteX="133dp"-->
+<!--        tools:layout_editor_absoluteY="16dp" />-->
+
+    <LinearLayout
+        android:id="@+id/main_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="?attr/actionBarSize"
+            android:background="@color/colorPrimary"
+            android:theme="@style/ToolbarTheme"
+            app:titleTextAppearance="@style/Toolbar.TitleText"
+            >
+            <TextView
+                android:id="@+id/create_post"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                style="@style/Toolbar.TitleText"
+                android:text="GO BIKER" />
+        </androidx.appcompat.widget.Toolbar>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/create_post"
+            android:padding="8dp"
+            android:id="@+id/myLayout"
+            android:orientation="horizontal">
+            <AutoCompleteTextView
+                android:layout_width="wrap_content"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:id="@+id/search_box_input_fragment"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="5dp"
+                android:background="@drawable/edittxt_pos"
+                android:hint="Search"
+                android:inputType="textCapWords"
+                android:padding="7dp"
+                android:ems="10"
+                android:completionThreshold="1"
+                />
+
+            <Button
+                android:id="@+id/search_people_friends_button_fragment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/ic_search"
+                style="@style/TransparentBtn.Positive"
+                android:textColor="@color/black"
+                android:text="Search"/>
+<!--            <ImageButton-->
+<!--                android:id="@+id/search_people_friends_button_fragment"-->
+<!--                android:layout_width="70dp"-->
+<!--                android:layout_height="match_parent"-->
+<!--                android:background="@drawable/inputs"-->
+<!--                android:src="@drawable/ic_search" />-->
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center|bottom"
+            android:layout_below="@+id/profile_info"
+            >
+            <com.google.android.material.tabs.TabLayout
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                app:itemTextColor="#FFFFFF"
+                android:id="@+id/profilenavbar"
+                android:background="@color/colorPrimary"
+                />
+
+            <androidx.viewpager.widget.ViewPager
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/profilecontainer"
+                android:layout_below="@+id/profilenavbar"
+                />
+        </RelativeLayout>
+    </LinearLayout>
+
+
+</RelativeLayout>

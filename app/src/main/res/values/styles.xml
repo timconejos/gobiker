@@ -1,0 +1,294 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/white</item>
+        <item name="colorPrimaryDark">@color/colorPrimary</item>
+        <item name="colorAccent">@color/colorPrimary</item>
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+
+    <style name="ToolbarTheme" parent="Theme.AppCompat.Light">
+        <!-- android:textColorPrimary is the color of the title text in the Toolbar  -->
+        <item name="android:textColorPrimary">@color/colorPrimary</item>
+        <!-- actionMenuTextColor is the color of the text of action (menu) items  -->
+        <item name="actionMenuTextColor">@color/colorPrimary</item>
+        <!-- Tints the input fields like checkboxes and text fields -->
+        <!-- Applies to views in their normal state. -->
+<!--        <item name="colorControlNormal">@color/controlNormal</item>-->
+        <!-- Applies to views in their activated state (i.e checked or switches) -->
+<!--        <item name="colorControlActivated">@color/controlActivated</item>-->
+        <!-- Applied to framework control highlights (i.e ripples or list selectors) -->
+<!--        <item name="colorControlHighlight">@color/controlActivated</item>-->
+
+        <!-- Enable these below if you want clicking icons to trigger a ripple effect -->
+        <!--
+        <item name="selectableItemBackground">?android:selectableItemBackground</item>
+        <item name="selectableItemBackgroundBorderless">?android:selectableItemBackground</item>
+        -->
+    </style>
+
+    <!-- This configures the styles for the title within the Toolbar  -->
+    <style name="Toolbar.TitleText" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textAllCaps">true</item>
+    </style>
+    <!--    HEADINGS / TEXTS -->
+
+    <style name="Headings" parent="TextAppearance.AppCompat">
+        <item name="android:fontFamily">sans-serif-black</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Headings.H1">
+        <item name="android:textSize">26sp</item>
+    </style>
+
+    <style name="Headings.H2">
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="Headings.H3">
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="Headings.H4">
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="Headings.H5">
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="Headings.H6">
+        <item name="android:textSize">12sp</item>
+    </style>
+
+
+    <style name="Subtitle" parent="TextAppearance.AppCompat">
+        <item name="android:fontFamily">sans-serif-light</item>
+    </style>
+
+    <style name="Subtitle.H1">
+        <item name="android:textSize">26sp</item>
+    </style>
+
+    <style name="Subtitle.H2">
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="Subtitle.H3">
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="Subtitle.H4">
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="Subtitle.H5">
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="Subtitle.H6">
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="Label" parent="TextAppearance.AppCompat">
+        <item name="android:fontFamily">sans-serif-light</item>
+    </style>
+    <style name="Label.SmallHigh">
+        <item name="android:textSize">10sp</item>
+        <item name="textAllCaps">true</item>
+    </style>
+
+
+    <!--  INPUT STYLES  -->
+    <style name="CustomTextInput" parent="Widget.AppCompat.EditText">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:padding">12dp</item>
+        <item name="android:editTextColor">@color/black</item>
+    </style>
+
+    <style name="CustomTextInput.Dark">
+        <item name="android:background">@drawable/edittxt_states</item>
+    </style>
+
+    <style name="CustomTextInput.Light">
+        <item name="android:background">@drawable/edittxt_pos_states</item>
+    </style>
+
+
+    <!--  BUTTONS  -->
+    <style name="PrimaryBtn" parent="Widget.AppCompat.Button">
+        <item name="android:textSize">30dp</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:padding">10dp</item>
+        <item name="android:fontFamily">sans-serif-black</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="PrimaryBtn.Positive">
+        <item name="android:background">@drawable/btn_pos_states</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="PrimaryBtn.Negative">
+        <item name="android:background">@drawable/btn_neg_states</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+    </style>
+    <style name="PrimaryBtn.TransparentNeg">
+        <item name="backgroundTint">@color/transparent</item>
+        <item name="android:background">@color/transparent</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="SecondaryBtn" parent="TextAppearance.AppCompat.Widget.Button">
+        <item name="android:textSize">14dp</item>
+        <item name="android:fontFamily">sans-serif-black</item>
+    </style>
+
+    <style name="SecondaryBtn.Positive">
+        <item name="backgroundTint">@color/colorPrimary</item>
+        <item name="android:background">@color/colorPrimary</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="SecondaryBtn.Negative">
+        <item name="backgroundTint">@color/white</item>
+        <item name="android:background">@color/white</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+    </style>
+
+    <style name="SecondaryBtn.Secondary">
+        <item name="backgroundTint">@color/lighterColor</item>
+        <item name="android:background">@color/lightColor</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+
+    <style name="TransparentBtn" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:textSize">14dp</item>
+        <item name="backgroundTint">@color/transparent</item>
+        <item name="android:background">@color/transparent</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:drawablePadding">5dp</item>
+    </style>
+
+    <style name="TransparentBtn.Positive">
+        <item name="android:textColor">@color/colorPrimary</item>
+    </style>
+
+    <style name="TransparentBtn.Negative">
+        <item name="android:textColor">@color/white</item>
+    </style>
+    <style name="TransparentBtn.Primary">
+        <item name="android:textSize">30dp</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:padding">10dp</item>
+        <item name="android:fontFamily">sans-serif-black</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="TransparentBtn.Like">
+        <item name="android:paddingStart">10dp</item>
+        <item name="android:paddingEnd">10dp</item>
+        <item name="android:textColor">@color/primaryText</item>
+        <item name="android:drawablePadding">5dp</item>
+        <item name="android:drawableLeft">@drawable/ic_favorite_border_black_24dp</item>
+    </style>
+
+    <style name="TransparentBtn.Unlike">
+        <item name="android:paddingStart">10dp</item>
+        <item name="android:paddingEnd">10dp</item>
+        <item name="android:textColor">@color/primaryText</item>
+        <item name="android:drawablePadding">5dp</item>
+        <item name="android:drawableLeft">@drawable/ic_favorite_border_black_24dp</item>
+    </style>
+
+    <style name="TransparentBtn.Comment">
+        <item name="android:paddingStart">10dp</item>
+        <item name="android:paddingEnd">10dp</item>
+        <item name="android:textColor">@color/primaryText</item>
+        <item name="android:drawablePadding">5dp</item>
+        <item name="android:drawableLeft">@drawable/ic_comment_black_24dp</item>
+    </style>
+
+
+
+        <style name="CustomFloatPlainBtn" parent="Widget.MaterialComponents.FloatingActionButton">
+        <item name="android:textColor">@color/white</item>
+        <item name="backgroundTint">@color/primaryText</item>
+    </style>
+
+
+    <style name="CustomFloatBtn" parent="Widget.MaterialComponents.ExtendedFloatingActionButton">
+
+        <item name="android:textSize">15dp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="paddingEnd">15dp</item>
+        <item name="paddingStart">15dp</item>
+    </style>
+
+    <style name="CustomFloatBtn.Directions">
+        <item name="android:drawableLeft">@drawable/ic_add_location</item>
+        <item name="android:drawablePadding">10dp</item>
+        <item name="android:background">@drawable/rounded_float_btn</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="CustomFloatBtn.Start">
+        <item name="android:drawableLeft">@drawable/ic_directions_bike</item>
+        <item name="android:drawablePadding">10dp</item>
+        <item name="android:background">@drawable/rounded_float_btn_dark</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="SocialBtn" parent="Widget.AppCompat.Button">
+        <item name="android:textSize">15dp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+
+
+    <style name="SocialBtn.FB">
+        <item name="backgroundTint">@color/facebook</item>
+        <item name="android:background">@color/facebook</item>
+        <item name="android:drawableLeft">@drawable/ico_fb</item>
+        <item name="android:drawablePadding">10dp</item>
+        <item name="android:paddingStart">10dp</item>
+        <item name="android:paddingEnd">10dp</item>
+    </style>
+
+    <style name="SocialBtn.Google">
+        <item name="backgroundTint">@color/google</item>
+        <item name="android:background">@color/google</item>
+        <item name="android:drawableLeft">@drawable/ico_google</item>
+        <item name="android:drawablePadding">10dp</item>
+        <item name="android:paddingStart">10dp</item>
+        <item name="android:paddingEnd">10dp</item>
+    </style>
+
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowBackground">@drawable/splash_screen</item>
+    </style>
+
+    <style name="AlertDialogTheme" parent="Theme.MaterialComponents.Light.Dialog.Alert">
+        <item name="colorPrimary">@color/colorAccent</item>
+    </style>
+
+</resources>
+

@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1037765640253",
+    "firebase_url": "https://go-biker-e68f2.firebaseio.com",
+    "project_id": "go-biker-e68f2",
+    "storage_bucket": "go-biker-e68f2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1037765640253:android:96192663d6705c6ad42a54",
+        "android_client_info": {
+          "package_name": "ph.com.team.gobiker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1037765640253-umfaheekuhq1ou7jo1a4rukqptek598m.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ph.com.team.gobiker",
+            "certificate_hash": "5bcf9bdc7d4f85bcbfbd246cdab90d6378d0532f"
+          }
+        },
+        {
+          "client_id": "1037765640253-i447v1pt24i0mje6c9te4r0skfu9jr28.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyACDkC-lzBmmc3wpspU3PXPk3SXhqTHW4o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1037765640253-i447v1pt24i0mje6c9te4r0skfu9jr28.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
