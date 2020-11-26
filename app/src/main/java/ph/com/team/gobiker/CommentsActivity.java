@@ -192,6 +192,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
                 commentsMap.put("date",saveCurrentDate);
                 commentsMap.put("time",saveCurrentTime);
                 commentsMap.put("username",userName);
+                commentsMap.put("isSeen", false);
 
                 postRef.child(RandomKey).updateChildren(commentsMap)
                         .addOnCompleteListener(new OnCompleteListener() {

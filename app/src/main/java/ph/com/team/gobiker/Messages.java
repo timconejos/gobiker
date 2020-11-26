@@ -1,18 +1,24 @@
 package ph.com.team.gobiker;
 
 public class Messages {
-    public String date, time, type, message, from;
+    public String date;
+    public String time;
+    public String type;
+    public String message;
+    public String from;
+    public String fileString;
 
     public Messages(){
 
     }
 
-    public Messages(String date, String time, String type, String message, String from) {
+    public Messages(String date, String time, String type, String message, String from, String fileString) {
         this.date = date;
         this.time = time;
         this.type = type;
         this.message = message;
         this.from = from;
+        this.fileString = fileString;
     }
 
     public String getDate() {
@@ -54,5 +60,15 @@ public class Messages {
     public void setFrom(String from) {
         this.from = from;
     }
+
+    public String getFileString() {
+        return fileString;
+    }
+
+    public void setFileString(String fileString) {
+        this.fileString = fileString;
+    }
+
+
 }
 

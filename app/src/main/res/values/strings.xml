@@ -35,6 +35,13 @@
     <string name="name">Name</string>
     <string name="change_prof_pic">Change profile picture</string>
 
+    <!-- GROUP -->
+    <string-array name="group_type">
+        <item>Private</item>
+        <item>Public</item>
+    </string-array>
+    <string name="group_details">Group Details</string>
+
     <!--    LOGIN SCREEN STRINGS -->
     <string name="title_activity_main_login">Sign in</string>
     <string name="prompt_email">Email</string>
@@ -83,7 +90,7 @@
     <string name="title_map">Map</string>
     <string name="create_post">Create Post</string>
     <string name="update_post">Update Post</string>
-    <string name="post">Post</string>
+    <string name="post">Edit Post</string>
     <string name="update_profile">Update Profile</string>
     <string name="save">Save</string>
 

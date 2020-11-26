@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ChatActivity">
+    tools:context=".ui.chat.ChatActivity">
     <include layout="@layout/app_bar_layout"
         android:id="@+id/chat_bar_layout">
     </include>
@@ -28,10 +28,22 @@
         android:orientation="horizontal"
         android:id="@+id/myLinearLayout">
 
+
+        <TextView
+            android:id="@+id/chat_notice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            style="@style/Headings.H3"
+            android:text="You have been removed from this group chat. You cannot reply anymore."
+            android:visibility="gone"
+            android:padding="10dp"
+            />
+
         <ImageButton
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:src="@drawable/ic_add_a_photo"
+            android:src="@drawable/ic_baseline_attachment_24"
             android:background="@color/transparent"
             android:id="@+id/send_image_file_button"/>
 

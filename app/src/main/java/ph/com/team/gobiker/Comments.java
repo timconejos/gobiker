@@ -7,6 +7,7 @@ public class Comments {
     public String comment;
     public String uid;
     public String profileimage;
+    public Boolean isSeen;
 
     public Comments(){
 
@@ -67,5 +68,14 @@ public class Comments {
 
     public void setProfileimage(String profileimage) {
         this.profileimage = profileimage;
+    }
+
+
+    public Boolean getSeen() {
+        return isSeen;
+    }
+
+    public void setSeen(Boolean seen) {
+        isSeen = seen;
     }
 }

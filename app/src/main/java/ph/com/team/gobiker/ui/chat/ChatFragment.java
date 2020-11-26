@@ -1,21 +1,25 @@
 package ph.com.team.gobiker.ui.chat;
 
+import android.app.Activity;
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -23,6 +27,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -30,30 +37,59 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-import ph.com.team.gobiker.ChatActivity;
-import ph.com.team.gobiker.ClickPostActivity;
-import ph.com.team.gobiker.CommentsActivity;
-import ph.com.team.gobiker.FindFriends;
-import ph.com.team.gobiker.FindFriendsActivity;
-import ph.com.team.gobiker.PersonProfileActivity;
+import ph.com.team.gobiker.GroupChats;
 import ph.com.team.gobiker.R;
-import ph.com.team.gobiker.ui.home.HomeFragment;
+import ph.com.team.gobiker.SearchAutoComplete;
+import ph.com.team.gobiker.SearchAutoCompleteAdapter;
 import ph.com.team.gobiker.ui.home.Posts;
+import ph.com.team.gobiker.ui.notifications.Notifications;
+import ph.com.team.gobiker.ui.notifications.NotificationsFragment;
+import ph.com.team.gobiker.ui.notifications.RecyclerAdapter;
+import ph.com.team.gobiker.user.User;
 
 public class ChatFragment extends Fragment {
 
     private ChatViewModel chatViewModel;
     private FirebaseAuth mAuth;
-    private RecyclerView postList;
-    private DatabaseReference MessagesRef,UsersRef;
+    private DatabaseReference MessagesRef,UsersRef, GroupChatRef;
     private String currentUserID, vid;
+    private Button newChatBtn;
+
+    //new chat variables
+    private List<SearchAutoComplete> profileList;
+    private RecyclerView profileSelectedView;
+    private ChatSearchAdapter profileadapter;
+    private List<ChatProfile> profileSelectedList;
+
+    EditText gc_name;
+    CircleImageView gc_image;
+
+    //chat list variables
+    private RecyclerView chatList;
+    private ChatRecyclerAdapter chatadapter;
+    private List<FindChat> chatitems;
+
+
+    //attachments variables
+    final static int Gallery_Pick = 1;
+    private Uri ImageUri;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -71,113 +107,443 @@ public class ChatFragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
         currentUserID = mAuth.getCurrentUser().getUid();
         UsersRef = FirebaseDatabase.getInstance().getReference().child("Users");
+        GroupChatRef = FirebaseDatabase.getInstance().getReference().child("GroupChats");
         MessagesRef = FirebaseDatabase.getInstance().getReference().child("Messages").child(currentUserID);
 
-        postList = root.findViewById(R.id.all_users_msgs_list);
-        postList.setHasFixedSize(true);
-        postList.setLayoutManager(new LinearLayoutManager(getActivity()));
+        newChatBtn = root.findViewById(R.id.new_convo);
+
+        newChatBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ViewChatDialog alert = new ViewChatDialog();
+                alert.showDialog(getActivity());
+            }
+        });
+
+
+        //new chat users array
+        profileList = new ArrayList<>();
+
+        //chat messages adapter
+        chatList = (RecyclerView) root.findViewById(R.id.all_users_msgs_list);
+        chatList.setHasFixedSize(true);
+        chatList.setLayoutManager(new LinearLayoutManager(getActivity()));
+        chatitems = new ArrayList<>();
+        chatadapter = new ChatRecyclerAdapter(chatitems, getActivity());
+        chatList.setAdapter(chatadapter);
+        chatadapter.notifyDataSetChanged();
 
         vid = "";
 
-        DisplayAllUsersMsgs();
+        RetrieveUsers();
+        RetrieveAllUsersMsgs();
 
         return root;
     }
 
-    private void DisplayAllUsersMsgs() {
-        FirebaseRecyclerAdapter<FindChat, FindChatViewHolder> firebaseRecyclerAdapter
-                = new FirebaseRecyclerAdapter<FindChat, FindChatViewHolder>(
-                FindChat.class,
-                R.layout.all_chat_layout,
-                FindChatViewHolder.class,
-                MessagesRef
-        ) {
-            @Override
-            protected void populateViewHolder(final FindChatViewHolder findChatViewHolder, final FindChat findChat, int i) {
-                UsersRef.child(getRef(i).getKey()).addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.exists()) {
-                            findChatViewHolder.setFullname(dataSnapshot.child("fullname").getValue().toString());
+    public class ViewChatDialog {
+        public void showDialog(Activity activity){
+            final Dialog dialog = new Dialog(activity);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.setCancelable(false);
+            dialog.setContentView(R.layout.dialog_new_chat);
 
-                            if (dataSnapshot.hasChild("profileimage"))
-                                findChatViewHolder.setProfileimage(getActivity().getApplicationContext(), dataSnapshot.child("profileimage").getValue().toString());
-                        }
-                    }
+            profileSelectedView = (RecyclerView) dialog.findViewById(R.id.all_users_post_list);
+            profileSelectedView.setHasFixedSize(true);
+            profileSelectedView.setLayoutManager(new LinearLayoutManager(getActivity()));
+            profileSelectedList = new ArrayList<>();
+            profileadapter = new ChatSearchAdapter(profileSelectedList, getActivity());
+            profileSelectedView.setAdapter(profileadapter);
+            profileadapter.notifyDataSetChanged();
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
+            Button close_button = (Button) dialog.findViewById(R.id.new_convo_close);
+            Button next_button = (Button) dialog.findViewById(R.id.new_convo_proceed);
 
-                    }
-                });
-
-                MessagesRef.child(getRef(i).getKey()).addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        String msg = "", dt="";
-                        for(DataSnapshot ds : snapshot.getChildren()) {
-                            for(DataSnapshot dSnapshot : ds.getChildren()) {
-                                msg = ds.child("message").getValue().toString();
-                                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-                                try{
-                                    Date date3 = sdf.parse(ds.child("time").getValue().toString());
-                                    SimpleDateFormat sdf2 = new SimpleDateFormat("hh:mm aa");
-                                    dt = ds.child("date").getValue().toString()+" "+sdf2.format(date3);
-                                }catch(ParseException e){
-                                    e.printStackTrace();
-                                }
-
-                            }
-                        }
-                        findChatViewHolder.setMessage(msg);
-                        findChatViewHolder.setDatetime(dt);
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
-
-                findChatViewHolder.mView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Intent profileIntent =  new Intent(getActivity().getApplicationContext(),ChatActivity.class);
-                        profileIntent.putExtra("visit_user_id",getRef(i).getKey());
-                        startActivity(profileIntent);
-                    }
-                });
-
+            if(profileSelectedList != null){
+                profileSelectedList.clear();
             }
-        };
-        postList.setAdapter(firebaseRecyclerAdapter);
+
+            AutoCompleteTextView searchEditText = dialog.findViewById(R.id.search_box_input_fragment);
+            SearchAutoCompleteAdapter searchadapter = new SearchAutoCompleteAdapter(activity, profileList);
+            searchEditText.setAdapter(searchadapter);
+
+            searchEditText.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    ChatProfile profileItem = new ChatProfile(
+                            profileList.get(i).getProfileuid(), profileList.get(i).getProfilename(), profileList.get(i).getProfileimage()
+                    );
+
+                    if(!profileSelectedList.contains(profileItem)){
+                        profileSelectedList.add(profileItem);
+                        profileadapter.notifyDataSetChanged();
+                        searchEditText.setText("");
+                    }else{
+                        Toast.makeText(activity, "This user is already in your list.", Toast.LENGTH_SHORT).show();
+                        searchEditText.setText("");
+                    }
+                }
+            });
+
+            close_button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    searchEditText.setText("");
+                    profileSelectedList.clear();
+                    dialog.dismiss();
+                }
+            });
+
+            next_button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(profileSelectedList.size() == 1){
+                        Intent chatIntent = new Intent(activity,ChatActivity.class);
+                        chatIntent.putExtra("visit_user_id",profileSelectedList.get(0).getUid());
+                        startActivity(chatIntent);
+                    }else{
+                        dialog.hide();
+                        CreateGroupChatDialog gcalertdialog = new CreateGroupChatDialog();
+                        gcalertdialog.showDialog(getActivity(), profileSelectedList, dialog);
+                    }
+
+                }
+            });
+
+            dialog.show();
+        }
     }
 
-    public static class FindChatViewHolder extends RecyclerView.ViewHolder{
-        View mView;
-        public FindChatViewHolder(View itemView){
-            super(itemView);
-            mView = itemView;
+    public class CreateGroupChatDialog {
+        public void showDialog(Activity activity, List<ChatProfile> gcparticipants, Dialog chatdialog){
+            final Dialog gcdialog = new Dialog(activity);
+            gcdialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            gcdialog.setCancelable(false);
+            gcdialog.setContentView(R.layout.dialog_new_gc);
+
+            gc_name = (EditText) gcdialog.findViewById(R.id.setup_full_name);
+            gc_image = (CircleImageView) gcdialog.findViewById(R.id.setup_gc_profile_image);
+
+            Button close_button = (Button) gcdialog.findViewById(R.id.new_gc_close);
+            Button next_button = (Button) gcdialog.findViewById(R.id.new_gc_proceed);
+
+            gc_image.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent galleryIntent = new Intent();
+                    galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
+                    galleryIntent.setType("image/*");
+                    startActivityForResult(galleryIntent,Gallery_Pick);
+                }
+            });
+
+            close_button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    chatdialog.show();
+                    gcdialog.dismiss();
+                }
+            });
+
+            next_button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    DatabaseReference GcRootRef = FirebaseDatabase.getInstance().getReference();
+                    DatabaseReference gcRef = GcRootRef.child("GroupChats");
+                    StorageReference gcImageRef;
+                    String gcKey = gcRef.push().getKey();
+
+                    gcImageRef = FirebaseStorage.getInstance().getReference().child("gc_picture");
+
+                    ProgressDialog loadingBar = new ProgressDialog(getActivity());
+                    loadingBar.setTitle("Group Chat");
+                    loadingBar.setMessage("Please wait, while we are creating your Group Chat...");
+                    loadingBar.setCanceledOnTouchOutside(true);
+                    loadingBar.show();
+
+                    if(ImageUri != null){
+                        final StorageReference filePath = gcImageRef.child(gcKey+".jpg");
+                        filePath.putFile(ImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                filePath.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                    @Override
+                                    public void onSuccess(Uri uri) {
+                                        String downloadUrl = uri.toString();
+                                        writeDataToDatabase(
+                                                downloadUrl,
+                                                gcKey,
+                                                GcRootRef,
+                                                gcparticipants,
+                                                chatdialog,
+                                                gcdialog,
+                                                activity,
+                                                loadingBar);
+
+                                    }
+                                });
+                            }
+                        });
+                    }else{
+                        writeDataToDatabase(
+                                "",
+                                gcKey,
+                                GcRootRef,
+                                gcparticipants,
+                                chatdialog,
+                                gcdialog,
+                                activity,
+                                loadingBar);
+                    }
+
+                }
+            });
+
+            gcdialog.show();
+
         }
 
-        public void setProfileimage(Context ctx, String profileimage){
-            CircleImageView myImage = mView.findViewById(R.id.all_chat_profile_image);
-            Picasso.with(ctx).load(profileimage).placeholder(R.drawable.profile).into(myImage);
-        }
+        private void writeDataToDatabase(String picUrl,
+                                         String gcKey,
+                                         DatabaseReference GcRootRef,
+                                         List<ChatProfile> gcparticipants,
+                                         Dialog chatdialog,
+                                         Dialog gcdialog,
+                                         Activity activity,
+                                         ProgressDialog loadingBar){
+            String saveCurrentDate, saveCurrentTime;
 
-        public void setFullname(String fullname) {
-            TextView myName = mView.findViewById(R.id.all_chat_profile_name);
-            myName.setText(fullname);
-        }
+            DatabaseReference gcRef = GcRootRef.child("GroupChats");
 
-        public void setMessage(String message) {
-            TextView myMessage = mView.findViewById(R.id.all_chat_text);
-            myMessage.setText(message);
-        }
+            Calendar calForDate = Calendar.getInstance();
+            SimpleDateFormat currentDate = new SimpleDateFormat("MM-dd-yyyy");
+            saveCurrentDate = currentDate.format(calForDate.getTime());
+            SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm:ss");
+            saveCurrentTime = currentTime.format(calForDate.getTime());
 
-        public void setDatetime(String datetime) {
-            TextView myDateTime = mView.findViewById(R.id.all_chat_time);
-            myDateTime.setText(datetime);
+            String message_sender_ref = "Messages/" + currentUserID + "/" +  gcKey;
+            DatabaseReference user_message_key = GcRootRef.child("Messages").child(currentUserID)
+                    .child(gcKey).push();
+            String message_push_id = user_message_key.getKey();
+
+            Map messageTextBody = new HashMap();
+            messageTextBody.put("message", "A new group chat has been made.");
+            messageTextBody.put("time",saveCurrentTime);
+            messageTextBody.put("date",saveCurrentDate);
+            messageTextBody.put("type","text");
+            messageTextBody.put("from",currentUserID);
+
+            Map messageBodyDetails = new HashMap();
+            messageBodyDetails.put(message_sender_ref+"/"+message_push_id,messageTextBody);
+
+            ArrayList<String> userids = new ArrayList<String>();
+            userids.add(currentUserID);
+
+            for(int x=0; x<gcparticipants.size(); x++){
+                if(!gcparticipants.get(x).getUid().equals(currentUserID)){
+                    String message_receiver_ref = "Messages/" + gcparticipants.get(x).getUid() + "/" +  gcKey;
+                    messageBodyDetails.put(message_receiver_ref+"/"+message_push_id,messageTextBody);
+                }
+                userids.add(gcparticipants.get(x).getUid());
+            }
+
+            gcRef.child(gcKey).child("gc_name").setValue(gc_name.getText().toString().trim());
+            if(!picUrl.equals("")){
+                gcRef.child(gcKey).child("gc_picture").setValue(picUrl);
+            }
+            gcRef.child(gcKey).child("gc_participants").setValue(userids);
+
+            GcRootRef.updateChildren(messageBodyDetails).addOnCompleteListener(new OnCompleteListener() {
+                @Override
+                public void onComplete(@NonNull Task task) {
+                    if (task.isSuccessful()){
+                        loadingBar.dismiss();
+                        chatdialog.dismiss();;
+                        gcdialog.dismiss();
+                        Intent profileIntent =  new Intent(getActivity().getApplicationContext(), ChatGroupActivity.class);
+                        profileIntent.putExtra("gcKey", gcKey);
+                        startActivity(profileIntent);
+                    }
+                    else{
+                        loadingBar.dismiss();
+                        Toast.makeText(activity,"Error: "+task.getException().getMessage(),Toast.LENGTH_SHORT).show();
+                    }
+
+                }
+            });
+        }
+    }
+
+    private void RetrieveUsers(){
+        UsersRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot suggestionSnapshot : dataSnapshot.getChildren()){
+                    if(!suggestionSnapshot.getKey().equals(currentUserID)){
+                        String suggestion = suggestionSnapshot.child("fullname").getValue(String.class);
+                        String profilepicstring = "";
+                        if (suggestionSnapshot.hasChild("profileimage"))
+                            profilepicstring = suggestionSnapshot.child("profileimage").getValue().toString();
+                        else
+                            profilepicstring = "";
+
+                        if(suggestion != null){
+                            profileList.add(new SearchAutoComplete(suggestion, profilepicstring, suggestionSnapshot.getKey()));
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void RetrieveAllUsersMsgs(){
+        MessagesRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(!chatitems.isEmpty()){
+                    chatitems.clear();
+                }
+                for(DataSnapshot idsnapshot : snapshot.getChildren()) {
+                    UsersRef.child(idsnapshot.getKey()).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.exists()) {
+                                if(dataSnapshot.hasChild("fullname")){
+                                    Query q = MessagesRef.child(idsnapshot.getKey()).orderByKey().limitToLast(1);
+                                    q.addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot querySnapshot) {
+                                            for (DataSnapshot childSnapshot: querySnapshot.getChildren()) {
+                                                String profilepicexists = "";
+
+                                                if (dataSnapshot.hasChild("profileimage"))
+                                                    profilepicexists = dataSnapshot.child("profileimage").getValue().toString();
+
+                                                String datetimehldr = "";
+                                                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+                                                try{
+                                                    Date date3 = sdf.parse(childSnapshot.child("time").getValue().toString());
+                                                    SimpleDateFormat sdf2 = new SimpleDateFormat("hh:mm aa");
+                                                    datetimehldr = childSnapshot.child("date").getValue().toString()+" "+sdf2.format(date3);
+                                                }catch(ParseException e){
+                                                    e.printStackTrace();
+                                                }
+
+                                                String finalDatetimehldr = datetimehldr;
+
+
+                                                FindChat chatItem = new FindChat(
+                                                        idsnapshot.getKey(), profilepicexists, dataSnapshot.child("fullname").getValue().toString(), childSnapshot.child("message").getValue().toString(), finalDatetimehldr, "single"
+                                                );
+                                                chatitems.add(chatItem);
+                                                chatadapter.notifyDataSetChanged();
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
+
+                                        }
+                                    });
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+
+                    GroupChatRef.child(idsnapshot.getKey()).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.exists()) {
+                                String grouppicexists = "";
+                                GroupChats gcdata = dataSnapshot.getValue(GroupChats.class);
+
+                                if (dataSnapshot.hasChild("gc_picture"))
+                                    grouppicexists = gcdata.getGc_picture();
+
+                                Query lastQuery = MessagesRef.child(idsnapshot.getKey()).orderByKey().limitToLast(1);
+                                String finalGrouppicexists = grouppicexists;
+                                lastQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot groupquerysnapshot) {
+                                        for (DataSnapshot childGroupSnapshot: groupquerysnapshot.getChildren()) {
+                                            String datetimehldr = "";
+                                            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+                                            try {
+                                                Date date3 = sdf.parse(childGroupSnapshot.child("time").getValue().toString());
+                                                SimpleDateFormat sdf2 = new SimpleDateFormat("hh:mm aa");
+                                                datetimehldr = childGroupSnapshot.child("date").getValue().toString() + " " + sdf2.format(date3);
+                                            } catch (ParseException e) {
+                                                e.printStackTrace();
+                                            }
+
+                                            String finalDatetimehldr = datetimehldr;
+
+                                            FindChat chatItem = new FindChat(
+                                                    idsnapshot.getKey(), finalGrouppicexists, gcdata.getGc_name(), childGroupSnapshot.child("message").getValue().toString(), finalDatetimehldr, "group"
+                                            );
+                                            chatitems.add(chatItem);
+                                            Collections.sort(chatitems, new TimeStampComparator());
+                                            Collections.reverse(chatitems);
+                                            chatadapter.notifyDataSetChanged();
+                                        }
+
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                    }
+                                });
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    @Override
+     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        ProgressDialog loadingBar = new ProgressDialog(getActivity());
+
+        if (requestCode==Gallery_Pick && resultCode==getActivity().RESULT_OK && data!=null){
+            ImageUri = data.getData();
+            loadingBar.setTitle("Profile Image");
+            loadingBar.setMessage("Please wait, while we are updating your Profile Image...");
+            loadingBar.setCanceledOnTouchOutside(true);
+            loadingBar.show();
+
+            gc_image.setImageURI(ImageUri);
+
+            loadingBar.dismiss();
+        }
+    }
+
+    public class TimeStampComparator implements Comparator<FindChat> {
+        public int compare(FindChat left, FindChat right) {
+            return left.getDatetime().compareTo(right.getDatetime());
         }
     }
 }

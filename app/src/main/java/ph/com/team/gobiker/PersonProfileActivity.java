@@ -8,10 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -20,9 +17,14 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import ph.com.team.gobiker.ui.chat.ChatActivity;
 
 public class PersonProfileActivity extends AppCompatActivity {
     private TextView userBM, userProfName, userGender,address, userPhone, level, overall_distance, numRides;
@@ -278,8 +280,28 @@ public class PersonProfileActivity extends AppCompatActivity {
                         SendFriendReqButton.setText("FOLLOW");
                     }
                     else{
+                        Calendar calForDate = Calendar.getInstance();
+                        SimpleDateFormat currentDate = new SimpleDateFormat("MM-dd-yyyy");
+                        String saveCurrentDate = currentDate.format(calForDate.getTime());
+
+                        SimpleDateFormat currentDates = new SimpleDateFormat("MMMM dd, yyyy");
+                        String saveCurrentDates = currentDates.format(calForDate.getTime());
+
+                        SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm:ss");
+                        String saveCurrentTime = currentTime.format(calForDate.getTime());
+
+                        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+                        SimpleDateFormat sdf2 = new SimpleDateFormat("hh:mm aa");
+                        Date date3 = null;
+                        try{
+                            date3 = sdf.parse(saveCurrentTime); }catch(ParseException e){
+                            e.printStackTrace();
+                        }
+
                         HashMap friendsMap = new HashMap();
                         friendsMap.put("uid",receiverUserId);
+                        friendsMap.put("Timestamp", saveCurrentDate+" "+saveCurrentTime);
+                        friendsMap.put("isSeen", false);
                         UsersRef.child(senderUserId).child("following").child(receiverUserId).updateChildren(friendsMap);
                         SendFriendReqButton.setText("UNFOLLOW");
                     }
@@ -296,7 +318,7 @@ public class PersonProfileActivity extends AppCompatActivity {
     }
 
     private void SendUserToChatActivity() {
-        Intent chatIntent = new Intent(PersonProfileActivity.this,ChatActivity.class);
+        Intent chatIntent = new Intent(PersonProfileActivity.this, ChatActivity.class);
         chatIntent.putExtra("visit_user_id",receiverUserId);
         //chatIntent.putExtra("userName",myProfileName);
         startActivity(chatIntent);

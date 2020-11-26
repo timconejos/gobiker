@@ -4,7 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.PowerManager;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Toast;
 
+import com.google.android.material.bottomnavigation.BottomNavigationItemView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -17,24 +21,35 @@ import com.google.maps.GeoApiContext;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import ph.com.team.gobiker.ui.login.MainLoginActivity;
+import ph.com.team.gobiker.ui.notifications.NotificationSeenCheck;
+import ph.com.team.gobiker.ui.notifications.Notifications;
+import ph.com.team.gobiker.ui.notifications.NotificationsFragment;
 
-public class NavActivity extends AppCompatActivity {
+public class NavActivity extends AppCompatActivity implements NotificationsFragment.Listener{
 
     private FirebaseAuth mAuth;
     private DatabaseReference UsersRef;
     public static GeoApiContext context;
     protected PowerManager.WakeLock mWakeLock;
+    public BottomNavigationView navView;
+    private NotificationsFragment f;
+    private boolean NotifFragmentStatus = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +57,14 @@ public class NavActivity extends AppCompatActivity {
         setContentView(R.layout.activity_nav);
         mAuth = FirebaseAuth.getInstance();
         UsersRef = FirebaseDatabase.getInstance().getReference().child("Users");
-        BottomNavigationView navView = findViewById(R.id.nav_view);
+        navView = findViewById(R.id.nav_view);
+
+        // creating the Fragment
+        f = new NotificationsFragment();
+        // register activity as listener
+        f.setListener(this);
+        f.initializeVariables();
+        f.notificationListener("fromnavactivity");
 
 
         context = new GeoApiContext.Builder().apiKey(getString(R.string.google_maps_key)).build();
@@ -142,5 +164,30 @@ public class NavActivity extends AppCompatActivity {
     protected void onDestroy() {
         this.mWakeLock.release();
         super.onDestroy();
+    }
+
+    @Override
+    public void setFragmentStatus(boolean fragmentStatus){
+        NotifFragmentStatus = fragmentStatus;
+    }
+
+    @Override
+    public void passNotifCtr(ArrayList<NotificationSeenCheck> notifarr) {
+        if(!NotifFragmentStatus){
+            int falsectr = 0;
+            for(int x=0; x<notifarr.size(); x++){
+                if(!notifarr.get(x).isSeen()){
+                    falsectr++;
+                }
+            }
+
+            if(falsectr != 0){
+                navView.getOrCreateBadge(R.id.navigation_notifications).setNumber(falsectr);
+            }else{
+                navView.removeBadge(R.id.navigation_notifications);
+            }
+        }else{
+            navView.removeBadge(R.id.navigation_notifications);
+        }
     }
 }

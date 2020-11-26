@@ -15,7 +15,6 @@
         android:title="@string/title_map"
         android:icon="@drawable/ic_gobiker_action"/>
 
-
     <item
         android:id="@+id/navigation_chat"
         android:icon="@drawable/ic_mail_white_24dp"

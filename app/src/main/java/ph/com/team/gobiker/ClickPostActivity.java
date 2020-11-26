@@ -33,7 +33,8 @@ import uk.co.senab.photoview.PhotoViewAttacher;
 public class ClickPostActivity extends AppCompatActivity {
 
     private ImageView PostImage;
-    private TextView PostDescription, user, datetime_post;
+    private TextView user, datetime_post;
+    private EditText PostDescription;
     private Button DeletePostButton, EditPostButton;
     private DatabaseReference ClickPostRef, UsersRef;
     private String PostKey, currentUserID, databaseUserID, description, image;
@@ -55,13 +56,13 @@ public class ClickPostActivity extends AppCompatActivity {
 
         PostImage = findViewById(R.id.click_post_image);
         PostDescription = findViewById(R.id.click_post_description);
-        DeletePostButton = findViewById(R.id.delete_post_button);
+//        DeletePostButton = findViewById(R.id.delete_post_button);
         EditPostButton = findViewById(R.id.edit_post_button);
         click_post_profile_image = findViewById(R.id.click_post_profile_image);
         user = findViewById(R.id.click_post_user_name);
         datetime_post = findViewById(R.id.click_post_time);
 
-        DeletePostButton.setVisibility(View.INVISIBLE);
+//        DeletePostButton.setVisibility(View.INVISIBLE);
         EditPostButton.setVisibility(View.INVISIBLE);
 
         PostImage.setOnClickListener(new View.OnClickListener() {
@@ -70,7 +71,6 @@ public class ClickPostActivity extends AppCompatActivity {
                 pAttacher = new PhotoViewAttacher(PostImage);
                 pAttacher.setZoomable(true);
                 pAttacher.update();
-
             }
         });
 
@@ -95,7 +95,7 @@ public class ClickPostActivity extends AppCompatActivity {
                     PostDescription.setText(description);
 
                     if (currentUserID.equals(databaseUserID)) {
-                        DeletePostButton.setVisibility(View.VISIBLE);
+//                        DeletePostButton.setVisibility(View.VISIBLE);
                         EditPostButton.setVisibility(View.VISIBLE);
                     }
 
@@ -129,12 +129,12 @@ public class ClickPostActivity extends AppCompatActivity {
             }
         });
 
-        DeletePostButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                DeleteCurrentPost();
-            }
-        });
+//        DeletePostButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                DeleteCurrentPost();
+//            }
+//        });
 
         EditPostButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -145,38 +145,41 @@ public class ClickPostActivity extends AppCompatActivity {
     }
 
     private void EditCurrentPost(String description) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(ClickPostActivity.this);
-        builder.setTitle("Edit Post: ");
-        final EditText inputField = new EditText(ClickPostActivity.this);
-        inputField.setText(description);
-        builder.setView(inputField);
-
-        builder.setPositiveButton(Html.fromHtml("<font color='#3F6634'>Update</font>"), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                ClickPostRef.child("description").setValue(inputField.getText().toString());
-                Toast.makeText(ClickPostActivity.this,"Post updated successfully",Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        builder.setNegativeButton(Html.fromHtml("<font color='#757575'>Cancel</font>"), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.cancel();
-            }
-        });
-
-        Dialog dialog = builder.create();
-        dialog.show();
-
-        dialog.getWindow().setBackgroundDrawableResource(android.R.color.white);
-    }
-
-    private void DeleteCurrentPost() {
-        ClickPostRef.removeValue();
+        ClickPostRef.child("description").setValue(PostDescription.getText().toString());
         SendUserToMainActivity();
-        Toast.makeText(this,"Post has been deleted.",Toast.LENGTH_SHORT).show();
+        Toast.makeText(ClickPostActivity.this,"Post updated successfully",Toast.LENGTH_SHORT).show();
+//        AlertDialog.Builder builder = new AlertDialog.Builder(ClickPostActivity.this);
+//        builder.setTitle("Edit Post: ");
+//        final EditText inputField = new EditText(ClickPostActivity.this);
+//        inputField.setText(description);
+//        builder.setView(inputField);
+//
+//        builder.setPositiveButton(Html.fromHtml("<font color='#3F6634'>Update</font>"), new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialogInterface, int i) {
+//                ClickPostRef.child("description").setValue(inputField.getText().toString());
+//                Toast.makeText(ClickPostActivity.this,"Post updated successfully",Toast.LENGTH_SHORT).show();
+//            }
+//        });
+//
+//        builder.setNegativeButton(Html.fromHtml("<font color='#757575'>Cancel</font>"), new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialogInterface, int i) {
+//                dialogInterface.cancel();
+//            }
+//        });
+//
+//        Dialog dialog = builder.create();
+//        dialog.show();
+//
+//        dialog.getWindow().setBackgroundDrawableResource(android.R.color.white);
     }
+
+//    private void DeleteCurrentPost() {
+//        ClickPostRef.removeValue();
+//        SendUserToMainActivity();
+//        Toast.makeText(this,"Post has been deleted.",Toast.LENGTH_SHORT).show();
+//    }
 
     private void SendUserToMainActivity() {
         Intent mainIntent = new Intent(ClickPostActivity.this,NavActivity.class);

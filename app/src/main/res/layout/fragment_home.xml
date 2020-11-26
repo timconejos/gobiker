@@ -45,7 +45,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 style="@style/Toolbar.TitleText"
-                android:text="@string/title_feed" />
+                android:text="GO BIKER" />
         </androidx.appcompat.widget.Toolbar>
         <LinearLayout
             android:layout_width="match_parent"
@@ -54,7 +54,7 @@
             android:padding="8dp"
             android:id="@+id/myLayout"
             android:orientation="horizontal">
-            <EditText
+            <AutoCompleteTextView
                 android:layout_width="wrap_content"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
@@ -62,9 +62,11 @@
                 android:layout_alignParentStart="true"
                 android:layout_marginStart="5dp"
                 android:background="@drawable/edittxt_pos"
-                android:hint="Search for people"
+                android:hint="Search"
                 android:inputType="textCapWords"
                 android:padding="7dp"
+                android:ems="10"
+                android:completionThreshold="1"
                 />
 
             <Button
@@ -83,32 +85,27 @@
 <!--                android:src="@drawable/ic_search" />-->
         </LinearLayout>
 
-        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-            android:id="@+id/swiperefresh"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/lighterColor">
-        <FrameLayout
-          android:layout_width="match_parent"
-          android:layout_height="match_parent">
-          <androidx.recyclerview.widget.RecyclerView
-              android:id="@+id/all_users_post_list"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent" />
+            android:layout_height="wrap_content"
+            android:gravity="center|bottom"
+            android:layout_below="@+id/profile_info"
+            >
+            <com.google.android.material.tabs.TabLayout
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                app:itemTextColor="#FFFFFF"
+                android:id="@+id/profilenavbar"
+                android:background="@color/colorPrimary"
+                />
 
-          <com.google.android.material.floatingactionbutton.FloatingActionButton
-              android:id="@+id/add_new_post"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_gravity="end|bottom"
-              android:layout_margin="16dp"
-              android:backgroundTint="@color/colorPrimary"
-              app:srcCompat="@drawable/ic_add_white_24dp"
-              app:tint="@color/white"
-              style="@style/CustomFloatPlainBtn"
-              />
-      </FrameLayout>
-        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+            <androidx.viewpager.widget.ViewPager
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/profilecontainer"
+                android:layout_below="@+id/profilenavbar"
+                />
+        </RelativeLayout>
     </LinearLayout>
 
 
