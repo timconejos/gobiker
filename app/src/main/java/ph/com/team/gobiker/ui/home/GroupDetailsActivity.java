@@ -66,12 +66,12 @@ import uk.co.senab.photoview.PhotoViewAttacher;
 public class GroupDetailsActivity extends AppCompatActivity {
     private TextView groupName, groupMembersNr, groupDateCreated, groupType, groupStatus, groupLabel;
     private CircleImageView groupImage;
-    private Button membersBtn, joinBtn, requestsBtn, editGroupBtn;
+    private Button membersBtn, groupRideBtn, joinBtn, requestsBtn, editGroupBtn;
     private View btnDivider;
 
     private DatabaseReference GroupsRef, GrpPostsRef, UsersRef, LikesRef;
     private FirebaseAuth mAuth;
-    private String currentGroupID, currentUserID;
+    private String currentGroupID, currentUserID, fromNotifications;
 
     private RecyclerView groupSpecificPostList;
     private long countPosts = 0;
@@ -106,6 +106,7 @@ public class GroupDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_group_profile);
 
         currentGroupID = getIntent().getExtras().get("GroupID").toString();
+        fromNotifications = getIntent().getExtras().get("groupAction").toString();
 
         mAuth = FirebaseAuth.getInstance();
         currentUserID = mAuth.getCurrentUser().getUid();
@@ -127,6 +128,7 @@ public class GroupDetailsActivity extends AppCompatActivity {
         editGroupBtn = findViewById(R.id.edit_btn);
         membersBtn = findViewById(R.id.btn_members);
         joinBtn = findViewById(R.id.btn_join);
+        groupRideBtn = findViewById(R.id.btn_groupride);
 
         //setup group posts
         groupSpecificPostList = findViewById(R.id.all_users_post_list);
@@ -144,6 +146,16 @@ public class GroupDetailsActivity extends AppCompatActivity {
         requestSelectedList = new ArrayList<>();
         requestadapter = new GroupRequestAdapter(requestSelectedList, GroupDetailsActivity.this);
         requestadapter.notifyDataSetChanged();
+
+        if(fromNotifications.equals("joinrequests")){
+            ViewJoinRequestDialog alert = new ViewJoinRequestDialog();
+            alert.showDialog(GroupDetailsActivity.this);
+        }
+
+        if(fromNotifications.equals("viewmembers")){
+            ViewMembersDialog alert = new ViewMembersDialog();
+            alert.showDialog(GroupDetailsActivity.this);
+        }
 
         requestsBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -189,8 +201,6 @@ public class GroupDetailsActivity extends AppCompatActivity {
                     grouppicstring = "";
                     Picasso.with(GroupDetailsActivity.this).load(R.drawable.profile).into(groupImage);
                 }
-
-
 
                 groupName.setText(group.getGroup_name());
                 groupDateCreated.setText("Created at "+group.getCreate_date());
@@ -262,6 +272,16 @@ public class GroupDetailsActivity extends AppCompatActivity {
     }
 
     private void CheckGroupMembership(String groupType, String btnText){
+        Calendar calForDate = Calendar.getInstance();
+        SimpleDateFormat currentDate = new SimpleDateFormat("MM-dd-yyyy");
+        String saveCurrentDate = currentDate.format(calForDate.getTime());
+
+        SimpleDateFormat currentDates = new SimpleDateFormat("MMMM dd, yyyy");
+        String saveCurrentDates = currentDates.format(calForDate.getTime());
+
+        SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm:ss");
+        String saveCurrentTime = currentTime.format(calForDate.getTime());
+
         if(btnText.equals("Leave Group")){
             joinBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -269,7 +289,6 @@ public class GroupDetailsActivity extends AppCompatActivity {
                     GroupsRef.child(currentGroupID).child("Members").child(currentUserID).removeValue();
                     Toast.makeText(GroupDetailsActivity.this, "You have left the group.", Toast.LENGTH_SHORT).show();
                     joinBtn.setText("Join");
-
                 }
             });
         }
@@ -279,6 +298,7 @@ public class GroupDetailsActivity extends AppCompatActivity {
                joinBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        GroupsRef.child(currentGroupID).child("Members").child(currentUserID).child("timestamp_joined").setValue(saveCurrentDate+" "+saveCurrentTime);
                         GroupsRef.child(currentGroupID).child("Members").child(currentUserID).child("role").setValue("Member");
                         GroupsRef.child(currentGroupID).child("Members").child(currentUserID).child("status").setValue("Accepted");
                         Toast.makeText(GroupDetailsActivity.this, "You have joined the group.", Toast.LENGTH_SHORT).show();
@@ -291,6 +311,7 @@ public class GroupDetailsActivity extends AppCompatActivity {
                 joinBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        GroupsRef.child(currentGroupID).child("Members").child(currentUserID).child("timestamp_joined").setValue(saveCurrentDate+" "+saveCurrentTime);
                         GroupsRef.child(currentGroupID).child("Members").child(currentUserID).child("role").setValue("Member");
                         GroupsRef.child(currentGroupID).child("Members").child(currentUserID).child("status").setValue("Pending");
                         Toast.makeText(GroupDetailsActivity.this, "You have sent a join request to the group.", Toast.LENGTH_SHORT).show();
@@ -309,7 +330,6 @@ public class GroupDetailsActivity extends AppCompatActivity {
 
             }
         }
-
     }
 
     private void RetrievePostsFromGroup() {
@@ -414,6 +434,7 @@ public class GroupDetailsActivity extends AppCompatActivity {
                                 public void onClick(View view) {
                                     Intent commentsIntent = new Intent(GroupDetailsActivity.this, CommentsActivity.class);
                                     commentsIntent.putExtra("PostKey", PostKey);
+                                    commentsIntent.putExtra("FeedType", "GroupFeed");
                                     startActivity(commentsIntent);
                                 }
                             });
@@ -423,6 +444,7 @@ public class GroupDetailsActivity extends AppCompatActivity {
                                 public void onClick(View view) {
                                     Intent likesIntent = new Intent(GroupDetailsActivity.this, LikesActivity.class);
                                     likesIntent.putExtra("PostKey", PostKey);
+                                    likesIntent.putExtra("FeedType", "GroupFeed");
                                     startActivity(likesIntent);
                                 }
                             });
@@ -506,7 +528,7 @@ public class GroupDetailsActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot suggestionSnapshot : dataSnapshot.getChildren()){
-                    if(!suggestionSnapshot.getKey().equals(currentUserID)){
+//                    if(!suggestionSnapshot.getKey().equals(currentUserID)){
                         String suggestion = suggestionSnapshot.child("fullname").getValue(String.class);
                         String profilepicstring = "";
                         if (suggestionSnapshot.hasChild("profileimage"))
@@ -545,7 +567,7 @@ public class GroupDetailsActivity extends AppCompatActivity {
                             });
 
                         }
-                    }
+//                    }
                 }
             }
 
@@ -804,7 +826,7 @@ public class GroupDetailsActivity extends AppCompatActivity {
 //            CommentPostButton = mView.findViewById(R.id.comment_button);
             DisplayNoOfLikes = mView.findViewById(R.id.display_no_of_likes);
 
-            LikesRef = FirebaseDatabase.getInstance().getReference().child("Likes");
+            LikesRef = FirebaseDatabase.getInstance().getReference().child("GroupLikes");
             currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         }
 

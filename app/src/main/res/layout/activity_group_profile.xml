@@ -120,7 +120,6 @@
                     android:text="Join Requests"
                     android:textSize="13dp" />
 
-
                 <View
                     android:id="@+id/btndivider"
                     android:layout_width="1dp"
@@ -145,9 +144,21 @@
             <Button
                 android:layout_width="230dp"
                 android:layout_height="wrap_content"
-                android:id="@+id/btn_members"
+                android:id="@+id/btn_groupride"
                 android:layout_below="@+id/adminlayout"
                 android:layout_marginTop="30dp"
+                android:background="@drawable/rounded_float_btn"
+                android:text="Start Ride"
+                android:layout_centerHorizontal="true"
+                style="@style/SecondaryBtn.Positive"
+                />
+
+            <Button
+                android:layout_width="230dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/btn_members"
+                android:layout_below="@+id/btn_groupride"
+                android:layout_marginTop="10dp"
                 android:background="@drawable/rounded_float_btn"
                 android:text="View Members"
                 android:layout_centerHorizontal="true"

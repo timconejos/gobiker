@@ -264,6 +264,7 @@ public class FeedFragment extends Fragment {
                                 public void onClick(View view) {
                                     Intent commentsIntent = new Intent(getActivity(), CommentsActivity.class);
                                     commentsIntent.putExtra("PostKey", PostKey);
+                                    commentsIntent.putExtra("FeedType", "HomeFeed");
                                     startActivity(commentsIntent);
                                 }
                             });
@@ -273,6 +274,7 @@ public class FeedFragment extends Fragment {
                                 public void onClick(View view) {
                                     Intent likesIntent = new Intent(getActivity(), LikesActivity.class);
                                     likesIntent.putExtra("PostKey", PostKey);
+                                    likesIntent.putExtra("FeedType", "HomeFeed");
                                     startActivity(likesIntent);
                                 }
                             });

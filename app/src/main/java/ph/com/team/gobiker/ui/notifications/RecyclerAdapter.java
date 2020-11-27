@@ -3,6 +3,7 @@ package ph.com.team.gobiker.ui.notifications;
 import android.app.LauncherActivity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,11 +25,13 @@ import ph.com.team.gobiker.FindFriendsActivity;
 import ph.com.team.gobiker.LikesActivity;
 import ph.com.team.gobiker.PersonProfileActivity;
 import ph.com.team.gobiker.R;
+import ph.com.team.gobiker.ui.home.GroupDetailsActivity;
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHolder> {
 
     private List<Notifications> listItems;
     private Context context;
+
 
     public RecyclerAdapter(List<Notifications> listItems, Context context){
         this.listItems = listItems;
@@ -55,23 +58,53 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         holder.notif_description.setText(listItem.getDescription());
         holder.notif_time.setText(listItem.getDate()+" "+listItem.getTime());
 
+        if(!listItem.getSeen()){
+            holder.notif_layout.setBackgroundColor(Color.LTGRAY);
+        }
+
         holder.notif_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(listItem.getNotiftype().equals("comment")){
                     Intent commentsIntent = new Intent(context, CommentsActivity.class);
                     commentsIntent.putExtra("PostKey", listItem.getPostid());
+                    commentsIntent.putExtra("FeedType", "GroupFeed");
                     context.startActivity(commentsIntent);
                 }
                 if(listItem.getNotiftype().equals("like")){
                     Intent likesIntent = new Intent(context, LikesActivity.class);
                     likesIntent.putExtra("PostKey", listItem.getPostid());
+                    likesIntent.putExtra("FeedType", "HomeFeed");
                     context.startActivity(likesIntent);
                 }
                 if(listItem.getNotiftype().equals("follow")){
                     Intent profileIntent =  new Intent(context, PersonProfileActivity.class);
                     profileIntent.putExtra("visit_user_id",listItem.getUid());
                     context.startActivity(profileIntent);
+                }
+                if(listItem.getNotiftype().equals("group_comment")){
+                    Intent commentsIntent = new Intent(context, CommentsActivity.class);
+                    commentsIntent.putExtra("PostKey", listItem.getPostid());
+                    commentsIntent.putExtra("FeedType", "GroupFeed");
+                    context.startActivity(commentsIntent);
+                }
+                if(listItem.getNotiftype().equals("group_like")){
+                    Intent likesIntent = new Intent(context, LikesActivity.class);
+                    likesIntent.putExtra("PostKey", listItem.getPostid());
+                    likesIntent.putExtra("FeedType", "GroupFeed");
+                    context.startActivity(likesIntent);
+                }
+                if(listItem.getNotiftype().equals("group_join")){
+                    Intent groupIntent =  new Intent(context, GroupDetailsActivity.class);
+                    groupIntent.putExtra("GroupID",listItem.getUid());
+                    groupIntent.putExtra("groupAction","joinrequests");
+                    context.startActivity(groupIntent);
+                }
+                if(listItem.getNotiftype().equals("group_member")){
+                    Intent groupIntent =  new Intent(context, GroupDetailsActivity.class);
+                    groupIntent.putExtra("GroupID",listItem.getUid());
+                    groupIntent.putExtra("groupAction","viewmembers");
+                    context.startActivity(groupIntent);
                 }
             }
         });

@@ -55,6 +55,7 @@ public class GroupsRecyclerAdapter extends RecyclerView.Adapter<GroupsRecyclerAd
             public void onClick(View view) {
                 Intent groupDetailsIntent = new Intent(context, GroupDetailsActivity.class);
                 groupDetailsIntent.putExtra("GroupID",listItem.getGroup_id());
+                groupDetailsIntent.putExtra("groupAction","none");
                 context.startActivity(groupDetailsIntent);
             }
         });

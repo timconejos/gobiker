@@ -69,8 +69,6 @@ public class ChatActivity extends AppCompatActivity {
 
         messageReceiverID = getIntent().getExtras().get("visit_user_id").toString();
 
-
-
         //messageReceiverName = getIntent().getExtras().get("userName").toString();
 
         InitializeFields();
