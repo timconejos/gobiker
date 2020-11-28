@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +32,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -58,11 +60,6 @@ import ph.com.team.gobiker.GroupChats;
 import ph.com.team.gobiker.R;
 import ph.com.team.gobiker.SearchAutoComplete;
 import ph.com.team.gobiker.SearchAutoCompleteAdapter;
-import ph.com.team.gobiker.ui.home.Posts;
-import ph.com.team.gobiker.ui.notifications.Notifications;
-import ph.com.team.gobiker.ui.notifications.NotificationsFragment;
-import ph.com.team.gobiker.ui.notifications.RecyclerAdapter;
-import ph.com.team.gobiker.user.User;
 
 public class ChatFragment extends Fragment {
 
@@ -71,6 +68,7 @@ public class ChatFragment extends Fragment {
     private DatabaseReference MessagesRef,UsersRef, GroupChatRef;
     private String currentUserID, vid;
     private Button newChatBtn;
+    public boolean fragmentActive = false;
 
     //new chat variables
     private List<SearchAutoComplete> profileList;
@@ -85,11 +83,50 @@ public class ChatFragment extends Fragment {
     private RecyclerView chatList;
     private ChatRecyclerAdapter chatadapter;
     private List<FindChat> chatitems;
-
+    private int chatctr = 0;
 
     //attachments variables
     final static int Gallery_Pick = 1;
     private Uri ImageUri;
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        fragmentActive = true;
+        mListener.setChatFragmentStatus(fragmentActive);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        fragmentActive = false;
+        mListener.setChatFragmentStatus(fragmentActive);
+    }
+
+    @Override
+    public void onStop(){
+        super.onStop();
+        fragmentActive = false;
+        mListener.setChatFragmentStatus(fragmentActive);
+    }
+
+    public interface Listener {
+        public void setChatFragmentStatus(boolean fragStatus);
+        public void passChatCtr(int chatctr);
+    }
+
+    private Listener mListener;
+
+    public void setListener(Listener listener) {
+        mListener = listener;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mListener = (Listener) context;
+    }
+
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -104,14 +141,7 @@ public class ChatFragment extends Fragment {
             }
         });
 
-        mAuth = FirebaseAuth.getInstance();
-        currentUserID = mAuth.getCurrentUser().getUid();
-        UsersRef = FirebaseDatabase.getInstance().getReference().child("Users");
-        GroupChatRef = FirebaseDatabase.getInstance().getReference().child("GroupChats");
-        MessagesRef = FirebaseDatabase.getInstance().getReference().child("Messages").child(currentUserID);
-
         newChatBtn = root.findViewById(R.id.new_convo);
-
         newChatBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -120,6 +150,8 @@ public class ChatFragment extends Fragment {
             }
         });
 
+        InitializeVariables();
+        chatNotifListener();
 
         //new chat users array
         profileList = new ArrayList<>();
@@ -127,6 +159,10 @@ public class ChatFragment extends Fragment {
         //chat messages adapter
         chatList = (RecyclerView) root.findViewById(R.id.all_users_msgs_list);
         chatList.setHasFixedSize(true);
+        chatList.setNestedScrollingEnabled(false);
+        chatList.setItemViewCacheSize(20);
+        chatList.setDrawingCacheEnabled(true);
+        chatList.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
         chatList.setLayoutManager(new LinearLayoutManager(getActivity()));
         chatitems = new ArrayList<>();
         chatadapter = new ChatRecyclerAdapter(chatitems, getActivity());
@@ -139,6 +175,15 @@ public class ChatFragment extends Fragment {
         RetrieveAllUsersMsgs();
 
         return root;
+    }
+
+    public void InitializeVariables(){
+        mAuth = FirebaseAuth.getInstance();
+        currentUserID = mAuth.getCurrentUser().getUid();
+        UsersRef = FirebaseDatabase.getInstance().getReference().child("Users");
+        GroupChatRef = FirebaseDatabase.getInstance().getReference().child("GroupChats");
+        MessagesRef = FirebaseDatabase.getInstance().getReference().child("Messages").child(currentUserID);
+
     }
 
     public class ViewChatDialog {
@@ -401,12 +446,43 @@ public class ChatFragment extends Fragment {
         });
     }
 
+    public void chatNotifListener(){
+        MessagesRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                chatctr = 0;
+                for(DataSnapshot idsnapshot : snapshot.getChildren()) {
+                    for (DataSnapshot childSnapshot: idsnapshot.getChildren()) {
+                        boolean isSeen;
+                        if(childSnapshot.child("isSeen").exists()){
+                            isSeen = (boolean) childSnapshot.child("isSeen").getValue();
+                            if(!isSeen){
+                                chatctr++;
+                                mListener.passChatCtr(chatctr);
+                            }else{
+                                mListener.passChatCtr(chatctr);
+                            }
+                        }
+
+                    }
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
     private void RetrieveAllUsersMsgs(){
         MessagesRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if(!chatitems.isEmpty()){
                     chatitems.clear();
+                    chatadapter.notifyDataSetChanged();
                 }
                 for(DataSnapshot idsnapshot : snapshot.getChildren()) {
                     UsersRef.child(idsnapshot.getKey()).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -436,12 +512,21 @@ public class ChatFragment extends Fragment {
 
                                                 String finalDatetimehldr = datetimehldr;
 
+                                                boolean isSeen;
+                                                if(childSnapshot.child("isSeen").exists()){
+                                                    isSeen = (boolean) childSnapshot.child("isSeen").getValue();
+                                                }else{
+                                                    isSeen = true;
+                                                }
 
                                                 FindChat chatItem = new FindChat(
-                                                        idsnapshot.getKey(), profilepicexists, dataSnapshot.child("fullname").getValue().toString(), childSnapshot.child("message").getValue().toString(), finalDatetimehldr, "single"
+                                                        idsnapshot.getKey(), profilepicexists, dataSnapshot.child("fullname").getValue().toString(), childSnapshot.child("message").getValue().toString(), finalDatetimehldr, "single", isSeen
                                                 );
-                                                chatitems.add(chatItem);
+                                                if(!chatitems.contains(chatItem)){
+                                                    chatitems.add(chatItem);
+                                                }
                                                 chatadapter.notifyDataSetChanged();
+
                                             }
                                         }
 
@@ -488,10 +573,19 @@ public class ChatFragment extends Fragment {
 
                                             String finalDatetimehldr = datetimehldr;
 
+                                            boolean isSeen;
+                                            if(childGroupSnapshot.child("isSeen").exists()){
+                                                isSeen = (boolean) childGroupSnapshot.child("isSeen").getValue();
+                                            }else{
+                                                isSeen = true;
+                                            }
+
                                             FindChat chatItem = new FindChat(
-                                                    idsnapshot.getKey(), finalGrouppicexists, gcdata.getGc_name(), childGroupSnapshot.child("message").getValue().toString(), finalDatetimehldr, "group"
+                                                    idsnapshot.getKey(), finalGrouppicexists, gcdata.getGc_name(), childGroupSnapshot.child("message").getValue().toString(), finalDatetimehldr, "group", isSeen
                                             );
-                                            chatitems.add(chatItem);
+                                            if(!chatitems.contains(chatItem)){
+                                                chatitems.add(chatItem);
+                                            }
                                             Collections.sort(chatitems, new TimeStampComparator());
                                             Collections.reverse(chatitems);
                                             chatadapter.notifyDataSetChanged();

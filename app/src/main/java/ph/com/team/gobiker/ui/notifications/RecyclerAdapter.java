@@ -60,6 +60,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 
         if(!listItem.getSeen()){
             holder.notif_layout.setBackgroundColor(Color.LTGRAY);
+        }else{
+            holder.notif_layout.setBackgroundColor(Color.WHITE);
         }
 
         holder.notif_layout.setOnClickListener(new View.OnClickListener() {

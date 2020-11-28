@@ -5,9 +5,12 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -17,7 +20,9 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
@@ -102,6 +107,20 @@ public class ChatGroupActivity extends AppCompatActivity {
     private Uri ImageUri;
     private Uri cameraUri;
     ContentValues values;
+    public static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 123;
+    private ChildEventListener ChildEventListener;
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        RootRef.child("Messages").child(messageSenderID).child(gcKey).removeEventListener(ChildEventListener);
+    }
+
+    @Override
+    public void onStop(){
+        super.onStop();
+        RootRef.child("Messages").child(messageSenderID).child(gcKey).removeEventListener(ChildEventListener);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,13 +133,7 @@ public class ChatGroupActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         messageSenderID = mAuth.getCurrentUser().getUid();
         gcKey = (String) getIntent().getExtras().get("gcKey");
-
-        values = new ContentValues();
-        values.put(MediaStore.Images.Media.TITLE, "New Picture");
-        values.put(MediaStore.Images.Media.DESCRIPTION, "From your Camera");
-        cameraUri = getContentResolver().insert(
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-
+        
         InitializeFields();
         DisplayReceiverInfo();
 
@@ -133,29 +146,38 @@ public class ChatGroupActivity extends AppCompatActivity {
                 builder.setTitle("File Upload");
 
                 builder.setItems(options, new DialogInterface.OnClickListener() {
-
                     @Override
                     public void onClick(DialogInterface dialog, int item) {
+                        if (checkPermissionREAD_EXTERNAL_STORAGE(ChatGroupActivity.this)) {
+                            values = new ContentValues();
+                            values.put(MediaStore.Images.Media.TITLE, "New Picture");
+                            values.put(MediaStore.Images.Media.DESCRIPTION, "From your Camera");
+                            cameraUri = getContentResolver().insert(
+                                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
 
-                        if (options[item].equals("Take Photo")) {
-                            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                            intent.putExtra(MediaStore.EXTRA_OUTPUT, cameraUri);
-                            startActivityForResult(intent, PICTURE_RESULT);
-                        } else if (options[item].equals("Choose from Gallery")) {
-                            gallery_type = "gc_picture_attachment";
-                            Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                            startActivityForResult(pickPhoto, GALLERY_PICK);
+                            if (options[item].equals("Take Photo")) {
+                                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                                intent.putExtra(MediaStore.EXTRA_OUTPUT, cameraUri);
+                                startActivityForResult(intent, PICTURE_RESULT);
+                            } else if (options[item].equals("Choose from Gallery")) {
+                                gallery_type = "gc_picture_attachment";
+                                Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                                startActivityForResult(pickPhoto, GALLERY_PICK);
 
-                        } else if (options[item].equals("Choose a File")) {
-                            Intent intent = new Intent()
-                                    .setType("*/*")
-                                    .setAction(Intent.ACTION_GET_CONTENT);
-                            intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
-                            intent.addCategory(Intent.CATEGORY_OPENABLE);
-                            startActivityForResult(Intent.createChooser(intent, "Select a file"), 123);
+                            } else if (options[item].equals("Choose a File")) {
+                                Intent intent = new Intent()
+                                        .setType("*/*")
+                                        .setAction(Intent.ACTION_GET_CONTENT);
+                                intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
+                                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                                startActivityForResult(Intent.createChooser(intent, "Select a file"), 123);
 
-                        } else if (options[item].equals("Cancel")) {
-                            dialog.dismiss();
+                            } else if (options[item].equals("Cancel")) {
+                                dialog.dismiss();
+                            }
+                        }else{
+                            showDialog("External storage", ChatGroupActivity.this,
+                                    Manifest.permission.READ_EXTERNAL_STORAGE);
                         }
                     }
                 });
@@ -174,15 +196,21 @@ public class ChatGroupActivity extends AppCompatActivity {
     }
 
     private void FetchMessages() {
-        RootRef.child("Messages").child(messageSenderID).child(gcKey)
+        ChildEventListener =  RootRef.child("Messages").child(messageSenderID).child(gcKey)
                 .addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                         if (dataSnapshot.exists()){
                             Messages messages = dataSnapshot.getValue(Messages.class);
                             messagesList.add(messages);
+                            userMessagesList.smoothScrollToPosition(messageAdapter.getItemCount());
                             messageAdapter.notifyDataSetChanged();
-                            userMessagesList.smoothScrollToPosition(messageAdapter.getItemCount() - 1);
+
+                            if(dataSnapshot.child("isSeen").exists()){
+                                if(!(boolean) dataSnapshot.child("isSeen").getValue()){
+                                    RootRef.child("Messages").child(messageSenderID).child(gcKey).child(dataSnapshot.getKey()).child("isSeen").setValue(true);
+                                }
+                            }
                         }
                     }
 
@@ -228,18 +256,27 @@ public class ChatGroupActivity extends AppCompatActivity {
                 saveCurrentTime = currentTime.format(calForDate.getTime());
 
                 Map messageTextBody = new HashMap();
+                Map receiverTextBody = new HashMap();
+                Map senderTextBody = new HashMap();
+
                 messageTextBody.put("message",messageText);
                 messageTextBody.put("time",saveCurrentTime);
                 messageTextBody.put("date",saveCurrentDate);
                 messageTextBody.put("type","text");
                 messageTextBody.put("from",messageSenderID);
 
+                senderTextBody.putAll(messageTextBody);
+                senderTextBody.put("isSeen", true);
+
+                receiverTextBody.putAll(messageTextBody);
+                receiverTextBody.put("isSeen", false);
+
                 Map messageBodyDetails = new HashMap();
-                messageBodyDetails.put(message_sender_ref+"/"+message_push_id,messageTextBody);
+                messageBodyDetails.put(message_sender_ref+"/"+message_push_id,senderTextBody);
 
                 for(int x=0; x<messageReceivers.size(); x++){
                     String message_receiver_ref = "Messages/" + messageReceivers.get(x).split(" / ")[0] + "/" +  gcKey;
-                    messageBodyDetails.put(message_receiver_ref+"/"+message_push_id,messageTextBody);
+                    messageBodyDetails.put(message_receiver_ref+"/"+message_push_id,receiverTextBody);
                 }
 
                 RootRef.updateChildren(messageBodyDetails).addOnCompleteListener(new OnCompleteListener() {
@@ -390,6 +427,10 @@ public class ChatGroupActivity extends AppCompatActivity {
         userMessagesList = findViewById(R.id.messages_list_users);
         linearLayoutManager = new LinearLayoutManager(this);
         userMessagesList.setHasFixedSize(true);
+        userMessagesList.setNestedScrollingEnabled(false);
+        userMessagesList.setItemViewCacheSize(20);
+        userMessagesList.setDrawingCacheEnabled(true);
+        userMessagesList.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
         userMessagesList.setLayoutManager(linearLayoutManager);
         userMessagesList.setAdapter(messageAdapter);
 
@@ -901,6 +942,8 @@ public class ChatGroupActivity extends AppCompatActivity {
                             SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm:ss");
                             saveCurrentTime = currentTime.format(calForDate.getTime());
                             Map messageTextBody = new HashMap();
+                            Map receiverTextBody = new HashMap();
+                            Map senderTextBody = new HashMap();
 
                             if(filetype.equals("image")){
                                 messageTextBody.put("message", messageSenderName + " sent an image");
@@ -914,12 +957,18 @@ public class ChatGroupActivity extends AppCompatActivity {
                             messageTextBody.put("from", messageSenderID);
                             messageTextBody.put("fileString", uri.toString());
 
+                            senderTextBody.putAll(messageTextBody);
+                            senderTextBody.put("isSeen", true);
+
+                            receiverTextBody.putAll(messageTextBody);
+                            receiverTextBody.put("isSeen", false);
+
                             Map messageBodyDetails = new HashMap();
-                            messageBodyDetails.put(message_sender_ref + "/" + message_push_id, messageTextBody);
+                            messageBodyDetails.put(message_sender_ref + "/" + message_push_id, senderTextBody);
 
                             for(int x=0; x<messageReceivers.size(); x++){
                                 String message_receiver_ref = "Messages/" + messageReceivers.get(x).split(" / ")[0] + "/" +  gcKey;
-                                messageBodyDetails.put(message_receiver_ref + "/" + message_push_id, messageTextBody);
+                                messageBodyDetails.put(message_receiver_ref + "/" + message_push_id, receiverTextBody);
                             }
 
                             RootRef.updateChildren(messageBodyDetails).addOnCompleteListener(new OnCompleteListener() {
@@ -951,5 +1000,70 @@ public class ChatGroupActivity extends AppCompatActivity {
         MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
         extension= mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
         return extension;
+    }
+
+    public boolean checkPermissionREAD_EXTERNAL_STORAGE(
+            final Context context) {
+        int currentAPIVersion = Build.VERSION.SDK_INT;
+        if (currentAPIVersion >= android.os.Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(context,
+                    Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(
+                        (Activity) context,
+                        Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                    showDialog("External storage", context,
+                            Manifest.permission.READ_EXTERNAL_STORAGE);
+
+                } else {
+                    ActivityCompat
+                            .requestPermissions(
+                                    (Activity) context,
+                                    new String[] { Manifest.permission.READ_EXTERNAL_STORAGE },
+                                    MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+                }
+                return false;
+            } else {
+                return true;
+            }
+
+        } else {
+            return true;
+        }
+    }
+
+    public void showDialog(final String msg, final Context context,
+                           final String permission) {
+        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(context);
+        alertBuilder.setCancelable(true);
+        alertBuilder.setTitle("Permission necessary");
+        alertBuilder.setMessage(msg + " permission is necessary");
+        alertBuilder.setPositiveButton(android.R.string.yes,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        ActivityCompat.requestPermissions((Activity) context,
+                                new String[] { permission },
+                                MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+                    }
+                });
+        AlertDialog alert = alertBuilder.create();
+        alert.show();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // do your stuff
+                } else {
+                    Toast.makeText(ChatGroupActivity.this, "GET_ACCOUNTS Denied",
+                            Toast.LENGTH_SHORT).show();
+                }
+                break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions,
+                        grantResults);
+        }
     }
 }
