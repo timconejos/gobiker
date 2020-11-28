@@ -1,7 +1,15 @@
 package ph.com.team.gobiker;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.media.RingtoneManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.view.LayoutInflater;
@@ -21,6 +29,7 @@ import com.google.maps.GeoApiContext;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
@@ -185,6 +194,7 @@ public class NavActivity extends AppCompatActivity implements NotificationsFragm
             for(int x=0; x<notifarr.size(); x++){
                 if(!notifarr.get(x).isSeen()){
                     falsectr++;
+//                    notifyThis("Notification", notifarr.get(x).getDescription());
                 }
             }
 
@@ -214,5 +224,47 @@ public class NavActivity extends AppCompatActivity implements NotificationsFragm
         }else{
             navView.removeBadge(R.id.navigation_chat);
         }
+    }
+
+    private void notifyThis(String title, String message){
+        NotificationManager mNotificationManager;
+
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(NavActivity.this, "notify_001");
+        Intent ii = new Intent(NavActivity.this, NavActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(NavActivity.this, 0, ii, 0);
+
+        NotificationCompat.BigTextStyle bigText = new NotificationCompat.BigTextStyle();;
+        mBuilder.setContentIntent(pendingIntent);
+        mBuilder.setSmallIcon(R.drawable.logo);
+        mBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.logo));
+        mBuilder.setContentTitle(title);
+        mBuilder.setContentText(message);
+        mBuilder.setPriority(Notification.PRIORITY_MAX);
+        mBuilder.setDefaults(Notification.DEFAULT_LIGHTS| Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE);
+        mBuilder.setContentInfo("GoBiker");
+        mBuilder.setStyle(bigText);
+
+        mNotificationManager =
+                (NotificationManager) NavActivity.this.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+        {
+            String channelId = "1003";
+            NotificationChannel channel = new NotificationChannel(
+                    channelId,
+                    "GoBiker Notification Channel",
+                    NotificationManager.IMPORTANCE_HIGH);
+            channel.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION), null);
+            channel.setLightColor(Color.GREEN);
+            channel.enableVibration(true);
+            channel.enableLights(true);
+            mNotificationManager.createNotificationChannel(channel);
+
+
+            mBuilder.setChannelId(channelId);
+        }
+
+        mNotificationManager.notify(0, mBuilder.build());
     }
 }

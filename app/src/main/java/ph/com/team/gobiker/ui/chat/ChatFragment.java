@@ -2,6 +2,9 @@ package ph.com.team.gobiker.ui.chat;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -21,6 +24,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -57,6 +61,7 @@ import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import ph.com.team.gobiker.GroupChats;
+import ph.com.team.gobiker.NavActivity;
 import ph.com.team.gobiker.R;
 import ph.com.team.gobiker.SearchAutoComplete;
 import ph.com.team.gobiker.SearchAutoCompleteAdapter;
