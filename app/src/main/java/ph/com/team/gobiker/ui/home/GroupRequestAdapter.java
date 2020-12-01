@@ -84,6 +84,7 @@ public class GroupRequestAdapter extends RecyclerView.Adapter<GroupRequestAdapte
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         if(task.isSuccessful()){
+                                            RootReference.child("Users").child(listItem.getUid()).child("groupsJoined").child(listItem.getGid()).setValue("Accepted");
                                             Toast.makeText(context, "You have successfully APPROVED the join request.", Toast.LENGTH_SHORT).show();
                                             ((GroupDetailsActivity)context).profileSelectedList.clear();
                                             ((GroupDetailsActivity)context).profileadapter.notifyDataSetChanged();
@@ -104,6 +105,7 @@ public class GroupRequestAdapter extends RecyclerView.Adapter<GroupRequestAdapte
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         if(task.isSuccessful()){
+                                            RootReference.child("Users").child(listItem.getUid()).child("groupsJoined").child(listItem.getGid()).removeValue();
                                             Toast.makeText(context, "You have successfully DISAPPROVED the join request.", Toast.LENGTH_SHORT).show();
                                             ((GroupDetailsActivity)context).profileSelectedList.clear();
                                             ((GroupDetailsActivity)context).profileadapter.notifyDataSetChanged();

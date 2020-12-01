@@ -301,6 +301,7 @@ public class GroupDetailsActivity extends AppCompatActivity {
                         GroupsRef.child(currentGroupID).child("Members").child(currentUserID).child("timestamp_joined").setValue(saveCurrentDate+" "+saveCurrentTime);
                         GroupsRef.child(currentGroupID).child("Members").child(currentUserID).child("role").setValue("Member");
                         GroupsRef.child(currentGroupID).child("Members").child(currentUserID).child("status").setValue("Accepted");
+                        UsersRef.child(currentUserID).child("groupsJoined").child(currentGroupID).setValue("Accepted");
                         Toast.makeText(GroupDetailsActivity.this, "You have joined the group.", Toast.LENGTH_SHORT).show();
                         joinBtn.setText("Leave Group");
                     }
@@ -314,6 +315,7 @@ public class GroupDetailsActivity extends AppCompatActivity {
                         GroupsRef.child(currentGroupID).child("Members").child(currentUserID).child("timestamp_joined").setValue(saveCurrentDate+" "+saveCurrentTime);
                         GroupsRef.child(currentGroupID).child("Members").child(currentUserID).child("role").setValue("Member");
                         GroupsRef.child(currentGroupID).child("Members").child(currentUserID).child("status").setValue("Pending");
+                        UsersRef.child(currentUserID).child("groupsJoined").child(currentGroupID).setValue("Pending");
                         Toast.makeText(GroupDetailsActivity.this, "You have sent a join request to the group.", Toast.LENGTH_SHORT).show();
                         joinBtn.setText("Cancel Join Request");
                     }
@@ -323,6 +325,7 @@ public class GroupDetailsActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         GroupsRef.child(currentGroupID).child("Members").child(currentUserID).removeValue();
+                        UsersRef.child(currentUserID).child("groupsJoined").child(currentGroupID).removeValue();
                         Toast.makeText(GroupDetailsActivity.this, "You have cancelled your join request the group.", Toast.LENGTH_SHORT).show();
                         joinBtn.setText("Join");
                     }
