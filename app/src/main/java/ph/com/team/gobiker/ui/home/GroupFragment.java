@@ -73,7 +73,7 @@ public class GroupFragment extends Fragment {
 
     private FirebaseAuth mAuth;
     private RecyclerView groupPostList;
-    private DatabaseReference UsersRef, GroupsRef, PostsRef, LikesRef;
+    private DatabaseReference UsersRef, GroupsRef, PostsRef, LikesRef, GroupLikesRef;
     private String currentUserID, vid;
     private List<SearchAutoComplete> profileList;
     private RecyclerView profileSelectedView, groupView;
@@ -565,8 +565,12 @@ public class GroupFragment extends Fragment {
 
                     if(groupname != null){
                         if(groupSnapshot.child("Members").hasChild(currentUserID)){
-                            groupList.add(new Groups(groupSnapshot.getKey(), groupname, profilepicstring, grouptype, groupstatus, groupcreatedate, "Joined"));
-                            joinedGroupList.add(new Groups(groupSnapshot.getKey(), groupname, profilepicstring, grouptype, groupstatus, groupcreatedate, "Joined"));
+                            String groupmembershipstatus = "Pending";
+                            if(groupSnapshot.child("Members").child(currentUserID).child("status").getValue().toString().equals("Accepted")){
+                                groupmembershipstatus = "Joined";
+                            }
+                            groupList.add(new Groups(groupSnapshot.getKey(), groupname, profilepicstring, grouptype, groupstatus, groupcreatedate, groupmembershipstatus));
+                            joinedGroupList.add(new Groups(groupSnapshot.getKey(), groupname, profilepicstring, grouptype, groupstatus, groupcreatedate, groupmembershipstatus));
                         }else{
                             groupList.add(new Groups(groupSnapshot.getKey(), groupname, profilepicstring, grouptype, groupstatus, groupcreatedate, ""));
                         }
@@ -715,6 +719,7 @@ public class GroupFragment extends Fragment {
                             public void onClick(View view) {
                                 Intent commentsIntent = new Intent(getActivity(), CommentsActivity.class);
                                 commentsIntent.putExtra("PostKey", PostKey);
+                                commentsIntent.putExtra("FeedType", "GroupFeed");
                                 startActivity(commentsIntent);
                             }
                         });
@@ -724,6 +729,7 @@ public class GroupFragment extends Fragment {
                             public void onClick(View view) {
                                 Intent likesIntent = new Intent(getActivity(), LikesActivity.class);
                                 likesIntent.putExtra("PostKey", PostKey);
+                                likesIntent.putExtra("FeedType", "GroupFeed");
                                 startActivity(likesIntent);
                             }
                         });
@@ -737,10 +743,12 @@ public class GroupFragment extends Fragment {
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                         if (LikeChecker.equals(true)) {
                                             if (dataSnapshot.hasChild(currentUserID)) {
+                                                Toast.makeText(getActivity(), "remove like", Toast.LENGTH_SHORT).show();
                                                 LikesRef.child(PostKey).child("Likes").child(currentUserID).child(currentUserID).removeValue();
                                                 LikesRef.child(PostKey).child("Likes").child(currentUserID).child("Timestamp").removeValue();
                                                 LikeChecker = false;
                                             } else {
+                                                Toast.makeText(getActivity(), "add like", Toast.LENGTH_SHORT).show();
                                                 LikesRef.child(PostKey).child("Likes").child(currentUserID).child(currentUserID).setValue(true);
                                                 Calendar calForDate = Calendar.getInstance();
                                                 SimpleDateFormat currentDate = new SimpleDateFormat("MM-dd-yyyy");
@@ -824,7 +832,7 @@ public class GroupFragment extends Fragment {
 //            CommentPostButton = mView.findViewById(R.id.comment_button);
             DisplayNoOfLikes = mView.findViewById(R.id.display_no_of_likes);
 
-            LikesRef = FirebaseDatabase.getInstance().getReference().child("Likes");
+            LikesRef = FirebaseDatabase.getInstance().getReference().child("GroupLikes");
             currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         }
 

@@ -128,6 +128,7 @@ public class NotificationsFragment extends Fragment {
         LikesRef = FirebaseDatabase.getInstance().getReference().child("Likes");
         GroupsRef = FirebaseDatabase.getInstance().getReference().child("Groups");
         GroupPostsRef = FirebaseDatabase.getInstance().getReference().child("GroupPosts");
+        GroupLikesRef = FirebaseDatabase.getInstance().getReference().child("GroupLikes");
         currentUserID = mAuth.getCurrentUser().getUid();
 
         listItems = new ArrayList<>();
@@ -184,6 +185,18 @@ public class NotificationsFragment extends Fragment {
         });
 
         GroupPostsRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                checkPostActivities(fromtype);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        GroupLikesRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 checkPostActivities(fromtype);
@@ -325,41 +338,15 @@ public class NotificationsFragment extends Fragment {
 
                                                             //check if call is from this fragment or the main nav activity
                                                             if(fromtype.equals("fromfragment")){
-                                                                if(likesSnapshot.child("groupID").exists()){
-                                                                    String finalTimestamphldr = timestamphldr;
-                                                                    String finalFullnamestring = fullnamestring;
-                                                                    String finalProfilepicstring = profilepicstring;
-                                                                    GroupsRef.child(likesSnapshot.child("groupID").getValue().toString()).addListenerForSingleValueEvent(new ValueEventListener() {
-                                                                        @Override
-                                                                        public void onDataChange(@NonNull DataSnapshot groupsnapshot) {
-                                                                            Notifications listItem = new Notifications(
-                                                                                    likesSnapshot.getKey(), finalTimestamphldr.split(" ")[1], finalTimestamphldr.split(" ")[0], finalFullnamestring +" liked your post in "+groupsnapshot.child("group_name").getValue().toString(), finalProfilepicstring, "like", idSnapshot.getKey(), isSeenVal
-                                                                            );
+                                                                Notifications listItem = new Notifications(
+                                                                        likesSnapshot.getKey(), timestamphldr.split(" ")[1], timestamphldr.split(" ")[0], fullnamestring+" liked your post.", profilepicstring, "like", idSnapshot.getKey(), isSeenVal
+                                                                );
 
-                                                                            if(!listItems.contains(listItem)){
-                                                                                listItems.add(listItem);
-                                                                                Collections.sort(listItems, new TimeStampComparator());
-                                                                                Collections.reverse(listItems);
-                                                                                adapter.notifyDataSetChanged();
-                                                                            }
-                                                                        }
-
-                                                                        @Override
-                                                                        public void onCancelled(@NonNull DatabaseError error) {
-
-                                                                        }
-                                                                    });
-                                                                }else{
-                                                                    Notifications listItem = new Notifications(
-                                                                            likesSnapshot.getKey(), timestamphldr.split(" ")[1], timestamphldr.split(" ")[0], fullnamestring+" liked your post.", profilepicstring, "like", idSnapshot.getKey(), isSeenVal
-                                                                    );
-
-                                                                    if(!listItems.contains(listItem)){
-                                                                        listItems.add(listItem);
-                                                                        Collections.sort(listItems, new TimeStampComparator());
-                                                                        Collections.reverse(listItems);
-                                                                        adapter.notifyDataSetChanged();
-                                                                    }
+                                                                if(!listItems.contains(listItem)){
+                                                                    listItems.add(listItem);
+                                                                    Collections.sort(listItems, new TimeStampComparator());
+                                                                    Collections.reverse(listItems);
+                                                                    adapter.notifyDataSetChanged();
                                                                 }
 
                                                                 // check if NotificationsFragment is currently opened. IF YES update is SEEN value
@@ -505,150 +492,300 @@ public class NotificationsFragment extends Fragment {
                 if (snapshot.exists()) {
                     for (DataSnapshot idsnapshot : snapshot.getChildren()) {
                         if(idsnapshot.child("Members").hasChild(currentUserID)){
-                            if(idsnapshot.child("group_type").getValue().toString().equals("Private")){
-                                GroupsRef.child(idsnapshot.getKey()).child("Members").addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot groupmembersnap) {
-                                        for (DataSnapshot groupusersnapshot : groupmembersnap.getChildren()) {
-                                            if(!groupusersnapshot.getKey().equals(currentUserID)){
-                                                if(groupusersnapshot.child("status").getValue().toString().equals("Pending")){
-                                                    UsersRef.child(groupusersnapshot.getKey()).addListenerForSingleValueEvent(new ValueEventListener() {
-                                                        @Override
-                                                        public void onDataChange(@NonNull DataSnapshot profilesnapshot) {
-                                                            if(profilesnapshot.exists()){
-                                                                String profilepicstring = "";
-                                                                boolean isSeenVal = false;
-                                                                if (profilesnapshot.hasChild("profileimage"))
-                                                                    profilepicstring = profilesnapshot.child("profileimage").getValue().toString();
-                                                                else
-                                                                    profilepicstring = "";
+                            GroupsRef.child(idsnapshot.getKey()).child("Members").addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot groupmembersnap) {
+                                    for (DataSnapshot groupusersnapshot : groupmembersnap.getChildren()) {
+                                        if(!groupusersnapshot.getKey().equals(currentUserID)){
+                                            UsersRef.child(groupusersnapshot.getKey()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(@NonNull DataSnapshot profilesnapshot) {
+                                                    if(profilesnapshot.exists()){
+                                                        String profilepicstring = "";
+                                                        String timestampjoinedstring = "";
+                                                        String notifmessage = "";
+                                                        String notiftype = "";
+                                                        boolean isSeenVal = false;
+                                                        if (profilesnapshot.hasChild("profileimage"))
+                                                            profilepicstring = profilesnapshot.child("profileimage").getValue().toString();
+                                                        else
+                                                            profilepicstring = "";
 
-                                                                Log.w("username", profilesnapshot.child("fullname").getValue().toString());
+                                                        if(groupusersnapshot.hasChild("timestamp_joined")){
+                                                            timestampjoinedstring = groupusersnapshot.child("timestamp_joined").getValue().toString();
+                                                        }else{
+                                                            timestampjoinedstring = "-- --";
+                                                        }
 
-                                                                if(fromtype.equals("fromfragment")){
-                                                                    Notifications listItem = new Notifications(
-                                                                            groupusersnapshot.getKey(), "--", "--", profilesnapshot.child("fullname").getValue().toString()+" has a join request on your group: "+idsnapshot.child("group_name").getValue().toString(), profilepicstring, "group_join", idsnapshot.getKey(), isSeenVal
-                                                                    );
-
-                                                                    if(!listItems.contains(listItem)){
-                                                                        listItems.add(listItem);
-                                                                        Collections.sort(listItems, new TimeStampComparator());
-                                                                        Collections.reverse(listItems);
-                                                                        adapter.notifyDataSetChanged();
-                                                                    }
-
-                                                                }else{
-                                                                    if(!isSeenVal){
-                                                                        NotificationSeenCheck seenItem = new NotificationSeenCheck(
-                                                                                profilesnapshot.child("fullname").getValue().toString()+" has a join request on your group: "+idsnapshot.child("group_name").getValue().toString(), isSeenVal
-                                                                        );
-                                                                        if(!notificationSeenItems.contains(seenItem)){
-                                                                            notificationSeenItems.add(seenItem);
-                                                                            mListener.passNotifCtr(notificationSeenItems);
-                                                                        }
-                                                                    }
-                                                                }
+                                                        if(idsnapshot.child("group_type").getValue().toString().equals("Private")){
+                                                            if(groupusersnapshot.child("status").getValue().toString().equals("Pending")){
+                                                                notifmessage = profilesnapshot.child("fullname").getValue().toString()+" has a join request on your group: "+idsnapshot.child("group_name").getValue().toString();
+                                                                notiftype = "group_join";
+                                                                isSeenVal = false;
+                                                            }else if(groupusersnapshot.child("status").getValue().toString().equals("Accepted")){
+                                                                notifmessage = profilesnapshot.child("fullname").getValue().toString()+" has joined the group: "+idsnapshot.child("group_name").getValue().toString();
+                                                                notiftype = "group_member";
+                                                                isSeenVal = true;
+                                                            }
+                                                        }else if(idsnapshot.child("group_type").getValue().toString().equals("Public")){
+                                                            if(groupusersnapshot.child("status").getValue().toString().equals("Accepted")){
+                                                                notifmessage = profilesnapshot.child("fullname").getValue().toString()+" has joined the group: "+idsnapshot.child("group_name").getValue().toString();
+                                                                notiftype = "group_member";
+                                                                isSeenVal = true;
                                                             }
                                                         }
 
-                                                        @Override
-                                                        public void onCancelled(@NonNull DatabaseError error) {
+                                                        if(fromtype.equals("fromfragment")){
+                                                            Notifications listItem = new Notifications(
+                                                                    idsnapshot.getKey(), timestampjoinedstring.split(" ")[1],  timestampjoinedstring.split(" ")[0], notifmessage, profilepicstring, notiftype, groupusersnapshot.getKey(), isSeenVal
+                                                            );
 
+                                                            if(!listItems.contains(listItem)){
+                                                                listItems.add(listItem);
+                                                                Collections.sort(listItems, new TimeStampComparator());
+                                                                Collections.reverse(listItems);
+                                                                adapter.notifyDataSetChanged();
+                                                            }
+
+                                                        }else{
+                                                            if(!isSeenVal){
+                                                                NotificationSeenCheck seenItem = new NotificationSeenCheck(
+                                                                        notifmessage, isSeenVal
+                                                                );
+                                                                if(!notificationSeenItems.contains(seenItem)){
+                                                                    notificationSeenItems.add(seenItem);
+                                                                    mListener.passNotifCtr(notificationSeenItems);
+                                                                }
+                                                            }
                                                         }
-                                                    });
+                                                    }
+                                                }
+
+                                                @Override
+                                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                                }
+                                            });
+                                        }
+
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
+
+                            GroupPostsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    for (DataSnapshot postSnapshot: snapshot.getChildren()) {
+                                        for (DataSnapshot postKeySnapshot : postSnapshot.getChildren()) {
+                                            if (postKeySnapshot.exists()) {
+                                                for (DataSnapshot commentSnapshot : postKeySnapshot.getChildren()) {
+                                                    if (commentSnapshot.exists()) {
+                                                        Posts post = postSnapshot.getValue(Posts.class);
+                                                        Comments comment = commentSnapshot.getValue(Comments.class);
+                                                        if(currentUserID.equals(post.getUid())){
+                                                            UsersRef.child(comment.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                                                @Override
+                                                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                                    if (dataSnapshot.exists()) {
+                                                                        String profilepicstring = "";
+                                                                        boolean isSeenVal;
+                                                                        if (dataSnapshot.hasChild("profileimage"))
+                                                                            profilepicstring = dataSnapshot.child("profileimage").getValue().toString();
+                                                                        else
+                                                                            profilepicstring = "";
+
+                                                                        if(commentSnapshot.hasChild("isSeen")){
+                                                                            isSeenVal = comment.getSeen();
+
+                                                                        }else{
+                                                                            isSeenVal = true;
+                                                                        }
+
+                                                                        //check if call is from this fragment or the main nav activity
+                                                                        if(fromtype.equals("fromfragment")){
+                                                                            Notifications listItem = new Notifications(
+                                                                                    comment.getUid(), comment.getTime(), comment.getDate(), comment.getUsername()+" commented on your post: "+comment.getComments(), profilepicstring, "group_comment", postSnapshot.getKey(), isSeenVal
+                                                                            );
+
+                                                                            if(!listItems.contains(listItem)){
+                                                                                listItems.add(listItem);
+                                                                                adapter.notifyDataSetChanged();
+                                                                            }
+
+                                                                            // check if NotificationsFragment is currently opened. IF YES update is SEEN value
+                                                                            if(fragmentActive){
+                                                                                GroupPostsRef.child(postSnapshot.getKey()).child("Comments").child(commentSnapshot.getKey()).child("isSeen").setValue(true);
+                                                                            }
+
+                                                                        }else{
+                                                                            if(!isSeenVal){
+                                                                                NotificationSeenCheck seenItem = new NotificationSeenCheck(
+                                                                                        comment.getUsername()+" commented on your post: "+comment.getComments(), isSeenVal
+                                                                                );
+                                                                                if(!notificationSeenItems.contains(seenItem)){
+                                                                                    notificationSeenItems.add(seenItem);
+                                                                                    mListener.passNotifCtr(notificationSeenItems);
+                                                                                }
+                                                                            }
+                                                                        }
+
+
+                                                                    }
+                                                                }
+
+                                                                @Override
+                                                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                                                }
+                                                            });
+                                                        }
+                                                    }
                                                 }
                                             }
-
                                         }
                                     }
+                                }
 
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError error) {
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
 
+                                }
+                            });
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        GroupLikesRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot idSnapshot: dataSnapshot.getChildren()) {
+                        GroupPostsRef.child(idSnapshot.getKey()).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot postsnapshot) {
+                                if(postsnapshot.exists()){
+                                    if(postsnapshot.child("uid").getValue().toString().equals(currentUserID)){
+                                        for(DataSnapshot likeHldrSnap: idSnapshot.getChildren()){
+                                            for(DataSnapshot likesSnapshot: likeHldrSnap.getChildren()){
+                                                Likes like = likesSnapshot.getValue(Likes.class);
+                                                UsersRef.child(likesSnapshot.getKey()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                                    @Override
+                                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                        if (dataSnapshot.exists()) {
+                                                            String fullnamestring = "";
+                                                            String profilepicstring = "";
+                                                            boolean isSeenVal;
+                                                            fullnamestring = dataSnapshot.child("fullname").getValue().toString();
+                                                            if (dataSnapshot.hasChild("profileimage"))
+                                                                profilepicstring = dataSnapshot.child("profileimage").getValue().toString();
+                                                            else
+                                                                profilepicstring = "";
+
+                                                            String timestamphldr = "";
+                                                            if(likesSnapshot.child("Timestamp").exists()){
+                                                                timestamphldr = likesSnapshot.child("Timestamp").getValue().toString();
+                                                            }else {
+                                                                timestamphldr="-- --";
+                                                            }
+
+                                                            if(likesSnapshot.hasChild("isSeen")){
+                                                                isSeenVal = like.isSeen();
+                                                            }else{
+                                                                isSeenVal = true;
+                                                            }
+
+                                                            //check if call is from this fragment or the main nav activity
+                                                            if(fromtype.equals("fromfragment")){
+                                                                if(likesSnapshot.child("groupID").exists()){
+                                                                    String finalTimestamphldr = timestamphldr;
+                                                                    String finalFullnamestring = fullnamestring;
+                                                                    String finalProfilepicstring = profilepicstring;
+                                                                    GroupsRef.child(likesSnapshot.child("groupID").getValue().toString()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                                                        @Override
+                                                                        public void onDataChange(@NonNull DataSnapshot groupsnapshot) {
+                                                                            Notifications listItem = new Notifications(
+                                                                                    likesSnapshot.getKey(), finalTimestamphldr.split(" ")[1], finalTimestamphldr.split(" ")[0], finalFullnamestring +" liked your post in "+groupsnapshot.child("group_name").getValue().toString(), finalProfilepicstring, "group_like", idSnapshot.getKey(), isSeenVal
+                                                                            );
+
+                                                                            if(!listItems.contains(listItem)){
+                                                                                listItems.add(listItem);
+                                                                                Collections.sort(listItems, new TimeStampComparator());
+                                                                                Collections.reverse(listItems);
+                                                                                adapter.notifyDataSetChanged();
+                                                                            }
+                                                                        }
+
+                                                                        @Override
+                                                                        public void onCancelled(@NonNull DatabaseError error) {
+
+                                                                        }
+                                                                    });
+                                                                }
+
+                                                                // check if NotificationsFragment is currently opened. IF YES update is SEEN value
+                                                                if(fragmentActive){
+                                                                    GroupLikesRef.child(postsnapshot.getKey()).child("Likes").child(likesSnapshot.getKey()).child("isSeen").setValue(true);
+                                                                }
+
+                                                            }else{
+                                                                if(!isSeenVal){
+                                                                    String finalFullnamestring1 = fullnamestring;
+                                                                    GroupsRef.child(likesSnapshot.child("groupID").getValue().toString()).addListenerForSingleValueEvent(new ValueEventListener() {
+
+                                                                        @Override
+                                                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                                                                        NotificationSeenCheck seenItem = new NotificationSeenCheck(
+                                                                                finalFullnamestring1 +" liked your post in "+snapshot.child("group_name").getValue().toString(), isSeenVal
+                                                                        );
+                                                                        if(!notificationSeenItems.contains(seenItem)){
+                                                                                notificationSeenItems.add(seenItem);
+                                                                                mListener.passNotifCtr(notificationSeenItems);
+                                                                            }
+
+                                                                        }
+
+                                                                        @Override
+                                                                        public void onCancelled(@NonNull DatabaseError error) {
+
+                                                                        }
+                                                                    });
+                                                                }
+                                                            }
+
+                                                        }
+                                                    }
+
+                                                    @Override
+                                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                                    }
+                                                });
+                                            }
+                                        }
                                     }
-                                });
+                                }
                             }
 
-//                            GroupPostsRef.addListenerForSingleValueEvent(new ValueEventListener() {
-//                                @Override
-//                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                                    for (DataSnapshot postSnapshot: snapshot.getChildren()) {
-//                                        for (DataSnapshot postKeySnapshot : postSnapshot.getChildren()) {
-//                                            if (postKeySnapshot.exists()) {
-//                                                for (DataSnapshot commentSnapshot : postKeySnapshot.getChildren()) {
-//                                                    if (commentSnapshot.exists()) {
-//                                                        Posts post = postSnapshot.getValue(Posts.class);
-//                                                        Comments comment = commentSnapshot.getValue(Comments.class);
-//                                                        if(currentUserID.equals(post.getUid())){
-//                                                            UsersRef.child(comment.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
-//                                                                @Override
-//                                                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                                                                    if (dataSnapshot.exists()) {
-//                                                                        String profilepicstring = "";
-//                                                                        boolean isSeenVal;
-//                                                                        if (dataSnapshot.hasChild("profileimage"))
-//                                                                            profilepicstring = dataSnapshot.child("profileimage").getValue().toString();
-//                                                                        else
-//                                                                            profilepicstring = "";
-//
-//                                                                        if(commentSnapshot.hasChild("isSeen")){
-//                                                                            isSeenVal = comment.getSeen();
-//
-//                                                                        }else{
-//                                                                            isSeenVal = true;
-//                                                                        }
-//
-//                                                                        //check if call is from this fragment or the main nav activity
-//                                                                        if(fromtype.equals("fromfragment")){
-//                                                                            Notifications listItem = new Notifications(
-//                                                                                    comment.getUid(), comment.getTime(), comment.getDate(), comment.getUsername()+" commented on your post: "+comment.getComments(), profilepicstring, "comment", postSnapshot.getKey(), isSeenVal
-//                                                                            );
-//
-//                                                                            if(!listItems.contains(listItem)){
-//                                                                                listItems.add(listItem);
-//                                                                                adapter.notifyDataSetChanged();
-//                                                                            }
-//
-//                                                                            // check if NotificationsFragment is currently opened. IF YES update is SEEN value
-//                                                                            if(fragmentActive){
-//                                                                                GroupPostsRef.child(postSnapshot.getKey()).child("Comments").child(commentSnapshot.getKey()).child("isSeen").setValue(true);
-//                                                                            }
-//
-//                                                                        }else{
-//                                                                            if(!isSeenVal){
-//                                                                                NotificationSeenCheck seenItem = new NotificationSeenCheck(
-//                                                                                        comment.getUsername()+" commented on your post: "+comment.getComments(), isSeenVal
-//                                                                                );
-//                                                                                if(!notificationSeenItems.contains(seenItem)){
-//                                                                                    notificationSeenItems.add(seenItem);
-//                                                                                    mListener.passNotifCtr(notificationSeenItems);
-//                                                                                }
-//                                                                            }
-//                                                                        }
-//
-//
-//                                                                    }
-//                                                                }
-//
-//                                                                @Override
-//                                                                public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//                                                                }
-//                                                            });
-//                                                        }
-//                                                    }
-//                                                }
-//                                            }
-//                                        }
-//                                    }
-//                                }
-//
-//                                @Override
-//                                public void onCancelled(@NonNull DatabaseError error) {
-//
-//                                }
-//                            });
-                        }
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+
+
                     }
                 }
             }

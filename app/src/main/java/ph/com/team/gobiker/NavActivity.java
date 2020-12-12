@@ -1,7 +1,15 @@
 package ph.com.team.gobiker;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.media.RingtoneManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.view.LayoutInflater;
@@ -21,6 +29,7 @@ import com.google.maps.GeoApiContext;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
@@ -36,20 +45,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import ph.com.team.gobiker.ui.chat.ChatFragment;
 import ph.com.team.gobiker.ui.login.MainLoginActivity;
 import ph.com.team.gobiker.ui.notifications.NotificationSeenCheck;
 import ph.com.team.gobiker.ui.notifications.Notifications;
 import ph.com.team.gobiker.ui.notifications.NotificationsFragment;
 
-public class NavActivity extends AppCompatActivity implements NotificationsFragment.Listener{
+public class NavActivity extends AppCompatActivity implements NotificationsFragment.Listener, ChatFragment.Listener{
 
     private FirebaseAuth mAuth;
     private DatabaseReference UsersRef;
     public static GeoApiContext context;
     protected PowerManager.WakeLock mWakeLock;
     public BottomNavigationView navView;
-    private NotificationsFragment f;
+    private NotificationsFragment notifFrag;
+    private ChatFragment chatFrag;
     private boolean NotifFragmentStatus = false;
+    private boolean ChatFragmentStatus = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,12 +71,16 @@ public class NavActivity extends AppCompatActivity implements NotificationsFragm
         UsersRef = FirebaseDatabase.getInstance().getReference().child("Users");
         navView = findViewById(R.id.nav_view);
 
-        // creating the Fragment
-        f = new NotificationsFragment();
-        // register activity as listener
-        f.setListener(this);
-        f.initializeVariables();
-        f.notificationListener("fromnavactivity");
+        //retrieve notification counter for nav badge
+        notifFrag = new NotificationsFragment();
+        notifFrag.setListener(this);
+        notifFrag.initializeVariables();
+        notifFrag.notificationListener("fromnavactivity");
+
+        chatFrag = new ChatFragment();
+        chatFrag.setListener(this);
+        chatFrag.InitializeVariables();
+        chatFrag.chatNotifListener();
 
 
         context = new GeoApiContext.Builder().apiKey(getString(R.string.google_maps_key)).build();
@@ -178,6 +194,7 @@ public class NavActivity extends AppCompatActivity implements NotificationsFragm
             for(int x=0; x<notifarr.size(); x++){
                 if(!notifarr.get(x).isSeen()){
                     falsectr++;
+//                    notifyThis("Notification", notifarr.get(x).getDescription());
                 }
             }
 
@@ -189,5 +206,65 @@ public class NavActivity extends AppCompatActivity implements NotificationsFragm
         }else{
             navView.removeBadge(R.id.navigation_notifications);
         }
+    }
+
+    @Override
+    public void setChatFragmentStatus(boolean fragStatus) {
+        ChatFragmentStatus = fragStatus;
+    }
+
+    @Override
+    public void passChatCtr(int chatctr) {
+        if(!ChatFragmentStatus){
+            if(chatctr != 0){
+                navView.getOrCreateBadge(R.id.navigation_chat).setNumber(chatctr);
+            }else{
+                navView.removeBadge(R.id.navigation_chat);
+            }
+        }else{
+            navView.removeBadge(R.id.navigation_chat);
+        }
+    }
+
+    private void notifyThis(String title, String message){
+        NotificationManager mNotificationManager;
+
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(NavActivity.this, "notify_001");
+        Intent ii = new Intent(NavActivity.this, NavActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(NavActivity.this, 0, ii, 0);
+
+        NotificationCompat.BigTextStyle bigText = new NotificationCompat.BigTextStyle();;
+        mBuilder.setContentIntent(pendingIntent);
+        mBuilder.setSmallIcon(R.drawable.logo);
+        mBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.logo));
+        mBuilder.setContentTitle(title);
+        mBuilder.setContentText(message);
+        mBuilder.setPriority(Notification.PRIORITY_MAX);
+        mBuilder.setDefaults(Notification.DEFAULT_LIGHTS| Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE);
+        mBuilder.setContentInfo("GoBiker");
+        mBuilder.setStyle(bigText);
+
+        mNotificationManager =
+                (NotificationManager) NavActivity.this.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+        {
+            String channelId = "1003";
+            NotificationChannel channel = new NotificationChannel(
+                    channelId,
+                    "GoBiker Notification Channel",
+                    NotificationManager.IMPORTANCE_HIGH);
+            channel.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION), null);
+            channel.setLightColor(Color.GREEN);
+            channel.enableVibration(true);
+            channel.enableLights(true);
+            mNotificationManager.createNotificationChannel(channel);
+
+
+            mBuilder.setChannelId(channelId);
+        }
+
+        mNotificationManager.notify(0, mBuilder.build());
     }
 }

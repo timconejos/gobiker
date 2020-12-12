@@ -116,27 +116,27 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
         String fromUserID = messages.getFrom();
         String fromMessageType = messages.getType();
 
-        usersDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Users").child(fromUserID);
-        usersDatabaseRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists() &&  dataSnapshot.child("profileimage").getValue() !=null){
-                    String image = dataSnapshot.child("profileimage").getValue().toString();
+        if(!fromUserID.equals(messageSenderID)){
+            usersDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Users").child(messages.getFrom());
+            usersDatabaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists() &&  dataSnapshot.child("profileimage").getValue() !=null){
+                        String image = dataSnapshot.child("profileimage").getValue().toString();
 
-                    Picasso.with(holder.receiverProfileImage.getContext()).load(image)
-                            .placeholder(R.drawable.profile).into(holder.receiverProfileImage);
+                        Picasso.with(holder.receiverProfileImage.getContext()).load(image)
+                                .placeholder(R.drawable.profile).into(holder.receiverProfileImage);
+                    }
                 }
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
 
-            }
-        });
+                }
+            });
+        }
 
         if (fromMessageType.equals("text")){
-            holder.ReceiverMessageText.setVisibility(View.INVISIBLE);
-            holder.receiverProfileImage.setVisibility(View.INVISIBLE);
             holder.ReceiverMessageFile.setVisibility(View.GONE);
             holder.SenderMessageFile.setVisibility(View.GONE);
 
@@ -148,7 +148,10 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
                 shape.setShape(GradientDrawable.RECTANGLE);
                 shape.setCornerRadii(new float[] { 15, 15, 15, 15, 15, 15, 15, 15 });
                 if (fromUserID.equals(messageSenderID)){
-//                    holder.SenderMessageText.setBackgroundResource(R.drawable.sender_message_text_background);
+                    holder.receiverProfileImage.setVisibility(View.GONE);
+                    holder.ReceiverMessageText.setVisibility(View.GONE);
+                    holder.SenderMessageText.setVisibility(View.VISIBLE);
+
                     shape.setColor(Color.parseColor("#D6D6D6"));
                     holder.SenderMessageText.setBackground(shape);
                     holder.SenderMessageText.setTextColor(Color.rgb(74, 74, 74));
@@ -156,10 +159,10 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
                     holder.SenderMessageText.setText(messages.getMessage()+"\n"+messages.getDate()+" "+sdf2.format(date3));
                 }
                 else{
-                    holder.SenderMessageText.setVisibility(View.INVISIBLE);
-                    holder.ReceiverMessageText.setVisibility(View.VISIBLE);
                     holder.receiverProfileImage.setVisibility(View.VISIBLE);
-//                    holder.ReceiverMessageText.setBackgroundResource(R.drawable.receiver_message_text_background);
+                    holder.ReceiverMessageText.setVisibility(View.VISIBLE);
+                    holder.SenderMessageText.setVisibility(View.GONE);
+
                     shape.setColor(Color.parseColor("#3F6634"));
                     holder.ReceiverMessageText.setBackground(shape);
                     holder.ReceiverMessageText.setTextColor(Color.WHITE);
@@ -170,8 +173,6 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
                 e.printStackTrace();
             }
         }else if (fromMessageType.equals("image")){
-            holder.ReceiverMessageText.setVisibility(View.INVISIBLE);
-            holder.receiverProfileImage.setVisibility(View.INVISIBLE);
             holder.ReceiverMessageFile.setVisibility(View.VISIBLE);
             holder.SenderMessageFile.setVisibility(View.VISIBLE);
 
@@ -183,13 +184,19 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
                 shape.setShape(GradientDrawable.RECTANGLE);
                 shape.setCornerRadii(new float[] { 15, 15, 15, 15, 15, 15, 15, 15 });
                 if (fromUserID.equals(messageSenderID)){
-//                    holder.SenderMessageText.setBackgroundResource(R.drawable.sender_message_text_background);
+                    holder.receiverProfileImage.setVisibility(View.GONE);
+                    holder.ReceiverMessageText.setVisibility(View.GONE);
+                    holder.SenderMessageText.setVisibility(View.VISIBLE);
+
                     shape.setColor(Color.parseColor("#D6D6D6"));
                     holder.SenderMessageText.setBackground(shape);
                     holder.SenderMessageText.setTextColor(Color.rgb(74, 74, 74));
                     holder.SenderMessageText.setGravity(Gravity.LEFT);
                     holder.SenderMessageText.setText(messages.getMessage()+"\n"+messages.getDate()+" "+sdf2.format(date3));
-                    Picasso.with(context).load(messages.getFileString()).into(holder.SenderMessageFile);
+                    Picasso.with(context)
+                            .load(messages.getFileString())
+                            .placeholder(R.drawable.image_placeholder)
+                            .into(holder.SenderMessageFile);
                     holder.SenderMessageFile.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -201,16 +208,19 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
                     });
                 }
                 else{
-                    holder.SenderMessageText.setVisibility(View.INVISIBLE);
-                    holder.ReceiverMessageText.setVisibility(View.VISIBLE);
                     holder.receiverProfileImage.setVisibility(View.VISIBLE);
-//                    holder.ReceiverMessageText.setBackgroundResource(R.drawable.receiver_message_text_background);
+                    holder.ReceiverMessageText.setVisibility(View.VISIBLE);
+                    holder.SenderMessageText.setVisibility(View.GONE);
+
                     shape.setColor(Color.parseColor("#3F6634"));
                     holder.ReceiverMessageText.setBackground(shape);
                     holder.ReceiverMessageText.setTextColor(Color.WHITE);
                     holder.ReceiverMessageText.setGravity(Gravity.LEFT);
                     holder.ReceiverMessageText.setText(messages.getMessage()+"\n"+messages.getDate()+" "+sdf2.format(date3));
-                    Picasso.with(context).load(messages.getFileString()).into(holder.ReceiverMessageFile);
+                    Picasso.with(context)
+                            .load(messages.getFileString())
+                            .placeholder(R.drawable.image_placeholder)
+                            .into(holder.ReceiverMessageFile);
                     holder.ReceiverMessageFile.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -228,8 +238,6 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
                 e.printStackTrace();
             }
         }else if (fromMessageType.equals("file")){
-            holder.ReceiverMessageText.setVisibility(View.INVISIBLE);
-            holder.receiverProfileImage.setVisibility(View.INVISIBLE);
             holder.ReceiverMessageFile.setVisibility(View.GONE);
             holder.SenderMessageFile.setVisibility(View.GONE);
 
@@ -241,7 +249,10 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
                 shape.setShape(GradientDrawable.RECTANGLE);
                 shape.setCornerRadii(new float[] { 15, 15, 15, 15, 15, 15, 15, 15 });
                 if (fromUserID.equals(messageSenderID)){
-//                    holder.SenderMessageText.setBackgroundResource(R.drawable.sender_message_text_background);
+                    holder.receiverProfileImage.setVisibility(View.GONE);
+                    holder.ReceiverMessageText.setVisibility(View.GONE);
+                    holder.SenderMessageText.setVisibility(View.VISIBLE);
+
                     shape.setColor(Color.parseColor("#D6D6D6"));
                     holder.SenderMessageText.setBackground(shape);
                     holder.SenderMessageText.setTextColor(Color.rgb(74, 74, 74));
@@ -259,10 +270,10 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
                     });
                 }
                 else{
-                    holder.SenderMessageText.setVisibility(View.INVISIBLE);
-                    holder.ReceiverMessageText.setVisibility(View.VISIBLE);
                     holder.receiverProfileImage.setVisibility(View.VISIBLE);
-//                    holder.ReceiverMessageText.setBackgroundResource(R.drawable.receiver_message_text_background);
+                    holder.ReceiverMessageText.setVisibility(View.VISIBLE);
+                    holder.SenderMessageText.setVisibility(View.GONE);
+
                     shape.setColor(Color.parseColor("#3F6634"));
                     holder.ReceiverMessageText.setBackground(shape);
                     holder.ReceiverMessageText.setTextColor(Color.WHITE);

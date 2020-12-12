@@ -73,30 +73,13 @@ import uk.co.senab.photoview.PhotoViewAttacher;
 public class HomeFragment extends Fragment {
 
     private HomeViewModel homeViewModel;
-    private FloatingActionButton addNewPost;
-    private NavigationView navigationView;
-    private DrawerLayout drawerLayout;
-    private ActionBarDrawerToggle actionBarDrawerToggle;
-    private RecyclerView postList;
-    private Toolbar mToolbar;
-
-    private CircleImageView NavProfileImage;
-    private TextView NavProfileUsername;
-    private ImageButton AddNewPostButton;
 
     private FirebaseAuth mAuth;
-    private DatabaseReference UsersRef, PostsRef, LikesRef;
+    private DatabaseReference UsersRef, GroupsRef;
     private Button searchButton;
     private AutoCompleteTextView SearchInputText;
     private String currentUserID;
     private View root;
-    private SwipeRefreshLayout swipe;
-
-    Boolean LikeChecker = false;
-    private PhotoViewAttacher pAttacher;
-
-    private List<String> suggestions = new ArrayList<>();
-    private ArrayAdapter<String> adapter ;
 
     private TabLayout tabLayout;
     private ViewPager viewPager;
@@ -115,6 +98,7 @@ public class HomeFragment extends Fragment {
         });
 
         UsersRef = FirebaseDatabase.getInstance().getReference().child("Users");
+        GroupsRef = FirebaseDatabase.getInstance().getReference().child("Groups");
         mAuth = FirebaseAuth.getInstance();
 
         viewPager = root.findViewById(R.id.profilecontainer);
@@ -144,9 +128,25 @@ public class HomeFragment extends Fragment {
             }
         });
 
+//        GroupsRef.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                for (DataSnapshot suggestionSnapshot : dataSnapshot.getChildren()){
+//                    String suggestion = suggestionSnapshot.child("group_name").getValue(String.class);
+//                    if(suggestion != null){
+//                        autoComplete.add(suggestion+" (Group)");
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        });
+
         SearchInputText = root.findViewById(R.id.search_box_input_fragment);
         SearchInputText.setAdapter(autoComplete);
-
 
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override

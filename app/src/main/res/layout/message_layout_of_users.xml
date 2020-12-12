@@ -58,7 +58,6 @@
         android:maxWidth="230dp"
         android:maxHeight="230dp"
         android:scaleType="fitXY"
-
         />
 
 
