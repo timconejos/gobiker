@@ -99,7 +99,9 @@ public class GroupFragment extends Fragment {
     ProgressDialog postLoadingBar;
     String current_user_name;
     FloatingActionButton addGroupPost;
-    ImageButton SelectPostImage;
+    ImageButton SelectPostImage_;
+    ImageView SelectedPostImage;
+    Button SelectPostImage;
     Button UpdatePostButton;
     EditText PostDescription;
     Spinner GroupToPost;
@@ -412,6 +414,7 @@ public class GroupFragment extends Fragment {
             postdialog.setContentView(R.layout.dialog_group_create_post);
 
             SelectPostImage = postdialog.findViewById(R.id.select_post_image);
+            SelectedPostImage = postdialog.findViewById(R.id.selected_post_image);
             UpdatePostButton = postdialog.findViewById(R.id.update_post_button);
             PostDescription = postdialog.findViewById(R.id.post_description);
             GroupToPost = postdialog.findViewById(R.id.group_type);
@@ -916,8 +919,9 @@ public class GroupFragment extends Fragment {
                 loadingBar.setMessage("Please wait, while we are saving your Post Image...");
                 loadingBar.setCanceledOnTouchOutside(true);
                 loadingBar.show();
-
-                SelectPostImage.setImageURI(PostImageUri);
+                SelectedPostImage.setImageURI(PostImageUri);
+                SelectedPostImage.getLayoutParams().height = 100;
+//                SelectPostImage.setImageURI(PostImageUri);
             }
 
             loadingBar.dismiss();

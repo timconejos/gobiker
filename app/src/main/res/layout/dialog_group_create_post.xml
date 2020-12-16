@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:theme="@style/ToolbarTheme"
         android:minHeight="?attr/actionBarSize"
-        android:background="@color/colorPrimary">
+        android:background="@drawable/border_bottom">
 
         <TextView
             android:id="@+id/create_post"
@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="@string/create_post"
-            android:textColor="@color/white"
+            android:textColor="@color/colorPrimary"
             style="@style/Toolbar.TitleText"/>
 
         <Button
@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="@string/save"
-            android:textColor="@color/white"
+            android:textColor="@color/colorPrimary"
             android:id="@+id/update_post_button"/>
 
 
@@ -40,41 +40,95 @@
         android:layout_below="@+id/toolbar_top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingTop="10dp"
+        >
         <TextView
             android:id="@+id/group_type_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Group"
-            android:layout_marginTop="10dp"/>
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"/>
         <Spinner
             android:id="@+id/group_type"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="20sp"
-            android:padding="20dp"
+            android:layout_height="40dp"
+            android:textSize="14sp"
+            android:background="@android:drawable/btn_dropdown"
             android:textColor="@android:color/background_dark"
             android:layout_marginTop="6dp"
-            android:layout_marginBottom="10dp"/>
-
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"/>
+        <TextView
+            android:id="@+id/group_post_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Post"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"/>
         <EditText
             android:id="@+id/post_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/inputs"
             android:ems="10"
             android:gravity="start|top"
             android:hint="Write something you want"
             android:inputType="textMultiLine"
-            android:padding="15dp" />
-        <ImageButton
-            android:id="@+id/select_post_image"
-            android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:layout_marginTop="0dp"
-            android:scaleType="fitCenter"
-            app:srcCompat="@drawable/select_image" />
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp" />
+<!--        <ImageButton-->
+<!--            android:id="@+id/select_post_image"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="300dp"-->
+<!--            android:layout_marginTop="0dp"-->
+<!--            android:scaleType="fitCenter"-->
+<!--            app:srcCompat="@drawable/select_image" />-->
 
+
+
+        <ImageView
+            android:id="@+id/selected_post_image"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scaleType="fitStart"
+            android:layout_margin="5dp">
+        </ImageView>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@drawable/border_top"
+            >
+            <Button
+                android:id="@+id/select_post_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/ic_add_a_photo"
+                android:background="@color/transparent"
+                android:text="@string/add_pic"
+                android:textAllCaps="false"
+                android:textSize="12sp"
+                android:letterSpacing="0"
+                android:textColor="@color/subtitleText"/>
+            <!--            <ImageButton-->
+            <!--                android:id="@+id/select_post_image"-->
+            <!--                android:layout_width="100dp"-->
+            <!--                android:layout_height="60dp"-->
+            <!--                android:layout_marginTop="0dp"-->
+            <!--                android:scaleType="fitStart"-->
+            <!--                android:paddingLeft="20dp"-->
+            <!--                android:paddingTop="10dp"-->
+            <!--                android:paddingBottom="5dp"-->
+            <!--                android:layout_gravity="bottom"-->
+            <!--                android:background="@color/white"-->
+            <!--                app:srcCompat="@drawable/select_image" />-->
+
+
+        </LinearLayout>
 
 
         <!--        <Button-->

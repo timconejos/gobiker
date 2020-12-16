@@ -38,6 +38,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 style="@style/Toolbar.TitleText"
+                android:textColor="@color/white"
                 android:text="@string/chat" />
         </androidx.appcompat.widget.Toolbar>
     <FrameLayout

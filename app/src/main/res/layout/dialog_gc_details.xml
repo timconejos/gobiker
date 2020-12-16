@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="?attr/actionBarSize"
-        android:background="@color/colorPrimary"
+        android:background="@drawable/border_bottom"
         android:theme="@style/ToolbarTheme"
         app:titleTextAppearance="@style/Toolbar.TitleText"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
@@ -22,7 +22,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            style="@style/Toolbar.TitleText"
+            android:textColor="@color/colorPrimary"
              />
     </androidx.appcompat.widget.Toolbar>
 
@@ -43,7 +43,9 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="10dp"
                 android:src="@drawable/profile"
-                android:id="@+id/gc_pic"/>
+                android:id="@+id/gc_pic"
+                app:civ_border_color="@color/lightColor"
+                app:civ_border_width="1dp"/>
 
             <TextView
                 android:id="@+id/gc_name"
@@ -60,7 +62,8 @@
                 android:id="@+id/btnLinear"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:background="@color/colorAccent"
+                android:background="@drawable/border_top"
+                android:backgroundTint="@color/lighterColor"
                 android:paddingHorizontal="20dp"
                 android:paddingVertical="10dp"
                 android:orientation="horizontal"
@@ -74,13 +77,13 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="Members"
-                    android:layout_weight="0.8"/>
+                    android:layout_weight="1"/>
 
                 <View
                     android:id="@+id/btndivider"
                     android:layout_width="2dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="0.2" />
+                    android:layout_weight="0.1" />
 
                 <Button
                     android:id="@+id/edit_gc_details"
@@ -88,7 +91,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="Edit "
-                    android:layout_weight="0.8"/>
+                    android:layout_weight="1"/>
 
             </LinearLayout>
 

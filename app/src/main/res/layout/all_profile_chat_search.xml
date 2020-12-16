@@ -5,8 +5,8 @@
     android:id="@+id/linear_posts"
     android:paddingStart="10dp"
     android:paddingEnd="10dp"
-    android:paddingTop="20dp"
-    android:paddingBottom="20dp"
+    android:paddingTop="7dp"
+    android:paddingBottom="7dp"
     android:background="@drawable/border_bottom">
     <de.hdodenhof.circleimageview.CircleImageView
         android:layout_width="50dp"
