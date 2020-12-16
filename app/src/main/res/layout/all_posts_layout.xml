@@ -31,7 +31,7 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="3dp">
+                android:layout_marginLeft="5dp">
 
                 <TextView
                     android:id="@+id/post_user_name"
@@ -41,8 +41,7 @@
                     android:text="user_name"
                     android:textAlignment="textStart"
                     android:textColor="@android:color/black"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
+                    style="@style/Headings.H5" />
 
                 <TextView
                     android:id="@+id/post_options"
@@ -66,7 +65,7 @@
                     android:layout_below="@+id/post_user_name"
                     android:text="Date"
                     android:textColor="@color/subtitleText"
-                    android:textSize="12sp" />
+                    style="@style/Subtitle.H7" />
                 <!--                <LinearLayout-->
                 <!--                    android:layout_width="match_parent"-->
                 <!--                    android:layout_height="wrap_content"-->
@@ -106,7 +105,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:background="@drawable/border_top">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -116,30 +116,47 @@
 
                 <ImageButton
                     android:id="@+id/like_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:scaleX="0.9"
+                    android:scaleY="0.9"
                     android:background="@android:color/white"
                     android:src="@drawable/ic_favorite_border_black_24dp"
                     android:layout_marginTop="3dp"
-                    android:paddingTop="10dp"
-                    android:paddingStart="10dp"
-                    android:paddingEnd="0dp"/>
+                    android:layout_marginLeft="10dp"
+                    android:paddingTop="0dp"
+                    android:paddingRight="0dp"
+/>
                 <TextView
                     android:id="@+id/display_no_of_likes"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="0"
-                    android:padding="10dp"
-                    android:textColor="@android:color/black"
-                    android:textSize="18sp"
-                    android:textStyle="bold"/>
+                    android:padding="6dp"
+                    android:layout_marginRight="20dp"
+                    android:textColor="@color/subtitleText"/>
+
+<!--                <Button-->
+<!--                    android:id="@+id/like_button"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:drawableLeft="@drawable/ic_favorite_border_black_24dp"-->
+<!--                    android:background="@color/transparent"-->
+<!--                    android:text="0"-->
+<!--                    android:textColor="@color/black"/>-->
                 <Button
-                    style="@style/TransparentBtn.Comment"
+
                     android:id="@+id/comment_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
-                    android:text="Comments" />
+                    android:background="@color/transparent"
+                    android:drawableLeft="@drawable/ic_comment_black_24dp"
+                    android:letterSpacing="0"
+                    android:text="Comments"
+                    android:textAllCaps="false"
+                    android:textColor="@color/black"
+                    android:textSize="12dp" />
 
             </LinearLayout>
 <!--            <ImageButton-->

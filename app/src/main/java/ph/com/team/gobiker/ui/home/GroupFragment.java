@@ -842,7 +842,7 @@ public class GroupFragment extends Fragment {
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     if(dataSnapshot.child(PostKey).child("Likes").hasChild(currentUserId)){
                         countLikes = (int) dataSnapshot.child(PostKey).child("Likes").getChildrenCount();
-                        LikeBtn.setImageResource(R.drawable.ic_favorite_border_red_24dp);
+                        LikeBtn.setImageResource(R.drawable.baseline_favorite_24);
                         DisplayNoOfLikes.setText(Integer.toString(countLikes));
                     }
                     else{

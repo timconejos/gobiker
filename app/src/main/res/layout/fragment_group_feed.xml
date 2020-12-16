@@ -68,36 +68,42 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Active Groups you can join"
+                    android:text="Active groups you can join"
                     android:id="@+id/active_groups_label"
-                    android:layout_marginTop="5dp"
-                    style="@style/Subtitle.H3"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginLeft="10dp"
                     android:textAlignment="textStart"
                     android:textColor="@color/black"
+                    style="@style/Subtitle.H6"
                     />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/all_groups_view"
-                    android:layout_below="@+id/active_groups_label"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"/>
 
                 <TextView
-                    android:layout_below="@+id/all_groups_view"
+
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Posts from your Group/s"
                     android:id="@+id/current_groups_label"
                     android:layout_marginTop="10dp"
-                    style="@style/Subtitle.H3"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginBottom="10dp"
                     android:textAlignment="textStart"
                     android:textColor="@color/black"
+                    style="@style/Subtitle.H6"
                     />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/all_users_post_list"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false"
+                    />
             </LinearLayout>
 
 
