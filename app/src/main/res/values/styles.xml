@@ -94,6 +94,9 @@
     <style name="Subtitle.H6">
         <item name="android:textSize">12sp</item>
     </style>
+    <style name="Subtitle.H7">
+        <item name="android:textSize">10sp</item>
+    </style>
 
     <style name="Label" parent="TextAppearance.AppCompat">
         <item name="android:fontFamily">sans-serif-light</item>

@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -36,7 +37,9 @@ import java.util.HashMap;
 public class PostActivity extends AppCompatActivity {
     private Toolbar mToolbar;
     private ProgressDialog loadingBar;
-    private ImageButton SelectPostImage;
+    private ImageButton SelectPostImage_;
+    private Button SelectPostImage;
+    private ImageView SelectedImage;
     private Button UpdatePostButton;
     private EditText PostDescription;
     private static final int Gallery_Pick = 1;
@@ -60,6 +63,7 @@ public class PostActivity extends AppCompatActivity {
         loadingBar = new ProgressDialog(this);
 
         SelectPostImage = findViewById(R.id.select_post_image);
+        SelectedImage = findViewById(R.id.selected_post_image);
         usersRef = FirebaseDatabase.getInstance().getReference().child("Users");
         postRef = FirebaseDatabase.getInstance().getReference().child("Posts");
         UpdatePostButton = findViewById(R.id.update_post_button);
@@ -232,7 +236,10 @@ public class PostActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode==Gallery_Pick && resultCode==RESULT_OK && data!=null){
             ImageUri = data.getData();
-            SelectPostImage.setImageURI(ImageUri);
+//            SelectPostImage.setImageURI(ImageUri);
+            SelectedImage.getLayoutParams().height = 200;
+            SelectedImage.setImageURI((ImageUri));
+            SelectPostImage.setText("Change Picture");
         }
     }
 

@@ -51,7 +51,8 @@
             android:parentActivityName=".NavActivity" />
         <activity
             android:name=".PostActivity"
-            android:parentActivityName=".NavActivity" />
+            android:parentActivityName=".NavActivity"
+            android:windowSoftInputMode="adjustResize"/>
         <activity android:name=".ClickPostActivity" />
         <activity
             android:name=".NavActivity"

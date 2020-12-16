@@ -38,29 +38,70 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_below="@id/toolbar_top"
         android:orientation="vertical">
         <EditText
             android:id="@+id/post_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/inputs"
+            android:background="@color/transparent"
             android:ems="10"
+            android:layout_weight="1"
             android:gravity="start|top"
             android:hint="Write something you want"
             android:inputType="textMultiLine"
             android:padding="15dp" />
-        <ImageButton
-            android:id="@+id/select_post_image"
+        <ImageView
+            android:id="@+id/selected_post_image"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:layout_marginTop="0dp"
-            android:scaleType="fitCenter"
-            app:srcCompat="@drawable/select_image" />
+            android:layout_height="wrap_content"
+            android:scaleType="fitStart"
+            android:layout_margin="5dp">
+
+        </ImageView>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@drawable/border_top"
+            >
+        <Button
+            android:id="@+id/select_post_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/ic_add_a_photo"
+            android:background="@color/transparent"
+            android:text="@string/add_pic"
+            android:textAllCaps="false"
+            android:textSize="12sp"
+            android:textColor="@color/subtitleText"/>
+<!--            <ImageButton-->
+<!--                android:id="@+id/select_post_image"-->
+<!--                android:layout_width="100dp"-->
+<!--                android:layout_height="60dp"-->
+<!--                android:layout_marginTop="0dp"-->
+<!--                android:scaleType="fitStart"-->
+<!--                android:paddingLeft="20dp"-->
+<!--                android:paddingTop="10dp"-->
+<!--                android:paddingBottom="5dp"-->
+<!--                android:layout_gravity="bottom"-->
+<!--                android:background="@color/white"-->
+<!--                app:srcCompat="@drawable/select_image" />-->
+
+
+        </LinearLayout>
 
 
 
+<!--        <ImageButton-->
+<!--            android:id="@+id/select_post_image"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="100dp"-->
+<!--            android:layout_marginTop="0dp"-->
+<!--            android:scaleType="fitCenter"-->
+<!--            android:layout_gravity="bottom"-->
+<!--            app:srcCompat="@drawable/select_image" />-->
 <!--        <Button-->
 <!--            android:id="@+id/update_post_button"-->
 <!--            android:layout_width="200dp"-->
