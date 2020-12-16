@@ -35,6 +35,13 @@
     <string name="name">Name</string>
     <string name="change_prof_pic">Change profile picture</string>
 
+    <!-- GROUP -->
+    <string-array name="group_type">
+        <item>Private</item>
+        <item>Public</item>
+    </string-array>
+    <string name="group_details">Group Details</string>
+
     <!--    LOGIN SCREEN STRINGS -->
     <string name="title_activity_main_login">Sign in</string>
     <string name="prompt_email">Email</string>
@@ -83,7 +90,7 @@
     <string name="title_map">Map</string>
     <string name="create_post">Create Post</string>
     <string name="update_post">Update Post</string>
-    <string name="post">Post</string>
+    <string name="post">Edit Post</string>
     <string name="update_profile">Update Profile</string>
     <string name="save">Save</string>
 
@@ -109,15 +116,16 @@
     <string name="age">Age</string>
     <string name="biometrics">Biometrics</string>
     <string name="personal_info">Personal Info</string>
-    <string name="note_account_info">NOTE: For accurate results, please enter your HEIGHT, WEIGHT, and AGE.</string>
+    <string name="note_account_info">NOTE: For accurate results, please enter your HEIGHT, WEIGHT, and AGE. This is for calorie counter for bicycle use.</string>
     <string name="add_pic">Add picture</string>
     <string name="ride">Ride</string>
     <string name="ride_s">Ride(s)</string>
     <string name="type">Type</string>
     <string name="ride_type">Bike / Motor</string>
     <string name="level">Level</string>
-    <string name="distance_traveled">Distance Traveled</string>
+    <string name="distance_traveled">Distance Travelled</string>
     <string name="create_profile">Create Profile</string>
     <string name="current_location">Current Location</string>
+    <string name="no_of_rides">No. of Rides</string>
 
 </resources>

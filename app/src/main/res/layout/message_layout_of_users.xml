@@ -18,12 +18,23 @@
         android:layout_alignParentTop="true"
         android:layout_marginTop="8dp"
         android:layout_toEndOf="@+id/message_profile_image"
-        android:background="@drawable/receiver_message_text_background"
         android:text="receiver message"
         android:id="@+id/receiver_message_text"
         android:textColor="@color/white"
         android:padding="10dp"
         style="@style/Subtitle.H5"/>
+
+    <ImageView
+        android:id="@+id/receiver_message_file"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/receiver_message_text"
+        android:layout_marginLeft="45dp"
+        android:adjustViewBounds="true"
+        android:maxWidth="230dp"
+        android:maxHeight="230dp"
+        android:scaleType="fitXY"
+        />
 
     <TextView
         android:id="@+id/sender_message_text"
@@ -31,10 +42,23 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="@+id/receiver_message_text"
         android:layout_marginTop="8dp"
-        android:background="@drawable/sender_message_text_background"
         android:padding="10dp"
         android:layout_alignParentRight="true"
         android:text="sender message"
         android:textColor="@color/primaryText"
         style="@style/Subtitle.H5" />
+
+    <ImageView
+        android:id="@+id/sender_message_file"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/sender_message_text"
+        android:layout_alignParentRight="true"
+        android:adjustViewBounds="true"
+        android:maxWidth="230dp"
+        android:maxHeight="230dp"
+        android:scaleType="fitXY"
+        />
+
+
 </RelativeLayout>

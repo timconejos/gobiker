@@ -46,16 +46,18 @@ public class FindFriendsActivity extends AppCompatActivity {
         searchButton = findViewById(R.id.search_people_friends_button);
         SearchInputText = findViewById(R.id.search_box_input);
 
-        SearchInputText.setText(getIntent().getExtras().get("searchKey").toString());
-        SearchPeopleAndFriends(getIntent().getExtras().get("searchKey").toString());
-
-
+        if (!getIntent().getExtras().get("searchKey").toString().equals("")) {
+            SearchInputText.setText(getIntent().getExtras().get("searchKey").toString());
+            SearchPeopleAndFriends(getIntent().getExtras().get("searchKey").toString());
+        }
 
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String searchBoxInput = SearchInputText.getText().toString();
-                SearchPeopleAndFriends(searchBoxInput);
+                if (!SearchInputText.getText().toString().equals("")){
+                    String searchBoxInput = SearchInputText.getText().toString();
+                    SearchPeopleAndFriends(searchBoxInput);
+                }
             }
         });
     }

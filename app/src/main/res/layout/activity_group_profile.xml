@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".PersonProfileActivity"
+        >
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="?attr/actionBarSize"
+            android:background="@color/colorPrimary"
+            android:theme="@style/ToolbarTheme"
+            app:titleTextAppearance="@style/Toolbar.TitleText"
+            >
+            <TextView
+                android:id="@+id/create_post"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                style="@style/Toolbar.TitleText"
+                android:text="@string/group_details" />
+        </androidx.appcompat.widget.Toolbar>
+
+        <RelativeLayout
+            android:layout_below="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/white_rounded_box">
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/profile"
+                android:id="@+id/group_profile_pic" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Profile Name"
+                android:id="@+id/person_full_name"
+                android:layout_below="@+id/group_profile_pic"
+                android:layout_marginTop="15dp"
+                android:textAlignment="center"
+                style="@style/Headings.H2"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Date Created"
+                android:id="@+id/date_created"
+                android:layout_below="@+id/person_full_name"
+                android:textAlignment="center"
+                android:layout_marginTop="2dp"
+                android:textColor="@color/colorAccent"
+                android:textSize="18sp"/>
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="No. of Members"
+                android:id="@+id/members_nr"
+                android:layout_below="@+id/date_created"
+                android:textAlignment="center"
+                android:layout_marginTop="2dp"
+                android:textColor="@color/colorAccent"
+                android:textSize="18sp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Group Status"
+                android:id="@+id/group_status"
+                android:layout_below="@+id/members_nr"
+                android:textAlignment="center"
+                android:layout_marginTop="2dp"
+                android:textColor="@color/colorAccent"
+                android:textSize="18sp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Group Type"
+                android:id="@+id/group_type"
+                android:layout_below="@+id/group_status"
+                android:textAlignment="center"
+                android:layout_marginTop="2dp"
+                android:textColor="@color/colorAccent"
+                android:textSize="18sp"/>
+
+            <LinearLayout
+                android:id="@+id/adminlayout"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:layout_below="@+id/group_type"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:layout_marginRight="10dp"
+                android:layout_marginLeft="10dp"
+                >
+
+                <Button
+                    android:id="@+id/requests_btn"
+                    style="@style/SecondaryBtn.Positive"
+                    android:layout_width="wrap_content"
+                    android:layout_height="55dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/rounded_float_btn"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:text="Join Requests"
+                    android:textSize="13dp" />
+
+                <View
+                    android:id="@+id/btndivider"
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.1" />
+
+                <Button
+                    android:id="@+id/edit_btn"
+                    style="@style/SecondaryBtn.Positive"
+                    android:layout_width="wrap_content"
+                    android:layout_height="55dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/rounded_float_btn"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:text="Edit Group"
+                    android:textSize="13dp" />
+
+
+            </LinearLayout>
+
+            <Button
+                android:layout_width="230dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/btn_groupride"
+                android:layout_below="@+id/adminlayout"
+                android:layout_marginTop="30dp"
+                android:background="@drawable/rounded_float_btn"
+                android:text="Start Ride"
+                android:layout_centerHorizontal="true"
+                style="@style/SecondaryBtn.Positive"
+                />
+
+            <Button
+                android:layout_width="230dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/btn_members"
+                android:layout_below="@+id/btn_groupride"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/rounded_float_btn"
+                android:text="View Members"
+                android:layout_centerHorizontal="true"
+                style="@style/SecondaryBtn.Positive"
+                />
+
+            <Button
+                android:id="@+id/btn_join"
+                android:layout_width="230dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/btn_members"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/button"
+                style="@style/SecondaryBtn.Negative"
+                android:text="Join" />
+
+            <View
+                android:layout_below="@+id/btn_join"
+                android:id="@+id/separator"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/darker_gray"/>
+
+            <TextView
+                android:layout_below="@+id/separator"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Posts from this Group"
+                android:id="@+id/current_groups_label"
+                android:layout_marginTop="10dp"
+                style="@style/Subtitle.H3"
+                android:gravity="center_horizontal"
+                android:textColor="@color/black"
+                />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_below="@+id/current_groups_label"
+                android:id="@+id/all_users_post_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </RelativeLayout>
+    </RelativeLayout>
+</ScrollView>

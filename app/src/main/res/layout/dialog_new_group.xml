@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SettingsActivity"
+    >
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:src="@drawable/profile"
+                android:id="@+id/setup_group_profile_image"/>
+
+            <TextView
+                android:id="@+id/add_pic2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/setup_group_profile_image"
+                android:layout_marginTop="10dp"
+                android:text="@string/add_pic"
+                android:gravity="center"
+                android:layout_marginBottom="10dp"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/add_pic2"
+                android:orientation="vertical"
+                android:id="@+id/personal_info_layout2"
+                android:paddingTop="30dp"
+                android:paddingStart="30dp"
+                android:paddingEnd="30dp">
+                <TextView
+                    android:id="@+id/profile_name_label2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Enter Group Name"
+                    android:layout_marginTop="10dp"/>
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/setup_full_name"
+                    android:hint="Group name"
+                    android:padding="20dp"
+                    android:textColor="@android:color/background_dark"
+                    android:textSize="20sp"
+                    android:inputType="textCapWords"
+                    android:layout_marginTop="6dp"/>
+
+                <TextView
+                    android:id="@+id/group_type_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Group Type"
+                    android:layout_marginTop="10dp"/>
+                <Spinner
+                    android:id="@+id/group_type"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp"
+                    android:padding="20dp"
+                    android:textColor="@android:color/background_dark"
+                    android:layout_marginTop="6dp"
+                    android:layout_marginBottom="10dp"/>
+
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:background="@color/colorAccent"
+                android:paddingHorizontal="20dp"
+                android:paddingVertical="10dp"
+                android:orientation="horizontal"
+                android:layout_below="@+id/personal_info_layout2"
+                android:layout_gravity="bottom">
+
+                <Button
+                    android:id="@+id/new_group_close"
+                    style="@style/SecondaryBtn.Positive"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Back"
+                    android:layout_weight="0.8"/>
+
+                <View
+                    android:id="@+id/btndivider"
+                    android:layout_width="2dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.2" />
+
+                <Button
+                    android:id="@+id/new_group_proceed"
+                    style="@style/SecondaryBtn.Negative"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Create"
+                    android:layout_weight="0.8"
+                    ></Button>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+    </ScrollView>
+</RelativeLayout>

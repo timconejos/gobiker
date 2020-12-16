@@ -3,10 +3,13 @@
     xmlns:dist="http://schemas.android.com/apk/distribution"
     package="ph.com.team.gobiker">
 
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
 
     <dist:module dist:instant="true" />
 
@@ -17,17 +20,34 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ClickCommentActivity"></activity>
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
+        <activity android:name=".PhotoFullScreenActivity"></activity>
+        <activity android:name=".ui.home.GroupDetailsActivity"></activity>
+        <activity android:name=".FollowingActivity"></activity>
+        <activity android:name=".FollowersActivity" />
+        <activity android:name=".ClickCommentActivity" />
         <activity android:name=".LikesActivity" />
         <activity android:name=".LogoutActivity" />
-        <activity android:name=".ChatActivity" />
+        <activity
+            android:name=".ui.chat.ChatActivity"
+            android:parentActivityName=".PersonProfileActivity" />
         <activity android:name=".PersonProfileActivity" />
         <activity android:name=".FindFriendsActivity" />
+        <activity android:name=".ui.chat.ChatGroupActivity" />
         <activity
             android:name=".SettingsActivity"
             android:parentActivityName=".NavActivity" />
         <activity android:name=".SetupActivity" />
-        <activity android:name=".CommentsActivity"
+        <activity
+            android:name=".CommentsActivity"
             android:parentActivityName=".NavActivity" />
         <activity
             android:name=".PostActivity"
@@ -66,6 +86,8 @@
         <activity android:name=".MainActivity" />
         <activity android:name=".HomeActivity" />
         <activity android:name=".ui.map.NavigationStartActivity" />
+        <activity android:name=".SetupWithExistingActivity"/>
+        <activity android:name=".ui.map.CreateRoomForGroupRide"/>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

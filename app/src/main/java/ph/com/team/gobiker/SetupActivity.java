@@ -2034,7 +2034,7 @@ public class SetupActivity extends AppCompatActivity {
         ArrayAdapter<String> adapterH = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, itemsH);
         HUnit.setAdapter(adapterH);
 
-        wt.setVisibility(View.GONE);
+        /*wt.setVisibility(View.GONE);
         ht.setVisibility(View.GONE);
         at.setVisibility(View.GONE);
         bn.setVisibility(View.GONE);
@@ -2046,12 +2046,12 @@ public class SetupActivity extends AppCompatActivity {
         divider.setVisibility(View.GONE);
         bioinfo.setVisibility(View.GONE);
         active_ride.setVisibility(View.GONE);
-        aclabel.setVisibility(View.GONE);
+        aclabel.setVisibility(View.GONE);*/
 
         checkBike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (checkBike.isChecked()){
+                /*if (checkBike.isChecked()){
                     wt.setVisibility(View.VISIBLE);
                     ht.setVisibility(View.VISIBLE);
                     at.setVisibility(View.VISIBLE);
@@ -2076,7 +2076,7 @@ public class SetupActivity extends AppCompatActivity {
                     HUnit.setVisibility(View.GONE);
                     divider.setVisibility(View.GONE);
                     bioinfo.setVisibility(View.GONE);
-                }
+                }*/
 
                 if (checkBike.isChecked() && checkMotor.isChecked()){
                     active_ride.setVisibility(View.VISIBLE);
@@ -2104,7 +2104,7 @@ public class SetupActivity extends AppCompatActivity {
         });
 
         Gender = findViewById(R.id.setup_gender);
-        String[] items = new String[]{"Male", "Female"};
+        String[] items = new String[]{"Male", "Female","Rather Not Say"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items);
         Gender.setAdapter(adapter);
 
@@ -2276,7 +2276,7 @@ public class SetupActivity extends AppCompatActivity {
             else if (checkm){
                 acRide = "Motorcycle";
             }
-            if (checkb){
+            //if (checkb){
                 sh = height.getText().toString();
                 sw = weight.getText().toString();
                 yo = age.getText().toString();
@@ -2310,7 +2310,7 @@ public class SetupActivity extends AppCompatActivity {
                     sw = "0";
                     wUnit = "0";
                 }
-            }
+            //}
             loadingBar.setTitle("Saving Information");
             loadingBar.setMessage("Please wait, while we are creating your new account...");
             loadingBar.show();
@@ -2336,6 +2336,8 @@ public class SetupActivity extends AppCompatActivity {
             userMap.put("active_ride",acRide);
             userMap.put("check_address",ckAdd);
             userMap.put("check_phone","true");
+            userMap.put("bike_number_of_rides","0");
+            userMap.put("motor_number_of_rides","0");
 
             UsersRef.updateChildren(userMap).addOnCompleteListener(new OnCompleteListener() {
                 @Override

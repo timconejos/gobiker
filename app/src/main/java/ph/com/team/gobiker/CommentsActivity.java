@@ -37,7 +37,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
         private ImageButton PostCommentButton;
         private EditText CommentInputText;
         private RecyclerView CommentsList;
-        private String Post_Key, current_user_id;
+        private String Post_Key, current_user_id, from_feed_type, postRoot;
         private DatabaseReference UsersRef, postRef;
         private FirebaseAuth mAuth;
 
@@ -47,11 +47,18 @@ import de.hdodenhof.circleimageview.CircleImageView;
             setContentView(R.layout.activity_comments);
 
             Post_Key = getIntent().getExtras().get("PostKey").toString();
+            from_feed_type = getIntent().getExtras().get("FeedType").toString();
+
+            if(from_feed_type.equals("GroupFeed")){
+                postRoot = "GroupPosts";
+            }else if(from_feed_type.equals("HomeFeed")){
+                postRoot = "Posts";
+            }
 
             mAuth = FirebaseAuth.getInstance();
             current_user_id = mAuth.getCurrentUser().getUid();
             UsersRef = FirebaseDatabase.getInstance().getReference().child("Users");
-            postRef = FirebaseDatabase.getInstance().getReference().child("Posts").child(Post_Key).child("Comments");
+            postRef = FirebaseDatabase.getInstance().getReference().child(postRoot).child(Post_Key).child("Comments");
 
             CommentsList = findViewById(R.id.comments_list);
             CommentsList.setHasFixedSize(true);
@@ -192,6 +199,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
                 commentsMap.put("date",saveCurrentDate);
                 commentsMap.put("time",saveCurrentTime);
                 commentsMap.put("username",userName);
+                commentsMap.put("isSeen", false);
 
                 postRef.child(RandomKey).updateChildren(commentsMap)
                         .addOnCompleteListener(new OnCompleteListener() {

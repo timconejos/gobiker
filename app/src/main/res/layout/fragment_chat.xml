@@ -41,12 +41,41 @@
                 android:text="@string/chat" />
         </androidx.appcompat.widget.Toolbar>
     <FrameLayout
+        android:id="@+id/chat_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/all_users_msgs_list"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:layout_marginBottom="60dp"
+            />
+
+        <RelativeLayout
+            android:id="@+id/relativeLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:background="@color/colorPrimary"
+            android:paddingHorizontal="20dp"
+            android:paddingVertical="10dp"
+            android:layout_gravity="bottom"
+            android:layout_below="@+id/all_users_msgs_list">
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/new_convo"
+                    style="@style/SecondaryBtn.Negative"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="New Chat"></Button>
+
+            </LinearLayout>
+
+        </RelativeLayout>
     </FrameLayout>
+
     </LinearLayout>
 </RelativeLayout>

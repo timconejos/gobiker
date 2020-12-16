@@ -2,6 +2,7 @@ package ph.com.team.gobiker;
 
 public class Likes {
     public String profileimage, fullname, uid;
+    public boolean isSeen;
 
     public Likes(){
 
@@ -35,5 +36,13 @@ public class Likes {
 
     public void setUid(String uid) {
         this.uid = uid;
+    }
+
+    public boolean isSeen() {
+        return isSeen;
+    }
+
+    public void setSeen(boolean seen) {
+        isSeen = seen;
     }
 }

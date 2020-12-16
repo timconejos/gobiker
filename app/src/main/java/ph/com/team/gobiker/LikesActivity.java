@@ -22,7 +22,7 @@ import com.squareup.picasso.Picasso;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class LikesActivity extends AppCompatActivity {
-    private String Post_Key;
+    private String Post_Key, from_feed_type, likesRoot;
     private DatabaseReference UsersRef, postRef;
     private FirebaseAuth mAuth;
     private RecyclerView LikesList;
@@ -33,10 +33,17 @@ public class LikesActivity extends AppCompatActivity {
         setContentView(R.layout.activity_likes);
 
         Post_Key = getIntent().getExtras().get("PostKey").toString();
+        from_feed_type = getIntent().getExtras().get("FeedType").toString();
+
+        if(from_feed_type.equals("GroupFeed")){
+            likesRoot = "GroupLikes";
+        }else if(from_feed_type.equals("HomeFeed")){
+            likesRoot = "Likes";
+        }
 
         mAuth = FirebaseAuth.getInstance();
         UsersRef = FirebaseDatabase.getInstance().getReference().child("Users");
-        postRef = FirebaseDatabase.getInstance().getReference().child("Posts").child(Post_Key).child("Likes");
+        postRef = FirebaseDatabase.getInstance().getReference().child(likesRoot).child(Post_Key).child("Likes");
 
         LikesList = findViewById(R.id.likes_list);
         LikesList.setHasFixedSize(true);
