@@ -5,8 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -29,7 +31,8 @@ import ph.com.team.gobiker.ui.chat.ChatActivity;
 public class PersonProfileActivity extends AppCompatActivity {
     private TextView userBM, userProfName, userGender,address, userPhone, level, overall_distance, numRides;
     private CircleImageView userProfileImage;
-    private Button SendFriendReqButton, SendMsgButton,seeallfollowerButton, seeallfollowingButton;;
+    private Button SendFriendReqButton, SendMsgButton,seeallfollowerButton, seeallfollowingButton;
+    private LinearLayout addressLayout;
     private DatabaseReference UsersRef;
     private FirebaseAuth mAuth;
     private String senderUserId, receiverUserId, CURRENT_STATE, myProfileName;
@@ -52,6 +55,7 @@ public class PersonProfileActivity extends AppCompatActivity {
         SendFriendReqButton = findViewById(R.id.person_send_friend_request_btn);
         SendMsgButton = findViewById(R.id.person_send_msg_btn);
         address = findViewById(R.id.person_address);
+        addressLayout = findViewById(R.id.address_layout);
         userPhone = findViewById(R.id.person_phone);
         level = findViewById(R.id.person_level);
         numRides = findViewById(R.id.person_nr);
@@ -92,10 +96,17 @@ public class PersonProfileActivity extends AppCompatActivity {
                         }
                     }
                 }
+
+                String followerTxt = "Follower";
                 if (f==1)
-                    seeallfollowerButton.setText(f+" follower");
+                    followerTxt = "Follower";
                 else
-                    seeallfollowerButton.setText(f+" followers");
+                    followerTxt = "Followers";
+
+                seeallfollowerButton.setText((Html.fromHtml("<big>"
+                        + f + "</big> <br/>"
+                        + "<small>" + followerTxt
+                        + "</small>")));
             }
 
             @Override
@@ -119,7 +130,13 @@ public class PersonProfileActivity extends AppCompatActivity {
                         numFollowing = dataSnapshot.child("following").getChildrenCount();
                     }
 
-                    seeallfollowingButton.setText(numFollowing+" following");
+
+
+//                    seeallfollowingButton.setText(numFollowing+" following");
+                    seeallfollowingButton.setText((Html.fromHtml("<big>"
+                            + numFollowing + "</big> <br/>"
+                            + "<small>" + "Following"
+                            + "</small>")));
 
                     myProfileName = dataSnapshot.child("fullname").getValue().toString();
                     String myGender = dataSnapshot.child("gender").getValue().toString();
@@ -133,7 +150,7 @@ public class PersonProfileActivity extends AppCompatActivity {
                     else
                         userGender.setVisibility(View.GONE);
                     if (dataSnapshot.hasChild("active_ride")){
-                        userBM.setText("Active Ride: "+dataSnapshot.child("active_ride").getValue().toString());
+                        userBM.setText(dataSnapshot.child("active_ride").getValue().toString());
                         if (myBike.equals("true") && dataSnapshot.child("active_ride").getValue().toString().equals("Bicycle")) {
                             /*userHeight.setVisibility(View.GONE);
                             userWeight.setVisibility(View.GONE);
@@ -146,10 +163,10 @@ public class PersonProfileActivity extends AppCompatActivity {
 
                             if (dataSnapshot.hasChild("bike_level")) {
                                 if (dataSnapshot.child("bike_level").getValue().toString().equals("")) {
-                                    level.setText("Level: 1");
+                                    level.setText("1");
                                 }
                                 else{
-                                    level.setText("Level: "+dataSnapshot.child("bike_level").getValue().toString());
+                                    level.setText(dataSnapshot.child("bike_level").getValue().toString());
                                 }
                             }
                             else{
@@ -158,70 +175,71 @@ public class PersonProfileActivity extends AppCompatActivity {
 
                             if (dataSnapshot.hasChild("bike_number_of_rides")){
                                 if (dataSnapshot.child("bike_number_of_rides").getValue().toString().equals(""))
-                                    numRides.setText("No. of Rides: 0");
+                                    numRides.setText("0");
                                 else
-                                    numRides.setText("No. of Rides: "+dataSnapshot.child("bike_number_of_rides").getValue().toString());
+                                    numRides.setText(dataSnapshot.child("bike_number_of_rides").getValue().toString());
                             }
                             else{
-                                numRides.setText("No. of Rides: 0");
+                                numRides.setText(" 0");
                             }
 
                             if (dataSnapshot.hasChild("bike_overall_distance")) {
                                 if (dataSnapshot.child("bike_overall_distance").getValue().toString().equals("")) {
-                                    overall_distance.setText("Distance Travelled: 0 m");
+                                    overall_distance.setText("0 m");
                                 }
                                 else{
-                                    overall_distance.setText("Distance Travelled: "+dataSnapshot.child("bike_overall_distance").getValue().toString()+" m");
+                                    overall_distance.setText(dataSnapshot.child("bike_overall_distance").getValue().toString()+" m");
                                 }
                             }
                             else{
-                                overall_distance.setText("Distance Travelled: 0 m");
+                                overall_distance.setText("0 m");
                             }
                         }
                         else{
                             if (dataSnapshot.hasChild("motor_level")) {
                                 if (dataSnapshot.child("motor_level").getValue().toString().equals("")) {
-                                    level.setText("Level: 1");
+                                    level.setText("1");
                                 }
                                 else{
-                                    level.setText("Level: "+dataSnapshot.child("motor_level").getValue().toString());
+                                    level.setText(dataSnapshot.child("motor_level").getValue().toString());
                                 }
                             }
                             else{
-                                level.setText("Level: 1");
+                                level.setText("1");
                             }
 
                             if (dataSnapshot.hasChild("motor_number_of_rides")){
                                 if (dataSnapshot.child("motor_number_of_rides").getValue().toString().equals(""))
-                                    numRides.setText("No. of Rides: 0");
+                                    numRides.setText("0");
                                 else
-                                    numRides.setText("No. of Rides: "+dataSnapshot.child("motor_number_of_rides").getValue().toString());
+                                    numRides.setText(dataSnapshot.child("motor_number_of_rides").getValue().toString());
                             }
                             else{
-                                numRides.setText("No. of Rides: 0");
+                                numRides.setText("0");
                             }
 
                             if (dataSnapshot.hasChild("motor_overall_distance")) {
                                 if (dataSnapshot.child("motor_overall_distance").getValue().toString().equals("")) {
-                                    overall_distance.setText("Distance Travelled: 0 m");
+                                    overall_distance.setText("0 m");
                                 }
                                 else{
-                                    overall_distance.setText("Distance Travelled: "+dataSnapshot.child("motor_overall_distance").getValue().toString()+" m");
+                                    overall_distance.setText(dataSnapshot.child("motor_overall_distance").getValue().toString()+" m");
                                 }
                             }
                             else{
-                                overall_distance.setText("Distance Travelled: 0 m");
+                                overall_distance.setText("0 m");
                             }
                         }
                     }
                     else{
-                        userBM.setText("Active Ride: Bicycle");
+                        userBM.setText("Bicycle");
                     }
 
                     if (dataSnapshot.child("check_address").getValue().toString().equals("true")){
                         address.setVisibility(View.VISIBLE);
+                        addressLayout.setVisibility(View.VISIBLE);
                         if (dataSnapshot.child("province").getValue().toString().equals("")) {
-                            address.setText("");
+                            address.setText("-");
                         }
                         else{
                             address.setText(dataSnapshot.child("city").getValue().toString()+" "+dataSnapshot.child("province").getValue().toString());
@@ -229,6 +247,7 @@ public class PersonProfileActivity extends AppCompatActivity {
                     }
                     else{
                         address.setVisibility(View.GONE);
+                        addressLayout.setVisibility(View.GONE);
                     }
 
                     if (dataSnapshot.child("check_phone").getValue().toString().equals("true")){
@@ -253,10 +272,10 @@ public class PersonProfileActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()){
                     if (dataSnapshot.hasChild(receiverUserId)){
-                        SendFriendReqButton.setText("UNFOLLOW");
+                        SendFriendReqButton.setText("Unfollow");
                     }
                     else{
-                        SendFriendReqButton.setText("FOLLOW");
+                        SendFriendReqButton.setText("Follow");
                     }
                 }
             }
@@ -275,9 +294,9 @@ public class PersonProfileActivity extends AppCompatActivity {
             SendFriendReqButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (SendFriendReqButton.getText().equals("UNFOLLOW")){
+                    if (SendFriendReqButton.getText().equals("Unfollow")){
                         UsersRef.child(senderUserId).child("following").child(receiverUserId).removeValue();
-                        SendFriendReqButton.setText("FOLLOW");
+                        SendFriendReqButton.setText("Follow");
                     }
                     else{
                         Calendar calForDate = Calendar.getInstance();
@@ -303,7 +322,7 @@ public class PersonProfileActivity extends AppCompatActivity {
                         friendsMap.put("Timestamp", saveCurrentDate+" "+saveCurrentTime);
                         friendsMap.put("isSeen", false);
                         UsersRef.child(senderUserId).child("following").child(receiverUserId).updateChildren(friendsMap);
-                        SendFriendReqButton.setText("UNFOLLOW");
+                        SendFriendReqButton.setText("Unfollow");
                     }
 
                 }

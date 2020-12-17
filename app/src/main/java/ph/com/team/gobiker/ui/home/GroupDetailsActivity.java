@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -64,7 +65,7 @@ import ph.com.team.gobiker.ui.chat.ChatSearchAdapter;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
 public class GroupDetailsActivity extends AppCompatActivity {
-    private TextView groupName, groupMembersNr, groupDateCreated, groupType, groupStatus, groupLabel;
+    private TextView groupName, groupMembersNr, groupDateCreated, groupType, groupStatus, groupLabel, groupTypeNStatus, groupMembersNrNStatus;
     private CircleImageView groupImage;
     private Button membersBtn, groupRideBtn, joinBtn, requestsBtn, editGroupBtn;
     private View btnDivider;
@@ -117,13 +118,15 @@ public class GroupDetailsActivity extends AppCompatActivity {
 
         groupImage = findViewById(R.id.group_profile_pic);
         groupName = findViewById(R.id.person_full_name);
+//        groupTypeNStatus = findViewById(R.id.group_type_and_status);
+        groupMembersNrNStatus = findViewById(R.id.members_nr_and_status);
         groupDateCreated = findViewById(R.id.date_created);
-        groupMembersNr = findViewById(R.id.members_nr);
-        groupStatus = findViewById(R.id.group_status);
+//        groupMembersNr = findViewById(R.id.members_nr);
+//        groupStatus = findViewById(R.id.group_status);
         groupType = findViewById(R.id.group_type);
         groupLabel = findViewById(R.id.current_groups_label);
 
-        btnDivider = findViewById(R.id.btndivider);
+//        btnDivider = findViewById(R.id.btndivider);
         requestsBtn = findViewById(R.id.requests_btn);
         editGroupBtn = findViewById(R.id.edit_btn);
         membersBtn = findViewById(R.id.btn_members);
@@ -203,14 +206,22 @@ public class GroupDetailsActivity extends AppCompatActivity {
                 }
 
                 groupName.setText(group.getGroup_name());
+                groupMembersNrNStatus.setText((Html.fromHtml("<b>"
+                        + String.valueOf(dataSnapshot.child("Members").getChildrenCount()) +" members"
+                                + "</b> | <i>" + group.getStatus() + "</i>")));
                 groupDateCreated.setText("Created at "+group.getCreate_date());
-                groupMembersNr.setText(String.valueOf(dataSnapshot.child("Members").getChildrenCount())+" members");
-                groupStatus.setText(group.getStatus());
-                groupType.setText(group.getGroup_type());
+//                groupMembersNr.setText(String.valueOf(dataSnapshot.child("Members").getChildrenCount())+" members");
+
+                groupType.setText((Html.fromHtml("<b>"
+                        + group.getGroup_type() + " group</b> ")));
+                grouptypehldr = group.getGroup_type();
+//                groupStatus.setText(group.getStatus());
+//                groupType.setText(group.getGroup_type());
 
                 if(dataSnapshot.child("Members").child(currentUserID).child("role").exists()) {
                     rolehldr = dataSnapshot.child("Members").child(currentUserID).child("role").getValue().toString();
-                }
+                }else
+                    rolehldr = "Member";
 
                 if(group.getGroup_type().equals("Public")){
                     groupLabel.setText("Posts from this group");
@@ -221,10 +232,10 @@ public class GroupDetailsActivity extends AppCompatActivity {
                     }
                     requestsBtn.setVisibility(View.GONE);
                     if(rolehldr.equals("Member")){
-                        btnDivider.setVisibility(View.GONE);
+//                        btnDivider.setVisibility(View.GONE);
                         editGroupBtn.setVisibility(View.GONE);
                     }else if(rolehldr.equals("Admin")){
-                        btnDivider.setVisibility(View.GONE);
+//                        btnDivider.setVisibility(View.GONE);
                         editGroupBtn.setVisibility(View.VISIBLE);
                     }
                 }else if(group.getGroup_type().equals("Private")){
@@ -235,7 +246,7 @@ public class GroupDetailsActivity extends AppCompatActivity {
                                 groupLabel.setText("Group is private. You need to have your join request approved first to view group posts.");
                                 editGroupBtn.setVisibility(View.GONE);
                                 requestsBtn.setVisibility(View.GONE);
-                                btnDivider.setVisibility(View.GONE);
+//                                btnDivider.setVisibility(View.GONE);
                             }else if(dataSnapshot.child("Members").child(currentUserID).child("status").getValue().equals("Accepted")){
                                 groupLabel.setText("Posts from this group");
                                 joinBtn.setText("Leave Group");
@@ -243,16 +254,16 @@ public class GroupDetailsActivity extends AppCompatActivity {
                                 if(rolehldr.equals("Member")){
                                     editGroupBtn.setVisibility(View.GONE);
                                     requestsBtn.setVisibility(View.GONE);
-                                    btnDivider.setVisibility(View.GONE);
+//                                    btnDivider.setVisibility(View.GONE);
                                 }else if(rolehldr.equals("Admin")){
-                                    btnDivider.setVisibility(View.VISIBLE);
+//                                    btnDivider.setVisibility(View.VISIBLE);
                                     requestsBtn.setVisibility(View.VISIBLE);
                                     editGroupBtn.setVisibility(View.VISIBLE);
                                 }
                             }
                         }
                     }else{
-                        btnDivider.setVisibility(View.GONE);
+//                        btnDivider.setVisibility(View.GONE);
                         editGroupBtn.setVisibility(View.GONE);
                         requestsBtn.setVisibility(View.GONE);
 
@@ -707,8 +718,9 @@ public class GroupDetailsActivity extends AppCompatActivity {
                 Picasso.with(GroupDetailsActivity.this).load(grouppicstring).placeholder(R.drawable.profile).into(edit_group_image);
             }
 
-            if (!groupType.getText().toString().equals(null)) {
-                int spinnerPosition = staticAdapter.getPosition(groupType.getText().toString());
+//            if (!groupType.getText().toString().equals(null)) {
+            if(!grouptypehldr.equals(null)){
+                int spinnerPosition = staticAdapter.getPosition(grouptypehldr);
                 edit_group_type.setSelection(spinnerPosition);
             }
 
