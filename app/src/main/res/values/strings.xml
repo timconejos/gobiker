@@ -25,7 +25,7 @@
     <string name="time">Time</string>
     <string name="distance">Distance</string>
     <string name="calories">Calories</string>
-    <string name="add_directions">Add Direction</string>
+    <string name="add_directions">Add direction</string>
     <string name="start">Start</string>
 
 
@@ -128,7 +128,7 @@
     <string name="type">Type</string>
     <string name="ride_type">Bike / Motor</string>
     <string name="level">Level</string>
-    <string name="distance_traveled">Distance Travelled</string>
+    <string name="distance_traveled">Distance travelled</string>
     <string name="create_profile">Create Profile</string>
     <string name="current_location">Current Location</string>
     <string name="no_of_rides">No. of Rides</string>

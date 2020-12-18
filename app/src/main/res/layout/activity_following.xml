@@ -15,15 +15,16 @@
         android:layout_marginBottom="5dp"
         android:paddingTop="20dp"
         android:text="Following"
-        android:textColor="@android:color/black"
-        android:textSize="24sp"
-        android:textStyle="bold" />
+        style="@style/Headings.H1"
+        />
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/following_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginStart="5dp"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="60dp"
         android:layout_marginEnd="5dp"
-        android:layout_marginBottom="5dp" />
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"/>
 </RelativeLayout>

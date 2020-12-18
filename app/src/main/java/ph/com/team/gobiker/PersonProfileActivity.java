@@ -104,7 +104,7 @@ public class PersonProfileActivity extends AppCompatActivity {
                     followerTxt = "Followers";
 
                 seeallfollowerButton.setText((Html.fromHtml("<big>"
-                        + f + "</big> <br/>"
+                        + f + "</big><br/>"
                         + "<small>" + followerTxt
                         + "</small>")));
             }
@@ -134,7 +134,7 @@ public class PersonProfileActivity extends AppCompatActivity {
 
 //                    seeallfollowingButton.setText(numFollowing+" following");
                     seeallfollowingButton.setText((Html.fromHtml("<big>"
-                            + numFollowing + "</big> <br/>"
+                            + numFollowing + "</big><br/>"
                             + "<small>" + "Following"
                             + "</small>")));
 
@@ -163,14 +163,14 @@ public class PersonProfileActivity extends AppCompatActivity {
 
                             if (dataSnapshot.hasChild("bike_level")) {
                                 if (dataSnapshot.child("bike_level").getValue().toString().equals("")) {
-                                    level.setText("1");
+                                    level.setText("Lvl. 1");
                                 }
                                 else{
-                                    level.setText(dataSnapshot.child("bike_level").getValue().toString());
+                                    level.setText("Lvl. " + dataSnapshot.child("bike_level").getValue().toString());
                                 }
                             }
                             else{
-                                level.setText("Level: 1");
+                                level.setText("Lvl. 1");
                             }
 
                             if (dataSnapshot.hasChild("bike_number_of_rides")){
@@ -180,7 +180,7 @@ public class PersonProfileActivity extends AppCompatActivity {
                                     numRides.setText(dataSnapshot.child("bike_number_of_rides").getValue().toString());
                             }
                             else{
-                                numRides.setText(" 0");
+                                numRides.setText("0");
                             }
 
                             if (dataSnapshot.hasChild("bike_overall_distance")) {
@@ -198,14 +198,14 @@ public class PersonProfileActivity extends AppCompatActivity {
                         else{
                             if (dataSnapshot.hasChild("motor_level")) {
                                 if (dataSnapshot.child("motor_level").getValue().toString().equals("")) {
-                                    level.setText("1");
+                                    level.setText("Lvl. 1");
                                 }
                                 else{
-                                    level.setText(dataSnapshot.child("motor_level").getValue().toString());
+                                    level.setText("Lvl. "+ dataSnapshot.child("motor_level").getValue().toString());
                                 }
                             }
                             else{
-                                level.setText("1");
+                                level.setText("Lvl. 1");
                             }
 
                             if (dataSnapshot.hasChild("motor_number_of_rides")){

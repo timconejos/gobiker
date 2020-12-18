@@ -152,6 +152,9 @@
         android:layout_marginTop="20dp"
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="97dp"
+
+        android:letterSpacing="0"
+        android:textAllCaps="false"
         android:clickable="true"
         android:elevation="8dp"
         app:rippleColor="@color/colorAccent"
@@ -172,12 +175,15 @@
         android:layout_marginTop="15dp"
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="30dp"
+        android:letterSpacing="0"
+        android:textAllCaps="false"
         android:clickable="true"
         android:elevation="8dp"
         android:focusable="true"
         android:backgroundTint="@color/white"
         app:rippleColor="@color/colorPrimary"
         android:text="@string/add_directions"
+
         map:icon="@drawable/ic_add_location"
         map:iconTint="@color/colorPrimary"/>
 </RelativeLayout>

@@ -17,6 +17,7 @@
             android:layout_height="wrap_content"
             android:gravity="center|bottom"
             android:id="@+id/follo"
+            android:visibility="gone"
             >
 
             <Button
@@ -46,6 +47,7 @@
             android:id="@+id/bikes"
             android:layout_weight="2"
             android:layout_below="@+id/follo"
+
             >
             <TextView
                 android:id="@+id/my_info_lbl"
@@ -56,7 +58,8 @@
                 android:gravity="start"
                 style="@style/Headings.H1"
                 android:textColor="@color/black"
-                android:layout_marginStart="20dp"/>
+                android:layout_marginStart="20dp"
+                android:visibility="gone"/>
             <TextView android:id="@+id/ride_lbl"
                 android:text="@string/ride_s"
                 android:layout_height="wrap_content"
@@ -64,13 +67,176 @@
                 style="@style/Headings.H4"
                 android:textColor="@color/black"
                 android:textAlignment="textStart"
-                android:layout_marginStart="20dp"/>
+                android:layout_marginStart="20dp"
+                android:visibility="gone"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/my_info"
+                style="@style/Headings.H5"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="20dp"
+                android:textColor="@color/lightColor"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:orientation="horizontal">
+
+                <FrameLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/round_shape"
+                    android:layout_margin="10dp"
+                    android:padding="15dp">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+                        <TextView
+                            android:id="@+id/ride_type_lbl"
+                            android:text="@string/type"
+                            android:layout_height="wrap_content"
+                            android:layout_width="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:drawableLeft="@drawable/ic_directions_bike_dark"
+                            android:drawablePadding="5dp"
+                            android:gravity="center"
+                            style="@style/Subtitle.H6"
+                            android:textColor="@color/black"
+                            />
+                        <TextView
+                            android:id="@+id/my_bike_motor"
+                            android:text="@string/ride_type"
+                            android:layout_height="wrap_content"
+                            android:layout_width="wrap_content"
+                            android:gravity="end"
+                            android:layout_alignParentRight="true"
+                            style="@style/Headings.H3"
+                            android:textColor="@color/black"/>
+                    </LinearLayout>
+                </FrameLayout>
+                <FrameLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/round_shape"
+                    android:layout_margin="10dp"
+                    android:padding="15dp">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+                        <TextView
+                            android:id="@+id/level_lbl"
+                            android:text="@string/level"
+                            android:layout_height="wrap_content"
+                            android:layout_width="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:gravity="center"
+                            android:drawableLeft="@drawable/ic_timeline_dark"
+                            android:drawablePadding="5dp"
+                            style="@style/Subtitle.H6"
+                            android:textColor="@color/black"/>
+                        <TextView
+                            android:id="@+id/my_level"
+                            android:text="@string/level"
+                            android:layout_height="wrap_content"
+                            android:layout_width="wrap_content"
+                            android:gravity="end"
+                            android:layout_alignParentRight="true"
+                            style="@style/Headings.H3"
+                            android:textColor="@color/black"/>
+                    </LinearLayout>
+
+                </FrameLayout>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:orientation="horizontal">
+
+                <FrameLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/round_shape"
+                    android:layout_margin="10dp"
+                    android:padding="15dp">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+                        <TextView
+                            android:id="@+id/distance_tvld_lbl"
+                            android:text="@string/distance_traveled"
+                            android:layout_height="wrap_content"
+                            android:layout_width="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:gravity="start|center"
+                            android:textAlignment="textStart"
+                            android:drawableLeft="@drawable/ic_map_dark"
+                            android:drawablePadding="5dp"
+                            style="@style/Subtitle.H6"
+                            android:textColor="@color/black"/>
+                        <TextView
+                            android:id="@+id/my_distance_traveled"
+                            android:text="@string/distance_traveled"
+                            android:layout_height="wrap_content"
+                            android:layout_width="wrap_content"
+                            android:gravity="start"
+                            android:layout_alignParentRight="true"
+                            style="@style/Headings.H3"
+                            android:textColor="@color/black"/>
+                    </LinearLayout>
+                </FrameLayout>
+                <FrameLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/round_shape"
+                    android:layout_margin="10dp"
+                    android:padding="15dp">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+                        <TextView
+                            android:id="@+id/no_rides_lbl"
+                            android:text="@string/no_of_rides"
+                            android:layout_height="wrap_content"
+                            android:layout_width="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:gravity="center"
+                            android:drawableLeft="@drawable/baseline_person_pin_circle_24"
+                            android:drawablePadding="5dp"
+                            style="@style/Subtitle.H6"
+                            android:textColor="@color/black"/>
+                        <TextView
+                            android:id="@+id/my_no_rides"
+                            android:text="@string/no_of_rides"
+                            android:layout_height="wrap_content"
+                            android:layout_width="wrap_content"
+                            android:gravity="end"
+                            android:layout_alignParentRight="true"
+                            style="@style/Headings.H3"
+                            android:textColor="@color/black"/>
+                    </LinearLayout>
+
+                </FrameLayout>
+            </LinearLayout>
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/round_shape"
                 android:layout_margin="20dp"
-                android:padding="15dp">
+                android:padding="15dp"
+                android:visibility="gone">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -80,7 +246,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
                         <TextView
-                            android:id="@+id/ride_type_lbl"
+                            android:id="@+id/ride_type_lbl_"
                             android:text="@string/type"
                             android:layout_height="wrap_content"
                             android:layout_width="wrap_content"
@@ -91,7 +257,7 @@
                             style="@style/Subtitle.H5"
                             android:textColor="@color/black"/>
                         <TextView
-                            android:id="@+id/my_bike_motor"
+                            android:id="@+id/my_bike_motor_"
                             android:text="@string/ride_type"
                             android:layout_height="wrap_content"
                             android:layout_width="wrap_content"
@@ -104,7 +270,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
                         <TextView
-                            android:id="@+id/level_lbl"
+                            android:id="@+id/level_lbl_"
                             android:text="@string/level"
                             android:layout_height="wrap_content"
                             android:layout_width="wrap_content"
@@ -115,7 +281,7 @@
                             style="@style/Subtitle.H5"
                             android:textColor="@color/black"/>
                         <TextView
-                            android:id="@+id/my_level"
+                            android:id="@+id/my_level_"
                             android:text="@string/level"
                             android:layout_height="wrap_content"
                             android:layout_width="wrap_content"
@@ -128,7 +294,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
                         <TextView
-                            android:id="@+id/distance_tvld_lbl"
+                            android:id="@+id/distance_tvld_lbl_"
                             android:text="@string/distance_traveled"
                             android:layout_height="wrap_content"
                             android:layout_width="wrap_content"
@@ -139,7 +305,7 @@
                             style="@style/Subtitle.H5"
                             android:textColor="@color/black"/>
                         <TextView
-                            android:id="@+id/my_distance_traveled"
+                            android:id="@+id/my_distance_traveled_"
                             android:text="@string/distance_traveled"
                             android:layout_height="wrap_content"
                             android:layout_width="wrap_content"
@@ -152,18 +318,18 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
                         <TextView
-                            android:id="@+id/no_rides_lbl"
+                            android:id="@+id/no_rides_lbl_"
                             android:text="@string/no_of_rides"
                             android:layout_height="wrap_content"
                             android:layout_width="wrap_content"
                             android:layout_alignParentLeft="true"
                             android:gravity="center"
-                            android:drawableLeft="@drawable/ic_map_dark"
+                            android:drawableLeft="@drawable/baseline_person_pin_circle_24"
                             android:drawablePadding="5dp"
                             style="@style/Subtitle.H5"
                             android:textColor="@color/black"/>
                         <TextView
-                            android:id="@+id/my_no_rides"
+                            android:id="@+id/my_no_rides_"
                             android:text="@string/no_of_rides"
                             android:layout_height="wrap_content"
                             android:layout_width="wrap_content"
@@ -174,13 +340,20 @@
                     </RelativeLayout>
                 </LinearLayout>
             </FrameLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="More details"
+                style="@style/Headings.H5"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="20dp"
+                android:textColor="@color/lightColor"/>
             <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/round_shape"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
-                android:layout_marginTop="10dp"
                 android:layout_marginBottom="20dp"
                 android:padding="15dp">
                 <LinearLayout
@@ -189,8 +362,11 @@
                     android:orientation="vertical">
                     <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="3dp"
+                        android:layout_marginBottom="3dp"
+                        android:background="@drawable/border_bottom"
+                        >
                         <TextView
                             android:id="@+id/address_lbl"
                             android:text="Address"
@@ -198,7 +374,7 @@
                             android:layout_width="wrap_content"
                             android:layout_alignParentLeft="true"
                             android:gravity="center"
-                            style="@style/Subtitle.H5"
+                            style="@style/Subtitle.H6"
                             android:textColor="@color/black"/>
                         <TextView
                             android:id="@+id/my_address"
@@ -207,22 +383,25 @@
                             android:layout_width="wrap_content"
                             android:gravity="end"
                             android:layout_alignParentRight="true"
-                            style="@style/Headings.H3"
+                            style="@style/Headings.H4"
                             android:textColor="@color/black"/>
                     </RelativeLayout>
                     <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="3dp"
+                        android:layout_marginBottom="3dp"
+                        android:background="@drawable/border_bottom">
 
                         <TextView
                             android:id="@+id/gender_lbl"
-                            android:text="Gender"
-                            android:layout_height="wrap_content"
+                            style="@style/Subtitle.H6"
                             android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:layout_alignParentLeft="true"
                             android:gravity="center"
-                            style="@style/Subtitle.H5"
-                            android:textColor="@color/black"/>
+                            android:text="Gender"
+                            android:textColor="@color/black" />
                         <TextView
                             android:id="@+id/my_gender"
                             android:text="Gender"
@@ -230,12 +409,15 @@
                             android:layout_width="wrap_content"
                             android:gravity="end"
                             android:layout_alignParentRight="true"
-                            style="@style/Headings.H3"
+                            style="@style/Headings.H4"
                             android:textColor="@color/black"/>
                     </RelativeLayout>
                     <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="3dp"
+                        android:layout_marginBottom="3dp"
+                        android:background="@drawable/border_bottom">
 
                         <TextView
                             android:id="@+id/weight_lbl"
@@ -244,7 +426,7 @@
                             android:layout_width="wrap_content"
                             android:layout_alignParentLeft="true"
                             android:gravity="center"
-                            style="@style/Subtitle.H5"
+                            style="@style/Subtitle.H6"
                             android:textColor="@color/black"/>
                         <TextView
                             android:id="@+id/my_bike_weight"
@@ -253,12 +435,15 @@
                             android:layout_width="wrap_content"
                             android:gravity="end"
                             android:layout_alignParentRight="true"
-                            style="@style/Headings.H3"
+                            style="@style/Headings.H4"
                             android:textColor="@color/black"/>
                     </RelativeLayout>
                     <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="3dp"
+                        android:layout_marginBottom="3dp"
+                        android:background="@drawable/border_bottom">
 
                         <TextView
                             android:id="@+id/height_lbl"
@@ -267,7 +452,7 @@
                             android:layout_width="wrap_content"
                             android:layout_alignParentLeft="true"
                             android:gravity="center"
-                            style="@style/Subtitle.H5"
+                            style="@style/Subtitle.H6"
                             android:textColor="@color/black"/>
                         <TextView
                             android:id="@+id/my_bike_height"
@@ -276,7 +461,7 @@
                             android:layout_width="wrap_content"
                             android:gravity="end"
                             android:layout_alignParentRight="true"
-                            style="@style/Headings.H3"
+                            style="@style/Headings.H4"
                             android:textColor="@color/black"/>
                     </RelativeLayout>
                     <RelativeLayout
@@ -290,7 +475,7 @@
                             android:layout_width="wrap_content"
                             android:layout_alignParentLeft="true"
                             android:gravity="center"
-                            style="@style/Subtitle.H5"
+                            style="@style/Subtitle.H6"
                             android:textColor="@color/black"/>
                         <TextView
                             android:id="@+id/my_bike_age"
@@ -299,7 +484,7 @@
                             android:layout_width="wrap_content"
                             android:gravity="end"
                             android:layout_alignParentRight="true"
-                            style="@style/Headings.H3"
+                            style="@style/Headings.H4"
                             android:textColor="@color/black"/>
                     </RelativeLayout>
                 </LinearLayout>
@@ -321,6 +506,7 @@
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="10dp"
                     android:backgroundTint="@color/colorPrimary"
+                    android:visibility="gone"
                     />
 
                 <View

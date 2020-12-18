@@ -31,7 +31,7 @@ public class ProfileFragment extends Fragment {
 
     private FirebaseAuth mAuth;
     private Button signOutButton, updateProfileButton, seeallfollowerButton, seeallfollowingButton;
-    private TextView userGender, userBM, userWeight, userHeight, userAge, level, overall_distance, address, weightlabel, heightlabel, agelabel, addrlabel;
+    private TextView userGender, userBM, userWeight, userHeight, userAge, level, overall_distance, address, weightlabel, heightlabel, agelabel, addrlabel, numRides;
     private CircleImageView userProfileImage;
     private DatabaseReference profileUserRef,UsersRef;
     private String currentUserId;
@@ -61,6 +61,7 @@ public class ProfileFragment extends Fragment {
         overall_distance = root.findViewById(R.id.my_distance_traveled);
         address = root.findViewById(R.id.my_address);
         addrlabel = root.findViewById(R.id.address_lbl);
+        numRides = root.findViewById(R.id.my_no_rides);
 
         weightlabel = root.findViewById(R.id.weight_lbl);
         heightlabel = root.findViewById(R.id.height_lbl);
@@ -240,14 +241,14 @@ public class ProfileFragment extends Fragment {
 
                             if (dataSnapshot.hasChild("bike_level")) {
                                 if (dataSnapshot.child("bike_level").getValue().toString().equals("")) {
-                                    level.setText("1");
+                                    level.setText("Lvl. 1");
                                 }
                                 else{
-                                    level.setText(dataSnapshot.child("bike_level").getValue().toString());
+                                    level.setText("Lvl. "+dataSnapshot.child("bike_level").getValue().toString());
                                 }
                             }
                             else{
-                                level.setText("1");
+                                level.setText("Lvl. 1");
                             }
 
                             if (dataSnapshot.hasChild("bike_overall_distance")) {
@@ -261,18 +262,29 @@ public class ProfileFragment extends Fragment {
                             else{
                                 overall_distance.setText("0 m");
                             }
+
+                            if (dataSnapshot.hasChild("bike_number_of_rides")){
+                                if (dataSnapshot.child("bike_number_of_rides").getValue().toString().equals(""))
+                                    numRides.setText("0");
+                                else
+                                    numRides.setText(dataSnapshot.child("bike_number_of_rides").getValue().toString());
+                            }
+                            else{
+                                numRides.setText("0");
+                            }
                         }
+
                         else{
                             if (dataSnapshot.hasChild("motor_level")) {
                                 if (dataSnapshot.child("motor_level").getValue().toString().equals("")) {
-                                    level.setText("1");
+                                    level.setText("Lvl. 1");
                                 }
                                 else{
-                                    level.setText(dataSnapshot.child("motor_level").getValue().toString());
+                                    level.setText("Lvl. "+dataSnapshot.child("motor_level").getValue().toString());
                                 }
                             }
                             else{
-                                level.setText("1");
+                                level.setText("Lvl. 1");
                             }
 
                             if (dataSnapshot.hasChild("motor_overall_distance")) {
@@ -285,6 +297,17 @@ public class ProfileFragment extends Fragment {
                             }
                             else{
                                 overall_distance.setText("0 m");
+                            }
+
+
+                            if (dataSnapshot.hasChild("motor_number_of_rides")){
+                                if (dataSnapshot.child("motor_number_of_rides").getValue().toString().equals(""))
+                                    numRides.setText("0");
+                                else
+                                    numRides.setText(dataSnapshot.child("motor_number_of_rides").getValue().toString());
+                            }
+                            else{
+                                numRides.setText("0");
                             }
                         }
                     }
