@@ -67,29 +67,29 @@ public class ProfileFragment extends Fragment {
         heightlabel = root.findViewById(R.id.height_lbl);
         agelabel = root.findViewById(R.id.age_lbl);
 
-        updateProfileButton = root.findViewById(R.id.myUpdateProfileButton);
+//        updateProfileButton = root.findViewById(R.id.myUpdateProfileButton);
 
         signOutButton = root.findViewById(R.id.signOutButton);
 
-
-        seeallfollowerButton = root.findViewById(R.id.seeAllFollowersButton);
-
-        seeallfollowerButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SendUserToFollowersActivity();
-            }
-        });
-
-        seeallfollowingButton = root.findViewById(R.id.seeAllFollowingButton);
-
-
-        seeallfollowingButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SendUserToFollowingActivity();
-            }
-        });
+//
+//        seeallfollowerButton = root.findViewById(R.id.seeAllFollowersButton);
+//
+//        seeallfollowerButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                SendUserToFollowersActivity();
+//            }
+//        });
+//
+//        seeallfollowingButton = root.findViewById(R.id.seeAllFollowingButton);
+//
+//
+//        seeallfollowingButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                SendUserToFollowingActivity();
+//            }
+//        });
 
         signOutButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -98,53 +98,53 @@ public class ProfileFragment extends Fragment {
             }
         });
 
-        updateProfileButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SendUserToSettingsActivity();
-            }
-        });
+//        updateProfileButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                SendUserToSettingsActivity();
+//            }
+//        });
 
-        UsersRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                int f = 0;
-                if (dataSnapshot.exists()) {
-                    for(DataSnapshot snapshot: dataSnapshot.getChildren()){
-                        if (snapshot.hasChild("following")) {
-                            if (snapshot.child("following").hasChild(currentUserId)) {
-                                f++;
-                            }
-                        }
-                    }
-                }
-                if (f==1)
-                    seeallfollowerButton.setText(f+" follower");
-                else
-                    seeallfollowerButton.setText(f+" followers");
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
+//        UsersRef.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                int f = 0;
+//                if (dataSnapshot.exists()) {
+//                    for(DataSnapshot snapshot: dataSnapshot.getChildren()){
+//                        if (snapshot.hasChild("following")) {
+//                            if (snapshot.child("following").hasChild(currentUserId)) {
+//                                f++;
+//                            }
+//                        }
+//                    }
+//                }
+//                if (f==1)
+//                    seeallfollowerButton.setText(f+" follower");
+//                else
+//                    seeallfollowerButton.setText(f+" followers");
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
 
         profileUserRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()){
 
-                    long numFollowing = 0;
+//                    long numFollowing = 0;
 
                     String myGender = dataSnapshot.child("gender").getValue().toString();
                     String myBike = dataSnapshot.child("bike").getValue().toString();
 
-                    if (dataSnapshot.hasChild("following")){
-                        numFollowing = dataSnapshot.child("following").getChildrenCount();
-                    }
-
-                    seeallfollowingButton.setText(numFollowing+" following");
+//                    if (dataSnapshot.hasChild("following")){
+//                        numFollowing = dataSnapshot.child("following").getChildrenCount();
+//                    }
+//
+//                    seeallfollowingButton.setText(numFollowing+" following");
 
                     if (dataSnapshot.child("check_address").getValue().toString().equals("true")){
                         if (dataSnapshot.child("province").getValue().toString().equals("")) {
@@ -345,16 +345,16 @@ public class ProfileFragment extends Fragment {
         startActivity(loginIntent);
     }
 
-    private void SendUserToFollowersActivity() {
-        Intent loginIntent = new Intent(getActivity(), FollowersActivity.class);
-        loginIntent.putExtra("visit_user_id",mAuth.getCurrentUser().getUid());
-        startActivity(loginIntent);
-    }
-
-    private void SendUserToFollowingActivity() {
-        Intent loginIntent = new Intent(getActivity(), FollowingActivity.class);
-        loginIntent.putExtra("visit_user_id",mAuth.getCurrentUser().getUid());
-        startActivity(loginIntent);
-    }
+//    private void SendUserToFollowersActivity() {
+//        Intent loginIntent = new Intent(getActivity(), FollowersActivity.class);
+//        loginIntent.putExtra("visit_user_id",mAuth.getCurrentUser().getUid());
+//        startActivity(loginIntent);
+//    }
+//
+//    private void SendUserToFollowingActivity() {
+//        Intent loginIntent = new Intent(getActivity(), FollowingActivity.class);
+//        loginIntent.putExtra("visit_user_id",mAuth.getCurrentUser().getUid());
+//        startActivity(loginIntent);
+//    }
 
 }
