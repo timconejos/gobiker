@@ -2,6 +2,7 @@ package ph.com.team.gobiker.ui.home;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
@@ -19,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -53,7 +55,9 @@ import ph.com.team.gobiker.FindFriendsActivity;
 import ph.com.team.gobiker.LikesActivity;
 import ph.com.team.gobiker.PostActivity;
 import ph.com.team.gobiker.R;
+import ph.com.team.gobiker.ui.chat.ChatGroupActivity;
 import ph.com.team.gobiker.ui.dashboard.ProfileFragment;
+import ph.com.team.gobiker.ui.dashboard.ViewOthersProfile;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
 public class HomeFeedFragment extends Fragment {
@@ -304,6 +308,7 @@ public class HomeFeedFragment extends Fragment {
                             }
                         });
 
+
                         UsersRef.child(currentUserID).child("following").addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -315,6 +320,15 @@ public class HomeFeedFragment extends Fragment {
                                     viewHolder.mView.setVisibility(View.GONE);
                                     viewHolder.lp.setVisibility(View.GONE);
                                 }
+
+                                viewHolder.profilell.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        Intent profileIntent =  new Intent(getActivity(), ViewOthersProfile.class);
+                                        profileIntent.putExtra("profileId",posts.getUid());
+                                        getActivity().startActivity(profileIntent);
+                                    }
+                                });
                             }
 
                             @Override
@@ -342,7 +356,7 @@ public class HomeFeedFragment extends Fragment {
         TextView DisplayNoOfLikes, optionMenuP;
         int countLikes;
         String currentUserId;
-        LinearLayout lp;
+        LinearLayout lp, profilell;
         DatabaseReference LikesRef;
         ImageView PostImage;
 
@@ -354,6 +368,7 @@ public class HomeFeedFragment extends Fragment {
             CommentBtn = mView.findViewById(R.id.comment_button);
             optionMenuP = mView.findViewById(R.id.post_options);
             lp = mView.findViewById(R.id.linear_posts);
+            profilell = mView.findViewById(R.id.profile_ll);
 //            LikepostButton = mView.findViewById(R.id.like_button);
 //            CommentPostButton = mView.findViewById(R.id.comment_button);
             DisplayNoOfLikes = mView.findViewById(R.id.display_no_of_likes);
@@ -361,6 +376,8 @@ public class HomeFeedFragment extends Fragment {
             LikesRef = FirebaseDatabase.getInstance().getReference().child("Likes");
             currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         }
+
+
 
         public void setLikeButtonStatus(final String PostKey){
             LikesRef.addValueEventListener(new ValueEventListener() {
@@ -385,35 +402,35 @@ public class HomeFeedFragment extends Fragment {
             });
         }
 
-        /*public void setLikeButtonStatus(final String PostKey){
-            LikesRef.addValueEventListener(new ValueEventListener() {
-                @RequiresApi(api = Build.VERSION_CODES.M)
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    Context context = null;
-                    if(dataSnapshot.child(PostKey).hasChild(currentUserId)){
-                        countLikes = (int) dataSnapshot.child(PostKey).getChildrenCount();
-                        LikeBtn.setText(Integer.toString(countLikes));
-//                        LikeBtn.setBackgroundResource(R.drawable.btn);
-                        LikeBtn.setTextAppearance(R.style.TransparentBtn_Like);
-//                        LikepostButton.setImageResource(R.drawable.ic_favorite_black_24dp);
-//                        DisplayNoOfLikes.setText(Integer.toString(countLikes));
-                    }
-                    else{
-                        countLikes = (int) dataSnapshot.child(PostKey).getChildrenCount();
-                        LikeBtn.setText(Integer.toString(countLikes));
-                        LikeBtn.setTextAppearance(R.style.TransparentBtn_Unlike);
-//                        LikepostButton.setImageResource(R.drawable.ic_favorite_border_black_24dp);
-//                        DisplayNoOfLikes.setText(Integer.toString(countLikes));
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            });
-        }*/
+//        public void setLikeButtonStatus(final String PostKey){
+//            LikesRef.addValueEventListener(new ValueEventListener() {
+//                @RequiresApi(api = Build.VERSION_CODES.M)
+//                @Override
+//                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                    Context context = null;
+//                    if(dataSnapshot.child(PostKey).hasChild(currentUserId)){
+//                        countLikes = (int) dataSnapshot.child(PostKey).getChildrenCount();
+//                        LikeBtn.setText(Integer.toString(countLikes));
+////                        LikeBtn.setBackgroundResource(R.drawable.btn);
+//                        LikeBtn.setTextAppearance(R.style.TransparentBtn_Like);
+////                        LikepostButton.setImageResource(R.drawable.ic_favorite_black_24dp);
+////                        DisplayNoOfLikes.setText(Integer.toString(countLikes));
+//                    }
+//                    else{
+//                        countLikes = (int) dataSnapshot.child(PostKey).getChildrenCount();
+//                        LikeBtn.setText(Integer.toString(countLikes));
+//                        LikeBtn.setTextAppearance(R.style.TransparentBtn_Unlike);
+////                        LikepostButton.setImageResource(R.drawable.ic_favorite_border_black_24dp);
+////                        DisplayNoOfLikes.setText(Integer.toString(countLikes));
+//                    }
+//                }
+//
+//                @Override
+//                public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                }
+//            });
+//        }
 
         public void setFullname(String fullname) {
             TextView username = (TextView) mView.findViewById(R.id.post_user_name);

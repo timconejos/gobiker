@@ -25,15 +25,16 @@ import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import ph.com.team.gobiker.ui.chat.ChatActivity;
+import ph.com.team.gobiker.ui.dashboard.ViewOthersProfile;
+import ph.com.team.gobiker.ui.home.GroupDetailsActivity;
 
 public class PersonProfileActivity extends AppCompatActivity {
     private TextView userBM, userProfName, userGender,address, userPhone, level, overall_distance, numRides;
     private CircleImageView userProfileImage;
-    private Button SendFriendReqButton, SendMsgButton,seeallfollowerButton, seeallfollowingButton;;
+    private Button ViewProfileButton, SendFriendReqButton, SendMsgButton,seeallfollowerButton, seeallfollowingButton;;
     private DatabaseReference UsersRef;
     private FirebaseAuth mAuth;
-    private String senderUserId, receiverUserId, CURRENT_STATE, myProfileName;
-    private String saveCurrentDate;
+    private String senderUserId, receiverUserId, myProfileName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +50,7 @@ public class PersonProfileActivity extends AppCompatActivity {
         userGender = findViewById(R.id.person_gender);
         userBM = findViewById(R.id.person_bm);
         userProfileImage = findViewById(R.id.person_profile_pic);
+        ViewProfileButton = findViewById(R.id.person_view_profile);
         SendFriendReqButton = findViewById(R.id.person_send_friend_request_btn);
         SendMsgButton = findViewById(R.id.person_send_msg_btn);
         address = findViewById(R.id.person_address);
@@ -72,6 +74,15 @@ public class PersonProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 SendUserToFollowingActivity();
+            }
+        });
+
+        ViewProfileButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent profileIntent = new Intent(PersonProfileActivity.this, ViewOthersProfile.class);
+                profileIntent.putExtra("profileId", receiverUserId);
+                startActivity(profileIntent);
             }
         });
 

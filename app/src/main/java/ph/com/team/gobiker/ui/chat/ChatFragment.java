@@ -106,6 +106,7 @@ public class ChatFragment extends Fragment {
         super.onPause();
         fragmentActive = false;
         mListener.setChatFragmentStatus(fragmentActive);
+
     }
 
     @Override
@@ -382,6 +383,8 @@ public class ChatFragment extends Fragment {
             messageTextBody.put("date",saveCurrentDate);
             messageTextBody.put("type","text");
             messageTextBody.put("from",currentUserID);
+            messageTextBody.put("isSeen", false);
+
 
             Map messageBodyDetails = new HashMap();
             messageBodyDetails.put(message_sender_ref+"/"+message_push_id,messageTextBody);
@@ -428,6 +431,7 @@ public class ChatFragment extends Fragment {
         UsersRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                profileList.clear();
                 for (DataSnapshot suggestionSnapshot : dataSnapshot.getChildren()){
                     if(!suggestionSnapshot.getKey().equals(currentUserID)){
                         String suggestion = suggestionSnapshot.child("fullname").getValue(String.class);
@@ -530,8 +534,9 @@ public class ChatFragment extends Fragment {
                                                 if(!chatitems.contains(chatItem)){
                                                     chatitems.add(chatItem);
                                                 }
+                                                Collections.sort(chatitems, new TimeStampComparator());
+                                                Collections.reverse(chatitems);
                                                 chatadapter.notifyDataSetChanged();
-
                                             }
                                         }
 

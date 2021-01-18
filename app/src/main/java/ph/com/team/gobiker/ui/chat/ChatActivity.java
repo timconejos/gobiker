@@ -84,8 +84,10 @@ public class ChatActivity extends AppCompatActivity {
 
     private TextView receiverName, userLastSeen;
     private CircleImageView receiverProfileImage;
-    private DatabaseReference RootRef, UsersRef;
+    private DatabaseReference RootRef, UsersRef, MessagesRef;
     private FirebaseAuth mAuth;
+
+    private ValueEventListener mListener;
 
     //chat attachments variables
     final static int PICTURE_RESULT = 0;
@@ -97,12 +99,26 @@ public class ChatActivity extends AppCompatActivity {
     public static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 123;
 
     @Override
+    public void onPause() {
+        super.onPause();
+        MessagesRef.child(messageSenderID).child(messageReceiverID).removeEventListener(mListener);
+
+    }
+
+    @Override
+    public void onStop(){
+        super.onStop();
+        MessagesRef.child(messageSenderID).child(messageReceiverID).removeEventListener(mListener);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
         RootRef = FirebaseDatabase.getInstance().getReference();
         UsersRef = FirebaseDatabase.getInstance().getReference().child("Users");
+        MessagesRef = FirebaseDatabase.getInstance().getReference().child("Messages");
         mAuth = FirebaseAuth.getInstance();
         messageSenderID = mAuth.getCurrentUser().getUid();
 
@@ -178,11 +194,11 @@ public class ChatActivity extends AppCompatActivity {
                     userMessagesList.smoothScrollToPosition(messageAdapter.getItemCount());
                     messageAdapter.notifyDataSetChanged();
                 }
-                if(dataSnapshot.child("isSeen").exists()){
-                    if(!(boolean) dataSnapshot.child("isSeen").getValue()){
-                        RootRef.child("Messages").child(messageSenderID).child(messageReceiverID).child(dataSnapshot.getKey()).child("isSeen").setValue(true);
-                    }
-                }
+//                if(dataSnapshot.child("isSeen").exists()){
+//                    if(!(boolean) dataSnapshot.child("isSeen").getValue()){
+//                        RootRef.child("Messages").child(messageSenderID).child(messageReceiverID).child(dataSnapshot.getKey()).child("isSeen").setValue(true);
+//                    }
+//                }
             }
 
             @Override
@@ -379,6 +395,8 @@ public class ChatActivity extends AppCompatActivity {
         userMessagesList.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
         userMessagesList.setLayoutManager(linearLayoutManager);
         userMessagesList.setAdapter(messageAdapter);
+
+        messagesSeen();
     }
 
     @Override
@@ -531,6 +549,28 @@ public class ChatActivity extends AppCompatActivity {
         }
     }
 
+    private void messagesSeen(){
+        mListener = MessagesRef.child(messageSenderID).child(messageReceiverID).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.exists()){
+                    for (DataSnapshot childSnapshot: snapshot.getChildren()) {
+                        if(childSnapshot.child("isSeen").exists()){
+                            if(!(boolean) childSnapshot.child("isSeen").getValue()){
+                                MessagesRef.child(messageSenderID).child(messageReceiverID).child(childSnapshot.getKey()).child("isSeen").setValue(true);
+                            }
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
     public void showDialog(final String msg, final Context context,
                            final String permission) {
         AlertDialog.Builder alertBuilder = new AlertDialog.Builder(context);
@@ -567,8 +607,7 @@ public class ChatActivity extends AppCompatActivity {
         }
     }
 
-    private String getfileExtension(Uri uri)
-    {
+    private String getfileExtension(Uri uri){
         String extension;
         ContentResolver contentResolver = getContentResolver();
         MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();

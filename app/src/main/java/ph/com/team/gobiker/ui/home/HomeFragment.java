@@ -84,6 +84,8 @@ public class HomeFragment extends Fragment {
     private TabLayout tabLayout;
     private ViewPager viewPager;
 
+    private ArrayList<String> suggestionsTemp = new ArrayList<String>();
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         homeViewModel =
@@ -117,7 +119,10 @@ public class HomeFragment extends Fragment {
                 for (DataSnapshot suggestionSnapshot : dataSnapshot.getChildren()){
                     String suggestion = suggestionSnapshot.child("fullname").getValue(String.class);
                     if(suggestion != null){
-                        autoComplete.add(suggestion);
+                        if(!suggestionsTemp.contains(suggestion)){
+                            autoComplete.add(suggestion);
+                            suggestionsTemp.add(suggestion);
+                        }
                     }
                 }
             }
@@ -165,8 +170,8 @@ public class HomeFragment extends Fragment {
 
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getChildFragmentManager());
-        adapter.addFragment(new HomeFeedFragment(), "Feed");
-        adapter.addFragment(new GroupFragment(), "Groups");
+        adapter.addFragment(new HomeFeedFragment(), "Feed", currentUserID);
+        adapter.addFragment(new GroupFragment(), "Groups", currentUserID);
         viewPager.setAdapter(adapter);
     }
 }

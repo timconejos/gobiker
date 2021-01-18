@@ -201,9 +201,21 @@
             <Button
                 android:layout_width="230dp"
                 android:layout_height="wrap_content"
-                android:id="@+id/person_send_friend_request_btn"
+                android:id="@+id/person_view_profile"
                 android:layout_below="@+id/follo"
                 android:layout_marginTop="45dp"
+                android:background="@drawable/rounded_float_btn"
+                android:text="View Profile"
+                android:layout_centerHorizontal="true"
+                style="@style/SecondaryBtn.Positive"
+                />
+
+            <Button
+                android:layout_width="230dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/person_send_friend_request_btn"
+                android:layout_below="@+id/person_view_profile"
+                android:layout_marginTop="10dp"
                 android:background="@drawable/rounded_float_btn"
                 android:text="Follow"
                 android:layout_centerHorizontal="true"

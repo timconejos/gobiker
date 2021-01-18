@@ -84,12 +84,10 @@ public class ChatRecyclerAdapter extends RecyclerView.Adapter<ChatRecyclerAdapte
             @Override
             public void onClick(View view) {
                 if(listItem.getChattype().equals("single")){
-                    messagesSeen(listItem.getId());
                     Intent profileIntent =  new Intent(context,ChatActivity.class);
                     profileIntent.putExtra("visit_user_id",listItem.getId());
                     context.startActivity(profileIntent);
                 }else if(listItem.getChattype().equals("group")){
-                    messagesSeen(listItem.getId());
                     Intent profileIntent =  new Intent(context,ChatGroupActivity.class);
                     profileIntent.putExtra("gcKey",listItem.getId());
                     context.startActivity(profileIntent);
@@ -97,28 +95,6 @@ public class ChatRecyclerAdapter extends RecyclerView.Adapter<ChatRecyclerAdapte
             }
         });
 
-    }
-
-    private void messagesSeen(String id){
-        MessagesRef.child(id).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.exists()){
-                    for (DataSnapshot childSnapshot: snapshot.getChildren()) {
-                        if(childSnapshot.child("isSeen").exists()){
-                            if(!(boolean) childSnapshot.child("isSeen").getValue()){
-                                MessagesRef.child(id).child(childSnapshot.getKey()).child("isSeen").setValue(true);
-                            }
-                        }
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
     }
 
     @Override

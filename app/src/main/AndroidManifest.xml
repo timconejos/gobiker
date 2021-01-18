@@ -29,6 +29,7 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
         </provider>
+        <activity android:name=".ui.dashboard.ViewOthersProfile"></activity>
         <activity android:name=".PhotoFullScreenActivity"></activity>
         <activity android:name=".ui.home.GroupDetailsActivity"></activity>
         <activity android:name=".FollowingActivity"></activity>

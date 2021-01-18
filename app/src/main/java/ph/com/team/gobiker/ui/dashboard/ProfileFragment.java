@@ -34,7 +34,7 @@ public class ProfileFragment extends Fragment {
     private TextView userGender, userBM, userWeight, userHeight, userAge, level, overall_distance, address, weightlabel, heightlabel, agelabel, addrlabel;
     private CircleImageView userProfileImage;
     private DatabaseReference profileUserRef,UsersRef;
-    private String currentUserId;
+    private String profileID;
 
     public static ProfileFragment newInstance() {
         ProfileFragment f = new ProfileFragment();
@@ -47,9 +47,8 @@ public class ProfileFragment extends Fragment {
 
         View root = inflater.inflate(R.layout.fragment_profile_details, container, false);
 
-        mAuth = FirebaseAuth.getInstance();
-        currentUserId = mAuth.getCurrentUser().getUid();
-        profileUserRef = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId);
+        profileID = getArguments().getString("profileId");
+        profileUserRef = FirebaseDatabase.getInstance().getReference().child("Users").child(profileID);
         UsersRef = FirebaseDatabase.getInstance().getReference().child("Users");
 
         userGender = root.findViewById(R.id.my_gender);
@@ -111,7 +110,7 @@ public class ProfileFragment extends Fragment {
                 if (dataSnapshot.exists()) {
                     for(DataSnapshot snapshot: dataSnapshot.getChildren()){
                         if (snapshot.hasChild("following")) {
-                            if (snapshot.child("following").hasChild(currentUserId)) {
+                            if (snapshot.child("following").hasChild(profileID)) {
                                 f++;
                             }
                         }
@@ -324,13 +323,13 @@ public class ProfileFragment extends Fragment {
 
     private void SendUserToFollowersActivity() {
         Intent loginIntent = new Intent(getActivity(), FollowersActivity.class);
-        loginIntent.putExtra("visit_user_id",mAuth.getCurrentUser().getUid());
+        loginIntent.putExtra("visit_user_id",profileID);
         startActivity(loginIntent);
     }
 
     private void SendUserToFollowingActivity() {
         Intent loginIntent = new Intent(getActivity(), FollowingActivity.class);
-        loginIntent.putExtra("visit_user_id",mAuth.getCurrentUser().getUid());
+        loginIntent.putExtra("visit_user_id",profileID);
         startActivity(loginIntent);
     }
 

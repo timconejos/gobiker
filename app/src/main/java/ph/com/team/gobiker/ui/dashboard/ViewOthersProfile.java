@@ -1,20 +1,13 @@
 package ph.com.team.gobiker.ui.dashboard;
 
 import android.os.Bundle;
-import android.view.LayoutInflater;
+import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
-
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
@@ -26,60 +19,46 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
-
 import de.hdodenhof.circleimageview.CircleImageView;
 import ph.com.team.gobiker.R;
 
-public class DashboardFragment extends Fragment {
+public class ViewOthersProfile extends AppCompatActivity {
 
-    private DashboardViewModel dashboardViewModel;
-    private View root;
     private FirebaseAuth mAuth;
     private TextView userProfName, userEmail, userPhone , numRides;
     private CircleImageView userProfileImage;
-    private DatabaseReference profileUserRef,UsersRef;
-    private String currentUserId;
+    private DatabaseReference profileUserRef;
+    private String profileId;
 
     private TabLayout tabLayout;
     private ViewPager viewPager;
 
-
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
-        dashboardViewModel =
-                ViewModelProviders.of(this).get(DashboardViewModel.class);
-        root = inflater.inflate(R.layout.fragment_dashboard, container, false);
-
-        dashboardViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-//                textView.setText(s);
-            }
-        });
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_other_profile);
+        profileId = getIntent().getExtras().get("profileId").toString();
 
         getProfileDetails();
 
-        viewPager = root.findViewById(R.id.profilecontainer);
-        tabLayout = root.findViewById(R.id.profilenavbar);
+        viewPager = findViewById(R.id.profilecontainer);
+        tabLayout = findViewById(R.id.profilenavbar);
 
         setupViewPager(viewPager);
         tabLayout.setupWithViewPager(viewPager);
-
-        return root;
     }
+
 
     private void getProfileDetails(){
 
         mAuth = FirebaseAuth.getInstance();
-        currentUserId = mAuth.getCurrentUser().getUid();
-        profileUserRef = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId);
-        UsersRef = FirebaseDatabase.getInstance().getReference().child("Users");
+        profileUserRef = FirebaseDatabase.getInstance().getReference().child("Users").child(profileId);
 
-        userProfName = root.findViewById(R.id.profile_name);
-        userEmail = root.findViewById(R.id.profile_email);
-        userPhone = root.findViewById(R.id.profile_phone);
-        numRides = root.findViewById(R.id.profile_rides);
-        userProfileImage = root.findViewById(R.id.profile_pic);
+        userProfName = findViewById(R.id.profile_name);
+        userEmail = findViewById(R.id.profile_email);
+        userPhone = findViewById(R.id.profile_phone);
+        numRides = findViewById(R.id.profile_rides);
+        userProfileImage = findViewById(R.id.profile_pic);
 
         profileUserRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -94,10 +73,10 @@ public class DashboardFragment extends Fragment {
 
                     if (dataSnapshot.hasChild("profileimage")){
                         String myProfileImage = dataSnapshot.child("profileimage").getValue().toString();
-                        Picasso.with(getActivity()).load(myProfileImage).placeholder(R.drawable.profile).into(userProfileImage);
+                        Picasso.with(getApplicationContext()).load(myProfileImage).placeholder(R.drawable.profile).into(userProfileImage);
                     }
                     else{
-                        Picasso.with(getActivity()).load(R.drawable.profile).into(userProfileImage);
+                        Picasso.with(getApplicationContext()).load(R.drawable.profile).into(userProfileImage);
                     }
 
                     userProfName.setText(myProfileName);
@@ -146,11 +125,9 @@ public class DashboardFragment extends Fragment {
     }
 
     private void setupViewPager(ViewPager viewPager) {
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getChildFragmentManager());
-        adapter.addFragment(new FeedFragment(), "Feed", currentUserId);
-        adapter.addFragment(new ProfileFragment(), "Profile", currentUserId);
+        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+        adapter.addFragment(new FeedFragment(), "Feed", profileId);
+        adapter.addFragment(new ProfileFragment(), "Profile", profileId);
         viewPager.setAdapter(adapter);
     }
-
-
 }

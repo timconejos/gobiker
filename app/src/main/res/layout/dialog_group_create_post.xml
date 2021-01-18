@@ -12,7 +12,19 @@
         android:layout_height="wrap_content"
         android:theme="@style/ToolbarTheme"
         android:minHeight="?attr/actionBarSize"
+        app:contentInsetLeft="0dp"
+        app:contentInsetStart="0dp"
+        app:contentInsetStartWithNavigation="0dp"
         android:background="@color/colorPrimary">
+
+        <Button
+            style="@style/TransparentBtn"
+            android:layout_gravity="start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Close"
+            android:textColor="@color/white"
+            android:id="@+id/cancel_post_button"/>
 
         <TextView
             android:id="@+id/create_post"
@@ -29,7 +41,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="@string/save"
+            android:text="Create"
             android:textColor="@color/white"
             android:id="@+id/update_post_button"/>
 

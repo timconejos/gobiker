@@ -55,12 +55,15 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import ph.com.team.gobiker.ClickPostActivity;
 import ph.com.team.gobiker.CommentsActivity;
 import ph.com.team.gobiker.LikesActivity;
+import ph.com.team.gobiker.NavActivity;
 import ph.com.team.gobiker.R;
 import ph.com.team.gobiker.SearchAutoComplete;
 import ph.com.team.gobiker.SearchAutoCompleteAdapter;
 import ph.com.team.gobiker.ui.chat.ChatGroupActivity;
 import ph.com.team.gobiker.ui.chat.ChatProfile;
 import ph.com.team.gobiker.ui.chat.ChatSearchAdapter;
+import ph.com.team.gobiker.ui.dashboard.ViewOthersProfile;
+import ph.com.team.gobiker.ui.login.MainLoginActivity;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
 public class GroupDetailsActivity extends AppCompatActivity {
@@ -286,9 +289,12 @@ public class GroupDetailsActivity extends AppCompatActivity {
             joinBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    GroupsRef.child(currentGroupID).child("Members").child(currentUserID).removeValue();
-                    Toast.makeText(GroupDetailsActivity.this, "You have left the group.", Toast.LENGTH_SHORT).show();
-                    joinBtn.setText("Join");
+                    if(rolehldr.equals("Admin")){
+
+                        GroupsRef.child(currentGroupID).child("Members").child(currentUserID).removeValue();
+                        Toast.makeText(GroupDetailsActivity.this, "You have left the group.", Toast.LENGTH_SHORT).show();
+                        joinBtn.setText("Join");
+                    }
                 }
             });
         }
@@ -503,6 +509,16 @@ public class GroupDetailsActivity extends AppCompatActivity {
                                             viewHolder.mView.setVisibility(View.GONE);
                                             viewHolder.lp.setVisibility(View.GONE);
                                         }
+
+                                        viewHolder.profilell.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View view) {
+                                                Intent profileIntent = new Intent(GroupDetailsActivity.this, ViewOthersProfile.class);
+                                                profileIntent.putExtra("profileId",posts.getUid());
+                                                startActivity(profileIntent);
+                                            }
+                                        });
+
                                         loadingBar.dismiss();
 
                                     }
@@ -813,7 +829,7 @@ public class GroupDetailsActivity extends AppCompatActivity {
         TextView DisplayNoOfLikes, optionMenuP;
         int countLikes;
         String currentUserId;
-        LinearLayout lp;
+        LinearLayout lp, profilell;
         DatabaseReference LikesRef;
         ImageView PostImage;
 
@@ -825,6 +841,7 @@ public class GroupDetailsActivity extends AppCompatActivity {
             CommentBtn = mView.findViewById(R.id.comment_button);
             optionMenuP = mView.findViewById(R.id.post_options);
             lp = mView.findViewById(R.id.linear_posts);
+            profilell = mView.findViewById(R.id.profile_ll);
 //            LikepostButton = mView.findViewById(R.id.like_button);
 //            CommentPostButton = mView.findViewById(R.id.comment_button);
             DisplayNoOfLikes = mView.findViewById(R.id.display_no_of_likes);

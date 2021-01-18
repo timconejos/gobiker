@@ -68,7 +68,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Active Groups you can join"
+                    android:text="Groups with people you follow"
                     android:id="@+id/active_groups_label"
                     android:layout_marginTop="5dp"
                     style="@style/Subtitle.H3"
@@ -86,7 +86,7 @@
                     android:layout_below="@+id/all_groups_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Posts from your Group/s"
+                    android:text="Group Posts"
                     android:id="@+id/current_groups_label"
                     android:layout_marginTop="10dp"
                     style="@style/Subtitle.H3"
