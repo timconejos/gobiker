@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/lighterColor"
-    tools:context=".ClickCommentActivity">
+    tools:context=".ui.posts.ClickCommentActivity">
 
     <LinearLayout
         android:layout_width="match_parent"

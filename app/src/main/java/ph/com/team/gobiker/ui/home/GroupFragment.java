@@ -8,7 +8,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -55,22 +55,22 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-import ph.com.team.gobiker.ClickPostActivity;
-import ph.com.team.gobiker.CommentsActivity;
-import ph.com.team.gobiker.LikesActivity;
+import ph.com.team.gobiker.ui.posts.ClickPostActivity;
+import ph.com.team.gobiker.ui.posts.CommentsActivity;
+import ph.com.team.gobiker.ui.posts.LikesActivity;
 import ph.com.team.gobiker.R;
-import ph.com.team.gobiker.SearchAutoComplete;
-import ph.com.team.gobiker.SearchAutoCompleteAdapter;
-import ph.com.team.gobiker.ui.chat.ChatGroupActivity;
+import ph.com.team.gobiker.ui.search.SearchAutoComplete;
+import ph.com.team.gobiker.ui.search.SearchAutoCompleteAdapter;
 import ph.com.team.gobiker.ui.chat.ChatProfile;
 import ph.com.team.gobiker.ui.chat.ChatSearchAdapter;
-import ph.com.team.gobiker.ui.dashboard.ViewOthersProfile;
+import ph.com.team.gobiker.ui.profile.ViewOthersProfile;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
 public class GroupFragment extends Fragment {
@@ -80,9 +80,9 @@ public class GroupFragment extends Fragment {
     private DatabaseReference UsersRef, GroupsRef, PostsRef, LikesRef, GroupLikesRef;
     private String currentUserID, vid;
     private List<SearchAutoComplete> profileList;
-    private RecyclerView profileSelectedView, groupView;
+    private RecyclerView profileSelectedView, groupView, yourGroupsView;
     private ChatSearchAdapter profileadapter;
-    private GroupsRecyclerAdapter groupadapter;
+    private GroupsRecyclerAdapter groupadapter, yourgroupsadapter;
     private List<ChatProfile> profileSelectedList;
     private List<Groups> groupList;
     private List<Groups> joinedGroupList;
@@ -150,13 +150,21 @@ public class GroupFragment extends Fragment {
         groupView.setHasFixedSize(true);
         groupView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
         groupList = new ArrayList<>();
-        joinedGroupList = new ArrayList<>();
         groupadapter = new GroupsRecyclerAdapter(groupList, getActivity());
         groupView.setAdapter(groupadapter);
         groupadapter.notifyDataSetChanged();
 
+        yourGroupsView = (RecyclerView) root.findViewById(R.id.your_groups);
+        yourGroupsView.setHasFixedSize(true);
+        yourGroupsView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
+        joinedGroupList = new ArrayList<>();
+        yourgroupsadapter = new GroupsRecyclerAdapter(joinedGroupList, getActivity());
+        yourGroupsView.setAdapter(yourgroupsadapter);
+        yourgroupsadapter.notifyDataSetChanged();
+
         groupPostList = root.findViewById(R.id.all_users_post_list);
         groupPostList.setHasFixedSize(true);
+        groupPostList.setNestedScrollingEnabled(false);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         linearLayoutManager.setReverseLayout(true);
         linearLayoutManager.setStackFromEnd(true);
@@ -314,59 +322,61 @@ public class GroupFragment extends Fragment {
             next_button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    DatabaseReference GroupRootRef = FirebaseDatabase.getInstance().getReference();
-                    DatabaseReference groupRef = GroupRootRef.child("Groups");
-                    StorageReference groupImageRef;
-                    String groupKey = groupRef.push().getKey();
-
-                    groupImageRef = FirebaseStorage.getInstance().getReference().child("group_picture");
-
-                    ProgressDialog loadingBar = new ProgressDialog(getActivity());
-                    loadingBar.setTitle("Group");
-                    loadingBar.setMessage("Please wait, while we are creating your Group...");
-                    loadingBar.setCanceledOnTouchOutside(true);
-                    loadingBar.show();
-
-                    if(ImageUri != null){
-                        final StorageReference filePath = groupImageRef.child(groupKey+".jpg");
-                        filePath.putFile(ImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                            @Override
-                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                filePath.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                    @Override
-                                    public void onSuccess(Uri uri) {
-                                        String downloadUrl = uri.toString();
-                                        writeDataToDatabase(
-                                                downloadUrl,
-                                                groupKey,
-                                                GroupRootRef,
-                                                groupparticipants,
-                                                chatdialog,
-                                                groupdialog,
-                                                activity,
-                                                loadingBar);
-
-                                    }
-                                });
-                            }
-                        });
+                    if(TextUtils.isEmpty(group_name.getText().toString())){
+                        Toast.makeText(activity, "Group Name cannot be empty. Please try again.", Toast.LENGTH_SHORT).show();
                     }else{
-                        writeDataToDatabase(
-                                "",
-                                groupKey,
-                                GroupRootRef,
-                                groupparticipants,
-                                chatdialog,
-                                groupdialog,
-                                activity,
-                                loadingBar);
+                        DatabaseReference GroupRootRef = FirebaseDatabase.getInstance().getReference();
+                        DatabaseReference groupRef = GroupRootRef.child("Groups");
+                        StorageReference groupImageRef;
+                        String groupKey = groupRef.push().getKey();
+
+                        groupImageRef = FirebaseStorage.getInstance().getReference().child("group_picture");
+
+                        ProgressDialog loadingBar = new ProgressDialog(getActivity());
+                        loadingBar.setTitle("Group");
+                        loadingBar.setMessage("Please wait, while we are creating your Group...");
+                        loadingBar.setCanceledOnTouchOutside(true);
+                        loadingBar.show();
+
+                        if(ImageUri != null){
+                            final StorageReference filePath = groupImageRef.child(groupKey+".jpg");
+                            filePath.putFile(ImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                @Override
+                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                    filePath.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                        @Override
+                                        public void onSuccess(Uri uri) {
+                                            String downloadUrl = uri.toString();
+                                            writeDataToDatabase(
+                                                    downloadUrl,
+                                                    groupKey,
+                                                    GroupRootRef,
+                                                    groupparticipants,
+                                                    chatdialog,
+                                                    groupdialog,
+                                                    activity,
+                                                    loadingBar);
+
+                                        }
+                                    });
+                                }
+                            });
+                        }else{
+                            writeDataToDatabase(
+                                    "",
+                                    groupKey,
+                                    GroupRootRef,
+                                    groupparticipants,
+                                    chatdialog,
+                                    groupdialog,
+                                    activity,
+                                    loadingBar);
+                        }
                     }
 
                 }
             });
-
             groupdialog.show();
-
         }
 
         private void writeDataToDatabase(String picUrl,
@@ -602,6 +612,7 @@ public class GroupFragment extends Fragment {
                                         postLoadingBar.dismiss();
                                         countPosts = 0;
                                         groupadapter.notifyDataSetChanged();
+                                        yourgroupsadapter.notifyDataSetChanged();
 
                                     }
                                     else{
@@ -644,9 +655,18 @@ public class GroupFragment extends Fragment {
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 for (DataSnapshot dataSnapshot : snapshot.getChildren()){
                                     if(groupSnapshot.child("Members").hasChild(dataSnapshot.child("uid").getValue().toString())){
-                                        groupList.add(new Groups(groupSnapshot.getKey(), groupname, finalProfilepicstring, grouptype, groupstatus, groupcreatedate, ""));
+                                        if(groupSnapshot.child("Members").hasChild(currentUserID)){
+                                            if(groupSnapshot.child("Members").child(currentUserID).child("status").getValue().toString().equals("Pending")){
+                                                groupList.add(new Groups(groupSnapshot.getKey(), groupname, finalProfilepicstring, grouptype, groupstatus, groupcreatedate, ""));
+                                            }
+                                        }else{
+                                            groupList.add(new Groups(groupSnapshot.getKey(), groupname, finalProfilepicstring, grouptype, groupstatus, groupcreatedate, ""));
+                                        }
+
                                     }
+                                    Collections.shuffle(groupList);
                                     groupadapter.notifyDataSetChanged();
+                                    yourgroupsadapter.notifyDataSetChanged();
                                 }
                             }
 
@@ -662,7 +682,9 @@ public class GroupFragment extends Fragment {
                             }
                             joinedGroupList.add(new Groups(groupSnapshot.getKey(), groupname, profilepicstring, grouptype, groupstatus, groupcreatedate, groupmembershipstatus));
                         }
+                        Collections.shuffle(joinedGroupList);
                         groupadapter.notifyDataSetChanged();
+                        yourgroupsadapter.notifyDataSetChanged();
                     }
                 }
             }
@@ -831,12 +853,12 @@ public class GroupFragment extends Fragment {
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                         if (LikeChecker.equals(true)) {
                                             if (dataSnapshot.hasChild(currentUserID)) {
-                                                Toast.makeText(getActivity(), "remove like", Toast.LENGTH_SHORT).show();
                                                 LikesRef.child(PostKey).child("Likes").child(currentUserID).child(currentUserID).removeValue();
                                                 LikesRef.child(PostKey).child("Likes").child(currentUserID).child("Timestamp").removeValue();
+                                                LikesRef.child(PostKey).child("Likes").child(currentUserID).child("isSeen").removeValue();
+                                                LikesRef.child(PostKey).child("Likes").child(currentUserID).child("groupID").removeValue();
                                                 LikeChecker = false;
                                             } else {
-                                                Toast.makeText(getActivity(), "add like", Toast.LENGTH_SHORT).show();
                                                 LikesRef.child(PostKey).child("Likes").child(currentUserID).child(currentUserID).setValue(true);
                                                 Calendar calForDate = Calendar.getInstance();
                                                 SimpleDateFormat currentDate = new SimpleDateFormat("MM-dd-yyyy");
@@ -995,6 +1017,7 @@ public class GroupFragment extends Fragment {
         public void setPostimage(Context ctx, String postimage) {
             ImageView PostImage = (ImageView) mView.findViewById(R.id.post_image);
             Picasso.with(ctx).load(postimage).into(PostImage);
+//            Picasso.with(ctx).load(postimage).fit().centerCrop().into(PostImage);
         }
     }
 

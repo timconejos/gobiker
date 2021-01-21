@@ -10,9 +10,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -52,21 +50,16 @@ import java.util.Date;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-import ph.com.team.gobiker.ClickPostActivity;
-import ph.com.team.gobiker.CommentsActivity;
-import ph.com.team.gobiker.LikesActivity;
-import ph.com.team.gobiker.NavActivity;
+import ph.com.team.gobiker.ui.posts.ClickPostActivity;
+import ph.com.team.gobiker.ui.posts.CommentsActivity;
+import ph.com.team.gobiker.ui.posts.LikesActivity;
 import ph.com.team.gobiker.R;
-import ph.com.team.gobiker.SearchAutoComplete;
-import ph.com.team.gobiker.SearchAutoCompleteAdapter;
-import ph.com.team.gobiker.ui.chat.ChatGroupActivity;
-import ph.com.team.gobiker.ui.chat.ChatProfile;
-import ph.com.team.gobiker.ui.chat.ChatSearchAdapter;
-import ph.com.team.gobiker.ui.dashboard.ViewOthersProfile;
-import ph.com.team.gobiker.ui.login.MainLoginActivity;
+import ph.com.team.gobiker.ui.search.SearchAutoComplete;
+import ph.com.team.gobiker.ui.profile.ViewOthersProfile;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
 public class GroupDetailsActivity extends AppCompatActivity {
+    private LinearLayout adminLayout;
     private TextView groupName, groupMembersNr, groupDateCreated, groupType, groupStatus, groupLabel;
     private CircleImageView groupImage;
     private Button membersBtn, groupRideBtn, joinBtn, requestsBtn, editGroupBtn;
@@ -126,6 +119,7 @@ public class GroupDetailsActivity extends AppCompatActivity {
         groupType = findViewById(R.id.group_type);
         groupLabel = findViewById(R.id.current_groups_label);
 
+        adminLayout = findViewById(R.id.adminlayout);
         btnDivider = findViewById(R.id.btndivider);
         requestsBtn = findViewById(R.id.requests_btn);
         editGroupBtn = findViewById(R.id.edit_btn);
@@ -136,6 +130,7 @@ public class GroupDetailsActivity extends AppCompatActivity {
         //setup group posts
         groupSpecificPostList = findViewById(R.id.all_users_post_list);
         groupSpecificPostList.setHasFixedSize(true);
+        groupSpecificPostList.setNestedScrollingEnabled(false);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setReverseLayout(true);
         linearLayoutManager.setStackFromEnd(true);
@@ -184,8 +179,9 @@ public class GroupDetailsActivity extends AppCompatActivity {
             }
         });
 
+        groupSpecificPostList.setVisibility(View.GONE);
+
         RetrieveGroupDetails();
-        RetrievePostsFromGroup();
         RetrieveUsers();
 
     }
@@ -210,6 +206,7 @@ public class GroupDetailsActivity extends AppCompatActivity {
                 groupMembersNr.setText(String.valueOf(dataSnapshot.child("Members").getChildrenCount())+" members");
                 groupStatus.setText(group.getStatus());
                 groupType.setText(group.getGroup_type());
+                rolehldr = "";
 
                 if(dataSnapshot.child("Members").child(currentUserID).child("role").exists()) {
                     rolehldr = dataSnapshot.child("Members").child(currentUserID).child("role").getValue().toString();
@@ -218,17 +215,27 @@ public class GroupDetailsActivity extends AppCompatActivity {
                 if(group.getGroup_type().equals("Public")){
                     groupLabel.setText("Posts from this group");
                     if(dataSnapshot.child("Members").hasChild(currentUserID)) {
+                        groupSpecificPostList.setVisibility(View.VISIBLE);
                         joinBtn.setText("Leave Group");
                     }else{
                         joinBtn.setText("Join");
                     }
                     requestsBtn.setVisibility(View.GONE);
                     if(rolehldr.equals("Member")){
+                        adminLayout.setVisibility(View.GONE);
                         btnDivider.setVisibility(View.GONE);
                         editGroupBtn.setVisibility(View.GONE);
+                        groupRideBtn.setVisibility(View.GONE);
                     }else if(rolehldr.equals("Admin")){
+                        adminLayout.setVisibility(View.VISIBLE);
                         btnDivider.setVisibility(View.GONE);
                         editGroupBtn.setVisibility(View.VISIBLE);
+                        groupRideBtn.setVisibility(View.VISIBLE);
+                    }else{
+                        adminLayout.setVisibility(View.GONE);
+                        btnDivider.setVisibility(View.GONE);
+                        editGroupBtn.setVisibility(View.GONE);
+                        groupRideBtn.setVisibility(View.GONE);
                     }
                 }else if(group.getGroup_type().equals("Private")){
                     if(dataSnapshot.child("Members").hasChild(currentUserID)){
@@ -236,28 +243,37 @@ public class GroupDetailsActivity extends AppCompatActivity {
                             if(dataSnapshot.child("Members").child(currentUserID).child("status").getValue().equals("Pending")){
                                 joinBtn.setText("Cancel Join Request");
                                 groupLabel.setText("Group is private. You need to have your join request approved first to view group posts.");
+                                adminLayout.setVisibility(View.GONE);
                                 editGroupBtn.setVisibility(View.GONE);
                                 requestsBtn.setVisibility(View.GONE);
                                 btnDivider.setVisibility(View.GONE);
+                                groupRideBtn.setVisibility(View.GONE);
                             }else if(dataSnapshot.child("Members").child(currentUserID).child("status").getValue().equals("Accepted")){
+                                RetrievePostsFromGroup();
                                 groupLabel.setText("Posts from this group");
                                 joinBtn.setText("Leave Group");
+                                groupSpecificPostList.setVisibility(View.VISIBLE);
 
                                 if(rolehldr.equals("Member")){
+                                    adminLayout.setVisibility(View.GONE);
                                     editGroupBtn.setVisibility(View.GONE);
                                     requestsBtn.setVisibility(View.GONE);
                                     btnDivider.setVisibility(View.GONE);
                                 }else if(rolehldr.equals("Admin")){
+                                    adminLayout.setVisibility(View.VISIBLE);
                                     btnDivider.setVisibility(View.VISIBLE);
                                     requestsBtn.setVisibility(View.VISIBLE);
                                     editGroupBtn.setVisibility(View.VISIBLE);
+                                    groupRideBtn.setVisibility(View.VISIBLE);
                                 }
                             }
                         }
                     }else{
-                        btnDivider.setVisibility(View.GONE);
+                        adminLayout.setVisibility(View.GONE);
                         editGroupBtn.setVisibility(View.GONE);
                         requestsBtn.setVisibility(View.GONE);
+                        btnDivider.setVisibility(View.GONE);
+                        groupRideBtn.setVisibility(View.GONE);
 
                         groupLabel.setText("Group is private. You need to join first to view group posts.");
                         joinBtn.setText("Join");
@@ -289,11 +305,41 @@ public class GroupDetailsActivity extends AppCompatActivity {
             joinBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    ProgressDialog loadingBarLeave = new ProgressDialog(getApplicationContext());
+                    loadingBarLeave.setTitle("Loading");
+                    loadingBarLeave.setMessage("Leaving group, please wait...");
+                    loadingBarLeave.setCanceledOnTouchOutside(true);
+                    loadingBarLeave.show();
                     if(rolehldr.equals("Admin")){
+                        GroupsRef.child(currentGroupID).child("Members").orderByChild("role").equalTo("Admin").addListenerForSingleValueEvent(
+                                new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        boolean isCurrAdmin = false;
+                                        int adminCtr = 0;
+                                        for (DataSnapshot memberSnapshot : snapshot.getChildren()){
+                                            if(memberSnapshot.getKey().equals(currentUserID)){
+                                                isCurrAdmin = true;
+                                            }
+                                            adminCtr++;
+                                        }
+                                        if(adminCtr == 1 && isCurrAdmin){
+                                            Toast.makeText(GroupDetailsActivity.this, "You have to assign atleast one admin to replace you before you leave the group.", Toast.LENGTH_SHORT).show();
+                                        }else{
+                                            GroupsRef.child(currentGroupID).child("Members").child(currentUserID).removeValue();
+                                            Toast.makeText(GroupDetailsActivity.this, "You have left the group.", Toast.LENGTH_SHORT).show();
+                                            joinBtn.setText("Join");
+                                            groupSpecificPostList.setVisibility(View.GONE);
+                                            loadingBarLeave.dismiss();
+                                        }
+                                    }
 
-                        GroupsRef.child(currentGroupID).child("Members").child(currentUserID).removeValue();
-                        Toast.makeText(GroupDetailsActivity.this, "You have left the group.", Toast.LENGTH_SHORT).show();
-                        joinBtn.setText("Join");
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                    }
+                                }
+                        );
                     }
                 }
             });
@@ -905,6 +951,7 @@ public class GroupDetailsActivity extends AppCompatActivity {
         public void setPostimage(Context ctx, String postimage) {
             ImageView PostImage = (ImageView) mView.findViewById(R.id.post_image);
             Picasso.with(ctx).load(postimage).into(PostImage);
+//            Picasso.with(ctx).load(postimage).fit().centerCrop().into(PostImage);
         }
     }
 

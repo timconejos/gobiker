@@ -1,4 +1,4 @@
-package ph.com.team.gobiker;
+package ph.com.team.gobiker.ui.chat;
 
 public class Messages {
     public String date;

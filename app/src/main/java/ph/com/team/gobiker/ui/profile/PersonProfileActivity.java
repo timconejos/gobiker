@@ -1,4 +1,4 @@
-package ph.com.team.gobiker;
+package ph.com.team.gobiker.ui.profile;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,9 +24,10 @@ import java.util.Date;
 import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import ph.com.team.gobiker.ui.followers.FollowersActivity;
+import ph.com.team.gobiker.ui.following.FollowingActivity;
+import ph.com.team.gobiker.R;
 import ph.com.team.gobiker.ui.chat.ChatActivity;
-import ph.com.team.gobiker.ui.dashboard.ViewOthersProfile;
-import ph.com.team.gobiker.ui.home.GroupDetailsActivity;
 
 public class PersonProfileActivity extends AppCompatActivity {
     private TextView userBM, userProfName, userGender,address, userPhone, level, overall_distance, numRides;

@@ -2,7 +2,6 @@ package ph.com.team.gobiker.ui.home;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
@@ -20,7 +19,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -49,36 +47,22 @@ import java.util.Date;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-import ph.com.team.gobiker.ClickPostActivity;
-import ph.com.team.gobiker.CommentsActivity;
-import ph.com.team.gobiker.FindFriendsActivity;
-import ph.com.team.gobiker.LikesActivity;
-import ph.com.team.gobiker.PostActivity;
+import ph.com.team.gobiker.ui.posts.ClickPostActivity;
+import ph.com.team.gobiker.ui.posts.CommentsActivity;
+import ph.com.team.gobiker.ui.posts.LikesActivity;
+import ph.com.team.gobiker.ui.posts.PostActivity;
 import ph.com.team.gobiker.R;
-import ph.com.team.gobiker.ui.chat.ChatGroupActivity;
-import ph.com.team.gobiker.ui.dashboard.ProfileFragment;
-import ph.com.team.gobiker.ui.dashboard.ViewOthersProfile;
+import ph.com.team.gobiker.ui.profile.ViewOthersProfile;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
 public class HomeFeedFragment extends Fragment {
-    private HomeViewModel homeViewModel;
     private FloatingActionButton addNewPost;
-    private NavigationView navigationView;
-    private DrawerLayout drawerLayout;
-    private ActionBarDrawerToggle actionBarDrawerToggle;
     private RecyclerView postList;
-    private Toolbar mToolbar;
 
-    private CircleImageView NavProfileImage;
-    private TextView NavProfileUsername;
-    private ImageButton AddNewPostButton;
 
     private FirebaseAuth mAuth;
     private DatabaseReference UsersRef, PostsRef, LikesRef;
-    private Button searchButton;
-    private AutoCompleteTextView SearchInputText;
     private String currentUserID;
-    private View root;
     private SwipeRefreshLayout swipe;
 
     Boolean LikeChecker = false;
@@ -153,52 +137,59 @@ public class HomeFeedFragment extends Fragment {
 
                         final String PostKey = getRef(position).getKey();
 
-                        //viewHolder.setFullname(UsersRef.child(posts.getUid()).child("fullname").val);
-
-                        UsersRef.child(posts.getUid()).addValueEventListener(new ValueEventListener() {
+                        UsersRef.child(currentUserID).child("following").addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                if (dataSnapshot.exists()) {
-                                    viewHolder.setFullname(dataSnapshot.child("fullname").getValue().toString());
-                                    if (dataSnapshot.hasChild("profileimage"))
-                                        viewHolder.setProfileimage(getActivity(), dataSnapshot.child("profileimage").getValue().toString());
-                                    else
-                                        viewHolder.setProfileimage(getActivity(), "");
+                                if (dataSnapshot.hasChild(posts.getUid()) || posts.getUid().equals(currentUserID)){
+                                    viewHolder.mView.setVisibility(View.VISIBLE);
+                                    viewHolder.lp.setVisibility(View.VISIBLE);
 
-                                    //viewHolder.setProfileimage(getActivity().getApplicationContext(),Picasso.with(getActivity()).load(dataSnapshot.child("profileimage").getValue().toString()).placeholder(R.drawable.profile));
+                                    //viewHolder.setFullname(UsersRef.child(posts.getUid()).child("fullname").val);
 
-                                }
-                            }
+                                    UsersRef.child(posts.getUid()).addValueEventListener(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                            if (dataSnapshot.exists()) {
+                                                viewHolder.setFullname(dataSnapshot.child("fullname").getValue().toString());
+                                                if (dataSnapshot.hasChild("profileimage"))
+                                                    viewHolder.setProfileimage(getActivity(), dataSnapshot.child("profileimage").getValue().toString());
+                                                else
+                                                    viewHolder.setProfileimage(getActivity(), "");
 
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
+                                                //viewHolder.setProfileimage(getActivity().getApplicationContext(),Picasso.with(getActivity()).load(dataSnapshot.child("profileimage").getValue().toString()).placeholder(R.drawable.profile));
 
-                            }
-                        });
+                                            }
+                                        }
 
-                        viewHolder.setTime(posts.getTime(), posts.getDate());
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                        }
+                                    });
+
+                                    viewHolder.setTime(posts.getTime(), posts.getDate());
 //                        viewHolder.setDate();
-                        viewHolder.setDescription(posts.getDescription());
-                        //viewHolder.setProfileimage(getActivity().getApplicationContext(),posts.getProfileimage());
+                                    viewHolder.setDescription(posts.getDescription());
+                                    //viewHolder.setProfileimage(getActivity().getApplicationContext(),posts.getProfileimage());
 
-                        if (posts.getPostimage()==""){
+                                    if (posts.getPostimage()==""){
 
-                        }
-                        else {
-                            viewHolder.setPostimage(getActivity().getApplicationContext(), posts.getPostimage());
-                        }
+                                    }
+                                    else {
+                                        viewHolder.setPostimage(getActivity().getApplicationContext(), posts.getPostimage());
+                                    }
 
-                        viewHolder.setLikeButtonStatus(PostKey);
+                                    viewHolder.setLikeButtonStatus(PostKey);
 
-                        viewHolder.PostImage.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                pAttacher = new PhotoViewAttacher(viewHolder.PostImage);
-                                pAttacher.setZoomable(true);
-                                pAttacher.update();
+                                    viewHolder.PostImage.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            pAttacher = new PhotoViewAttacher(viewHolder.PostImage);
+                                            pAttacher.setZoomable(true);
+                                            pAttacher.update();
 
-                            }
-                        });
+                                        }
+                                    });
 
                             /*viewHolder.mView.setOnClickListener(new View.OnClickListener() {
                                 @Override
@@ -209,112 +200,105 @@ public class HomeFeedFragment extends Fragment {
                                 }
                             });*/
 
-                        if(posts.getUid().equals(currentUserID)){
-                            viewHolder.optionMenuP.setVisibility(View.VISIBLE);
-                        }else{
-                            viewHolder.optionMenuP.setVisibility(View.GONE);
-                        }
+                                    if(posts.getUid().equals(currentUserID)){
+                                        viewHolder.optionMenuP.setVisibility(View.VISIBLE);
+                                    }else{
+                                        viewHolder.optionMenuP.setVisibility(View.GONE);
+                                    }
 
-                        viewHolder.optionMenuP.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
+                                    viewHolder.optionMenuP.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
 
-                                //creating a popup menu
-                                PopupMenu popup = new PopupMenu(getActivity(), viewHolder.optionMenuP);
-                                //inflating menu from xml resource
-                                popup.inflate(R.menu.post_menu);
-                                //adding click listener
-                                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                                    @Override
-                                    public boolean onMenuItemClick(MenuItem item) {
-                                        switch (item.getItemId()) {
-                                            case R.id.post_edit_menu:
-                                                Intent clickPostIntent = new Intent(getActivity(), ClickPostActivity.class);
-                                                clickPostIntent.putExtra("PostKey", PostKey);
-                                                startActivity(clickPostIntent);
-                                                return true;
-                                            case R.id.post_delete_menu:
-                                                PostsRef.child(PostKey).removeValue();
-                                                DisplayAllUsersPosts();
-                                                Toast.makeText(getActivity(),"Post has been deleted.",Toast.LENGTH_SHORT).show();
-                                                return true;
-                                            default:
-                                                return false;
+                                            //creating a popup menu
+                                            PopupMenu popup = new PopupMenu(getActivity(), viewHolder.optionMenuP);
+                                            //inflating menu from xml resource
+                                            popup.inflate(R.menu.post_menu);
+                                            //adding click listener
+                                            popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                                                @Override
+                                                public boolean onMenuItemClick(MenuItem item) {
+                                                    switch (item.getItemId()) {
+                                                        case R.id.post_edit_menu:
+                                                            Intent clickPostIntent = new Intent(getActivity(), ClickPostActivity.class);
+                                                            clickPostIntent.putExtra("PostKey", PostKey);
+                                                            startActivity(clickPostIntent);
+                                                            return true;
+                                                        case R.id.post_delete_menu:
+                                                            PostsRef.child(PostKey).removeValue();
+                                                            DisplayAllUsersPosts();
+                                                            Toast.makeText(getActivity(),"Post has been deleted.",Toast.LENGTH_SHORT).show();
+                                                            return true;
+                                                        default:
+                                                            return false;
+                                                    }
+                                                }
+                                            });
+                                            //displaying the popup
+                                            popup.show();
+
                                         }
-                                    }
-                                });
-                                //displaying the popup
-                                popup.show();
+                                    });
 
-                            }
-                        });
-
-                        viewHolder.CommentBtn.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                Intent commentsIntent = new Intent(getActivity(), CommentsActivity.class);
-                                commentsIntent.putExtra("PostKey", PostKey);
-                                commentsIntent.putExtra("FeedType", "HomeFeed");
-                                startActivity(commentsIntent);
-                            }
-                        });
-
-                        viewHolder.DisplayNoOfLikes.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                Intent likesIntent = new Intent(getActivity(), LikesActivity.class);
-                                likesIntent.putExtra("PostKey", PostKey);
-                                likesIntent.putExtra("FeedType", "HomeFeed");
-                                startActivity(likesIntent);
-                            }
-                        });
-
-                        viewHolder.LikeBtn.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                LikeChecker = true;
-                                LikesRef.child(PostKey).child("Likes").addValueEventListener(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                        if (LikeChecker.equals(true)) {
-                                            if (dataSnapshot.hasChild(currentUserID)) {
-                                                LikesRef.child(PostKey).child("Likes").child(currentUserID).child(currentUserID).removeValue();
-                                                LikesRef.child(PostKey).child("Likes").child(currentUserID).child("Timestamp").removeValue();
-                                                LikeChecker = false;
-                                            } else {
-                                                LikesRef.child(PostKey).child("Likes").child(currentUserID).child(currentUserID).setValue(true);
-                                                Calendar calForDate = Calendar.getInstance();
-                                                SimpleDateFormat currentDate = new SimpleDateFormat("MM-dd-yyyy");
-                                                String saveCurrentDate = currentDate.format(calForDate.getTime());
-
-                                                SimpleDateFormat currentDates = new SimpleDateFormat("MMMM dd, yyyy");
-                                                String saveCurrentDates = currentDates.format(calForDate.getTime());
-
-                                                SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm:ss");
-                                                String saveCurrentTime = currentTime.format(calForDate.getTime());
-
-                                                LikesRef.child(PostKey).child("Likes").child(currentUserID).child("Timestamp").setValue(saveCurrentDate+" "+saveCurrentTime);
-                                                LikesRef.child(PostKey).child("Likes").child(currentUserID).child("isSeen").setValue(false);
-                                                LikeChecker = false;
-                                            }
+                                    viewHolder.CommentBtn.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            Intent commentsIntent = new Intent(getActivity(), CommentsActivity.class);
+                                            commentsIntent.putExtra("PostKey", PostKey);
+                                            commentsIntent.putExtra("FeedType", "HomeFeed");
+                                            startActivity(commentsIntent);
                                         }
-                                    }
+                                    });
 
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                                    viewHolder.DisplayNoOfLikes.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            Intent likesIntent = new Intent(getActivity(), LikesActivity.class);
+                                            likesIntent.putExtra("PostKey", PostKey);
+                                            likesIntent.putExtra("FeedType", "HomeFeed");
+                                            startActivity(likesIntent);
+                                        }
+                                    });
 
-                                    }
-                                });
-                            }
-                        });
+                                    viewHolder.LikeBtn.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            LikeChecker = true;
+                                            LikesRef.child(PostKey).child("Likes").addValueEventListener(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                    if (LikeChecker.equals(true)) {
+                                                        if (dataSnapshot.hasChild(currentUserID)) {
+                                                            LikesRef.child(PostKey).child("Likes").child(currentUserID).child(currentUserID).removeValue();
+                                                            LikesRef.child(PostKey).child("Likes").child(currentUserID).child("Timestamp").removeValue();
+                                                            LikesRef.child(PostKey).child("Likes").child(currentUserID).child("isSeen").removeValue();
+                                                            LikeChecker = false;
+                                                        } else {
+                                                            LikesRef.child(PostKey).child("Likes").child(currentUserID).child(currentUserID).setValue(true);
+                                                            Calendar calForDate = Calendar.getInstance();
+                                                            SimpleDateFormat currentDate = new SimpleDateFormat("MM-dd-yyyy");
+                                                            String saveCurrentDate = currentDate.format(calForDate.getTime());
 
+                                                            SimpleDateFormat currentDates = new SimpleDateFormat("MMMM dd, yyyy");
+                                                            String saveCurrentDates = currentDates.format(calForDate.getTime());
 
-                        UsersRef.child(currentUserID).child("following").addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                if (dataSnapshot.hasChild(posts.getUid()) || posts.getUid().equals(currentUserID)){
-                                    viewHolder.mView.setVisibility(View.VISIBLE);
-                                    viewHolder.lp.setVisibility(View.VISIBLE);
+                                                            SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm:ss");
+                                                            String saveCurrentTime = currentTime.format(calForDate.getTime());
+
+                                                            LikesRef.child(PostKey).child("Likes").child(currentUserID).child("Timestamp").setValue(saveCurrentDate+" "+saveCurrentTime);
+                                                            LikesRef.child(PostKey).child("Likes").child(currentUserID).child("isSeen").setValue(false);
+                                                            LikeChecker = false;
+                                                        }
+                                                    }
+                                                }
+
+                                                @Override
+                                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                                }
+                                            });
+                                        }
+                                    });
                                 }
                                 else{
                                     viewHolder.mView.setVisibility(View.GONE);
@@ -336,14 +320,6 @@ public class HomeFeedFragment extends Fragment {
 
                             }
                         });
-
-//                            viewHolder.optionMenuP.setOnClickListener(new View.OnClickListener() {
-//                                @Override
-//                                public void onClick(View view) {
-//                                    Toast.makeText(getContext(),"A",Toast.LENGTH_SHORT).show();
-//                                }
-//                            });
-
                     }
                 };
         postList.setAdapter(firebaseRecyclerAdapter);

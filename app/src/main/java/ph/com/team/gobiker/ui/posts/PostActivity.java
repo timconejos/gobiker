@@ -1,4 +1,4 @@
-package ph.com.team.gobiker;
+package ph.com.team.gobiker.ui.posts;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -32,6 +32,9 @@ import com.google.firebase.storage.UploadTask;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
+
+import ph.com.team.gobiker.NavActivity;
+import ph.com.team.gobiker.R;
 
 public class PostActivity extends AppCompatActivity {
     private Toolbar mToolbar;
@@ -248,7 +251,7 @@ public class PostActivity extends AppCompatActivity {
     }
 
     private void SendUserToMainActivity() {
-        Intent mainIntent = new Intent(PostActivity.this,NavActivity.class);
+        Intent mainIntent = new Intent(PostActivity.this, NavActivity.class);
         //mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(mainIntent);
         //finish();

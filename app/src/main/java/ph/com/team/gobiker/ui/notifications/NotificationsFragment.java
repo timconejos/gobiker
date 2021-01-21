@@ -2,12 +2,10 @@ package ph.com.team.gobiker.ui.notifications;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,14 +22,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.security.acl.Group;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import ph.com.team.gobiker.Comments;
-import ph.com.team.gobiker.Likes;
+import ph.com.team.gobiker.ui.posts.Comments;
+import ph.com.team.gobiker.ui.posts.Likes;
 import ph.com.team.gobiker.R;
 import ph.com.team.gobiker.ui.home.Posts;
 

@@ -1,4 +1,4 @@
-package ph.com.team.gobiker;
+package ph.com.team.gobiker.ui.posts;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,41 +20,52 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import ph.com.team.gobiker.R;
 
-public class FollowingActivity extends AppCompatActivity {
-    private DatabaseReference UsersRef,FollowingsRef;
+public class LikesActivity extends AppCompatActivity {
+    private String Post_Key, from_feed_type, likesRoot;
+    private DatabaseReference UsersRef, postRef;
     private FirebaseAuth mAuth;
-    private RecyclerView FollowingList;
+    private RecyclerView LikesList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_following);
+        setContentView(R.layout.activity_likes);
+
+        Post_Key = getIntent().getExtras().get("PostKey").toString();
+        from_feed_type = getIntent().getExtras().get("FeedType").toString();
+
+        if(from_feed_type.equals("GroupFeed")){
+            likesRoot = "GroupLikes";
+        }else if(from_feed_type.equals("HomeFeed")){
+            likesRoot = "Likes";
+        }
 
         mAuth = FirebaseAuth.getInstance();
         UsersRef = FirebaseDatabase.getInstance().getReference().child("Users");
-        FollowingsRef = FirebaseDatabase.getInstance().getReference().child("Users").child(getIntent().getExtras().get("visit_user_id").toString()).child("following");
+        postRef = FirebaseDatabase.getInstance().getReference().child(likesRoot).child(Post_Key).child("Likes");
 
-        FollowingList = findViewById(R.id.following_list);
-        FollowingList.setHasFixedSize(true);
+        LikesList = findViewById(R.id.likes_list);
+        LikesList.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setReverseLayout(true);
         linearLayoutManager.setStackFromEnd(true);
-        FollowingList.setLayoutManager(linearLayoutManager);
+        LikesList.setLayoutManager(linearLayoutManager);
     }
 
     @Override
     protected void onStart(){
         super.onStart();
-        FirebaseRecyclerAdapter<Likes, LikesActivity.LikesViewHolder> firebaseRecyclerAdapter =
-                new FirebaseRecyclerAdapter<Likes, LikesActivity.LikesViewHolder>(
+        FirebaseRecyclerAdapter<Likes, LikesViewHolder> firebaseRecyclerAdapter =
+                new FirebaseRecyclerAdapter<Likes, LikesViewHolder>(
                         Likes.class,
                         R.layout.all_likes_layout,
-                        LikesActivity.LikesViewHolder.class,
-                        FollowingsRef
+                        LikesViewHolder.class,
+                        postRef
                 ) {
                     @Override
-                    protected void populateViewHolder(final LikesActivity.LikesViewHolder likesViewHolder, Likes likes, int i) {
+                    protected void populateViewHolder(final LikesViewHolder likesViewHolder, Likes likes, int i) {
                         //likesViewHolder.setUsername(getRef(i).getKey());
                         UsersRef.child(getRef(i).getKey()).addValueEventListener(new ValueEventListener() {
                             @Override
@@ -76,6 +87,27 @@ public class FollowingActivity extends AppCompatActivity {
                     }
                 };
 
-        FollowingList.setAdapter(firebaseRecyclerAdapter);
+        LikesList.setAdapter(firebaseRecyclerAdapter);
+    }
+
+    public static class LikesViewHolder extends RecyclerView.ViewHolder{
+        View mView;
+        public LikesViewHolder(@NonNull View itemView) {
+            super(itemView);
+            mView = itemView;
+        }
+
+        public void setUsername(String username) {
+            TextView myUserName = mView.findViewById(R.id.likes_username);
+            myUserName.setText(username);
+        }
+
+        public void setProfileimage(Context ctx, String profileimage) {
+            CircleImageView image = (CircleImageView) mView.findViewById(R.id.likes_profile_image);
+            if (profileimage.equals(""))
+                Picasso.with(ctx).load(R.drawable.profile).into(image);
+            else
+                Picasso.with(ctx).load(profileimage).placeholder(R.drawable.profile).into(image);
+        }
     }
 }

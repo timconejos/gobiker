@@ -54,10 +54,11 @@
         android:layout_height="match_parent"
         android:background="@color/lighterColor">
 
-        <ScrollView
+        <androidx.core.widget.NestedScrollView
             xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <LinearLayout
                 android:layout_below="@+id/current_groups_label"
@@ -71,25 +72,42 @@
                     android:text="Groups with people you follow"
                     android:id="@+id/active_groups_label"
                     android:layout_marginTop="5dp"
-                    style="@style/Subtitle.H3"
+                    android:layout_marginLeft="10dp"
+                    style="@style/Headings.H4"
                     android:textAlignment="textStart"
                     android:textColor="@color/black"
                     />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/all_groups_view"
-                    android:layout_below="@+id/active_groups_label"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
                 <TextView
-                    android:layout_below="@+id/all_groups_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Your Groups"
+                    android:id="@+id/your_groups_label"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginLeft="10dp"
+                    style="@style/Headings.H4"
+                    android:textAlignment="textStart"
+                    android:textColor="@color/black"
+                    />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/your_groups"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Group Posts"
                     android:id="@+id/current_groups_label"
-                    android:layout_marginTop="10dp"
-                    style="@style/Subtitle.H3"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginLeft="10dp"
+                    style="@style/Headings.H4"
                     android:textAlignment="textStart"
                     android:textColor="@color/black"
                     />
@@ -101,7 +119,7 @@
             </LinearLayout>
 
 
-        </ScrollView>
+        </androidx.core.widget.NestedScrollView>
 
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

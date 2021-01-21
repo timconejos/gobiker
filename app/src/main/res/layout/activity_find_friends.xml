@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".FindFriendsActivity"
+    tools:context=".ui.search.FindFriendsActivity"
     android:background="@color/lightestColor">
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -62,13 +62,19 @@
             android:textColor="@color/black"
             android:text="Search"/>
     </LinearLayout>
-    <androidx.recyclerview.widget.RecyclerView
+    <com.google.android.material.tabs.TabLayout
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        app:itemTextColor="#FFFFFF"
+        android:id="@+id/searchnavbar"
+        android:layout_below="@id/myLayout"
+        android:background="@color/colorPrimary"
+        />
+
+    <androidx.viewpager.widget.ViewPager
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/myLayout"
-        android:layout_margin="10dp"
-        android:id="@+id/search_result_list">
-
-    </androidx.recyclerview.widget.RecyclerView>
+        android:id="@+id/searchcontainer"
+        android:layout_below="@+id/searchnavbar"
+        />
 </RelativeLayout>

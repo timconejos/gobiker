@@ -1,21 +1,15 @@
-package ph.com.team.gobiker.ui.dashboard;
+package ph.com.team.gobiker.ui.profile;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.ColorSpace;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.TextUtils;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -25,24 +19,16 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.widget.Toolbar;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.transition.AutoTransition;
-import androidx.transition.TransitionManager;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -59,16 +45,13 @@ import java.util.Date;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-import ph.com.team.gobiker.ClickPostActivity;
-import ph.com.team.gobiker.CommentsActivity;
-import ph.com.team.gobiker.CreateAccount;
-import ph.com.team.gobiker.FindFriendsActivity;
-import ph.com.team.gobiker.LikesActivity;
-import ph.com.team.gobiker.PostActivity;
+import ph.com.team.gobiker.ui.posts.ClickPostActivity;
+import ph.com.team.gobiker.ui.posts.CommentsActivity;
+import ph.com.team.gobiker.ui.posts.LikesActivity;
+import ph.com.team.gobiker.ui.posts.PostActivity;
 import ph.com.team.gobiker.R;
 import ph.com.team.gobiker.ui.home.HomeViewModel;
 import ph.com.team.gobiker.ui.home.Posts;
-import ph.com.team.gobiker.ui.login.MainLoginActivity;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
 public class FeedFragment extends Fragment {
@@ -79,7 +62,7 @@ public class FeedFragment extends Fragment {
 
     private FirebaseAuth mAuth;
     private DatabaseReference UsersRef, PostsRef, LikesRef;
-    private String profileID;
+    private String profileID, currentUserId;
     private View root;
     private SwipeRefreshLayout swipe;
 
@@ -118,6 +101,9 @@ public class FeedFragment extends Fragment {
         UsersRef = FirebaseDatabase.getInstance().getReference().child("Users");
         PostsRef = FirebaseDatabase.getInstance().getReference().child("Posts");
         LikesRef = FirebaseDatabase.getInstance().getReference().child("Likes");
+
+        mAuth = FirebaseAuth.getInstance();
+        currentUserId = mAuth.getCurrentUser().getUid();
 
         postList = root.findViewById(R.id.all_users_post_list);
         postList.setHasFixedSize(true);
@@ -279,12 +265,13 @@ public class FeedFragment extends Fragment {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                             if (LikeChecker.equals(true)) {
-                                                if (dataSnapshot.hasChild(profileID)) {
-                                                    LikesRef.child(PostKey).child("Likes").child(profileID).child(profileID).removeValue();
-                                                    LikesRef.child(PostKey).child("Likes").child(profileID).child("Timestamp").removeValue();
+                                                if (dataSnapshot.hasChild(currentUserId)) {
+                                                    LikesRef.child(PostKey).child("Likes").child(currentUserId).child(currentUserId).removeValue();
+                                                    LikesRef.child(PostKey).child("Likes").child(currentUserId).child("Timestamp").removeValue();
+                                                    LikesRef.child(PostKey).child("Likes").child(currentUserId).child("isSeen").removeValue();
                                                     LikeChecker = false;
                                                 } else {
-                                                    LikesRef.child(PostKey).child("Likes").child(profileID).child(profileID).setValue(true);
+                                                    LikesRef.child(PostKey).child("Likes").child(currentUserId).child(currentUserId).setValue(true);
                                                     Calendar calForDate = Calendar.getInstance();
                                                     SimpleDateFormat currentDate = new SimpleDateFormat("MM-dd-yyyy");
                                                     String saveCurrentDate = currentDate.format(calForDate.getTime());
@@ -295,8 +282,8 @@ public class FeedFragment extends Fragment {
                                                     SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm:ss");
                                                     String saveCurrentTime = currentTime.format(calForDate.getTime());
 
-                                                    LikesRef.child(PostKey).child("Likes").child(profileID).child("Timestamp").setValue(saveCurrentDate+" "+saveCurrentTime);
-                                                    LikesRef.child(PostKey).child("Likes").child(profileID).child("isSeen").setValue(false);
+                                                    LikesRef.child(PostKey).child("Likes").child(currentUserId).child("Timestamp").setValue(saveCurrentDate+" "+saveCurrentTime);
+                                                    LikesRef.child(PostKey).child("Likes").child(currentUserId).child("isSeen").setValue(false);
                                                     LikeChecker = false;
                                                 }
                                             }

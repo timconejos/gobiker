@@ -1,8 +1,6 @@
-package ph.com.team.gobiker.ui.dashboard;
+package ph.com.team.gobiker.ui.profile;
 
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;

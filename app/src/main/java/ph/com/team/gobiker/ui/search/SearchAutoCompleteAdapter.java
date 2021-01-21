@@ -1,4 +1,4 @@
-package ph.com.team.gobiker;
+package ph.com.team.gobiker.ui.search;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import ph.com.team.gobiker.R;
 
 public class SearchAutoCompleteAdapter extends ArrayAdapter<SearchAutoComplete> {
     private List<SearchAutoComplete> searchListFull;

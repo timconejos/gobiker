@@ -1,4 +1,4 @@
-package ph.com.team.gobiker.ui.dashboard;
+package ph.com.team.gobiker.ui.profile;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,11 +17,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-import ph.com.team.gobiker.FollowersActivity;
-import ph.com.team.gobiker.FollowingActivity;
+import ph.com.team.gobiker.ui.followers.FollowersActivity;
+import ph.com.team.gobiker.ui.following.FollowingActivity;
 import ph.com.team.gobiker.LogoutActivity;
 import ph.com.team.gobiker.R;
 import ph.com.team.gobiker.SettingsActivity;

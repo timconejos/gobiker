@@ -1,14 +1,15 @@
-package ph.com.team.gobiker;
+package ph.com.team.gobiker.ui.posts;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
+
+import ph.com.team.gobiker.R;
 
 public class PhotoFullScreenActivity  extends Activity {
 
