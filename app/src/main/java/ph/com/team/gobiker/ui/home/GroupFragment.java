@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -54,19 +55,22 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-import ph.com.team.gobiker.ClickPostActivity;
-import ph.com.team.gobiker.CommentsActivity;
-import ph.com.team.gobiker.LikesActivity;
+import ph.com.team.gobiker.ui.posts.ClickPostActivity;
+import ph.com.team.gobiker.ui.posts.CommentsActivity;
+import ph.com.team.gobiker.ui.posts.LikesActivity;
 import ph.com.team.gobiker.R;
-import ph.com.team.gobiker.SearchAutoComplete;
-import ph.com.team.gobiker.SearchAutoCompleteAdapter;
+import ph.com.team.gobiker.ui.search.SearchAutoComplete;
+import ph.com.team.gobiker.ui.search.SearchAutoCompleteAdapter;
 import ph.com.team.gobiker.ui.chat.ChatProfile;
 import ph.com.team.gobiker.ui.chat.ChatSearchAdapter;
+import ph.com.team.gobiker.ui.profile.ViewOthersProfile;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
 public class GroupFragment extends Fragment {
@@ -76,9 +80,9 @@ public class GroupFragment extends Fragment {
     private DatabaseReference UsersRef, GroupsRef, PostsRef, LikesRef, GroupLikesRef;
     private String currentUserID, vid;
     private List<SearchAutoComplete> profileList;
-    private RecyclerView profileSelectedView, groupView;
+    private RecyclerView profileSelectedView, groupView, yourGroupsView;
     private ChatSearchAdapter profileadapter;
-    private GroupsRecyclerAdapter groupadapter;
+    private GroupsRecyclerAdapter groupadapter, yourgroupsadapter;
     private List<ChatProfile> profileSelectedList;
     private List<Groups> groupList;
     private List<Groups> joinedGroupList;
@@ -100,7 +104,7 @@ public class GroupFragment extends Fragment {
     String current_user_name;
     FloatingActionButton addGroupPost;
     ImageButton SelectPostImage;
-    Button UpdatePostButton;
+    Button UpdatePostButton, CancelPostButton;
     EditText PostDescription;
     Spinner GroupToPost;
     StorageReference PostsImageReference;
@@ -146,13 +150,21 @@ public class GroupFragment extends Fragment {
         groupView.setHasFixedSize(true);
         groupView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
         groupList = new ArrayList<>();
-        joinedGroupList = new ArrayList<>();
         groupadapter = new GroupsRecyclerAdapter(groupList, getActivity());
         groupView.setAdapter(groupadapter);
         groupadapter.notifyDataSetChanged();
 
+        yourGroupsView = (RecyclerView) root.findViewById(R.id.your_groups);
+        yourGroupsView.setHasFixedSize(true);
+        yourGroupsView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
+        joinedGroupList = new ArrayList<>();
+        yourgroupsadapter = new GroupsRecyclerAdapter(joinedGroupList, getActivity());
+        yourGroupsView.setAdapter(yourgroupsadapter);
+        yourgroupsadapter.notifyDataSetChanged();
+
         groupPostList = root.findViewById(R.id.all_users_post_list);
         groupPostList.setHasFixedSize(true);
+        groupPostList.setNestedScrollingEnabled(false);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         linearLayoutManager.setReverseLayout(true);
         linearLayoutManager.setStackFromEnd(true);
@@ -310,59 +322,61 @@ public class GroupFragment extends Fragment {
             next_button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    DatabaseReference GroupRootRef = FirebaseDatabase.getInstance().getReference();
-                    DatabaseReference groupRef = GroupRootRef.child("Groups");
-                    StorageReference groupImageRef;
-                    String groupKey = groupRef.push().getKey();
-
-                    groupImageRef = FirebaseStorage.getInstance().getReference().child("group_picture");
-
-                    ProgressDialog loadingBar = new ProgressDialog(getActivity());
-                    loadingBar.setTitle("Group");
-                    loadingBar.setMessage("Please wait, while we are creating your Group...");
-                    loadingBar.setCanceledOnTouchOutside(true);
-                    loadingBar.show();
-
-                    if(ImageUri != null){
-                        final StorageReference filePath = groupImageRef.child(groupKey+".jpg");
-                        filePath.putFile(ImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                            @Override
-                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                filePath.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                    @Override
-                                    public void onSuccess(Uri uri) {
-                                        String downloadUrl = uri.toString();
-                                        writeDataToDatabase(
-                                                downloadUrl,
-                                                groupKey,
-                                                GroupRootRef,
-                                                groupparticipants,
-                                                chatdialog,
-                                                groupdialog,
-                                                activity,
-                                                loadingBar);
-
-                                    }
-                                });
-                            }
-                        });
+                    if(TextUtils.isEmpty(group_name.getText().toString())){
+                        Toast.makeText(activity, "Group Name cannot be empty. Please try again.", Toast.LENGTH_SHORT).show();
                     }else{
-                        writeDataToDatabase(
-                                "",
-                                groupKey,
-                                GroupRootRef,
-                                groupparticipants,
-                                chatdialog,
-                                groupdialog,
-                                activity,
-                                loadingBar);
+                        DatabaseReference GroupRootRef = FirebaseDatabase.getInstance().getReference();
+                        DatabaseReference groupRef = GroupRootRef.child("Groups");
+                        StorageReference groupImageRef;
+                        String groupKey = groupRef.push().getKey();
+
+                        groupImageRef = FirebaseStorage.getInstance().getReference().child("group_picture");
+
+                        ProgressDialog loadingBar = new ProgressDialog(getActivity());
+                        loadingBar.setTitle("Group");
+                        loadingBar.setMessage("Please wait, while we are creating your Group...");
+                        loadingBar.setCanceledOnTouchOutside(true);
+                        loadingBar.show();
+
+                        if(ImageUri != null){
+                            final StorageReference filePath = groupImageRef.child(groupKey+".jpg");
+                            filePath.putFile(ImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                @Override
+                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                    filePath.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                        @Override
+                                        public void onSuccess(Uri uri) {
+                                            String downloadUrl = uri.toString();
+                                            writeDataToDatabase(
+                                                    downloadUrl,
+                                                    groupKey,
+                                                    GroupRootRef,
+                                                    groupparticipants,
+                                                    chatdialog,
+                                                    groupdialog,
+                                                    activity,
+                                                    loadingBar);
+
+                                        }
+                                    });
+                                }
+                            });
+                        }else{
+                            writeDataToDatabase(
+                                    "",
+                                    groupKey,
+                                    GroupRootRef,
+                                    groupparticipants,
+                                    chatdialog,
+                                    groupdialog,
+                                    activity,
+                                    loadingBar);
+                        }
                     }
 
                 }
             });
-
             groupdialog.show();
-
         }
 
         private void writeDataToDatabase(String picUrl,
@@ -376,10 +390,14 @@ public class GroupFragment extends Fragment {
             String saveCurrentDate, saveCurrentTime;
 
             DatabaseReference groupRef = GroupRootRef.child("Groups");
+            DatabaseReference gcRef = GroupRootRef.child("GroupChats");
+            String gcKey = gcRef.push().getKey();
 
             Calendar calForDate = Calendar.getInstance();
             SimpleDateFormat currentDate = new SimpleDateFormat("MM-dd-yyyy");
             saveCurrentDate = currentDate.format(calForDate.getTime());
+            SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm:ss");
+            saveCurrentTime = currentTime.format(calForDate.getTime());
 
             groupRef.child(groupKey).child("group_name").setValue(group_name.getText().toString().trim());
             if(!picUrl.equals("")){
@@ -398,9 +416,55 @@ public class GroupFragment extends Fragment {
                 }
             }
 
-            loadingBar.dismiss();
-            chatdialog.dismiss();
-            gcdialog.dismiss();
+            String message_sender_ref = "Messages/" + currentUserID + "/" +  gcKey;
+            DatabaseReference user_message_key = GroupRootRef.child("Messages").child(currentUserID)
+                    .child(gcKey).push();
+            String message_push_id = user_message_key.getKey();
+
+            Map messageTextBody = new HashMap();
+            messageTextBody.put("message", "A new group chat has been made.");
+            messageTextBody.put("time",saveCurrentTime);
+            messageTextBody.put("date",saveCurrentDate);
+            messageTextBody.put("type","text");
+            messageTextBody.put("isSeen", false);
+            messageTextBody.put("from",currentUserID);
+
+            Map messageBodyDetails = new HashMap();
+            messageBodyDetails.put(message_sender_ref+"/"+message_push_id,messageTextBody);
+
+            ArrayList<String> userids = new ArrayList<String>();
+            userids.add(currentUserID);
+
+            for(int x=0; x<groupparticipants.size(); x++){
+                if(!groupparticipants.get(x).getUid().equals(currentUserID)){
+                    String message_receiver_ref = "Messages/" + groupparticipants.get(x).getUid() + "/" +  gcKey;
+                    messageBodyDetails.put(message_receiver_ref+"/"+message_push_id,messageTextBody);
+                }
+                userids.add(groupparticipants.get(x).getUid());
+            }
+
+            gcRef.child(gcKey).child("gc_name").setValue(group_name.getText().toString().trim());
+            if(!picUrl.equals("")){
+                gcRef.child(gcKey).child("gc_picture").setValue(picUrl);
+            }
+            gcRef.child(gcKey).child("gc_participants").setValue(userids);
+
+            GroupRootRef.updateChildren(messageBodyDetails).addOnCompleteListener(new OnCompleteListener() {
+                @Override
+                public void onComplete(@NonNull Task task) {
+                    if (task.isSuccessful()){
+                        loadingBar.dismiss();
+                        chatdialog.dismiss();
+                        gcdialog.dismiss();
+                        Toast.makeText(activity,"Group successfully created!",Toast.LENGTH_SHORT).show();
+                    }
+                    else{
+                        loadingBar.dismiss();
+                        Toast.makeText(activity,"Error: "+task.getException().getMessage(),Toast.LENGTH_SHORT).show();
+                    }
+
+                }
+            });
         }
     }
 
@@ -413,6 +477,7 @@ public class GroupFragment extends Fragment {
 
             SelectPostImage = postdialog.findViewById(R.id.select_post_image);
             UpdatePostButton = postdialog.findViewById(R.id.update_post_button);
+            CancelPostButton = postdialog.findViewById(R.id.cancel_post_button);
             PostDescription = postdialog.findViewById(R.id.post_description);
             GroupToPost = postdialog.findViewById(R.id.group_type);
             PostsImageReference = FirebaseStorage.getInstance().getReference();
@@ -450,6 +515,13 @@ public class GroupFragment extends Fragment {
                 }
             });
 
+            CancelPostButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    postdialog.dismiss();
+                }
+            });
+
 
             postdialog.show();
         }
@@ -457,11 +529,6 @@ public class GroupFragment extends Fragment {
         private void ValidatePostInfo() {
             Description = PostDescription.getText().toString();
 
-            postLoadingBar = new ProgressDialog(getActivity());
-            postLoadingBar.setTitle("Add New Post");
-            postLoadingBar.setMessage("Please wait, while we are adding your new post...");
-            postLoadingBar.show();
-            postLoadingBar.setCanceledOnTouchOutside(true);
             Calendar calForDate = Calendar.getInstance();
             SimpleDateFormat currentDate = new SimpleDateFormat("MM-dd-yyyy");
             saveCurrentDate = currentDate.format(calForDate.getTime());
@@ -472,12 +539,32 @@ public class GroupFragment extends Fragment {
             SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm:ss");
             saveCurrentTime = currentTime.format(calForDate.getTime());
             postRandomName = saveCurrentDate+saveCurrentTime;
-            if(PostImageUri==null){
-                SavingPostInformationToDatabase();
-            }
-            else {
+
+            if(!Description.isEmpty()){
+                postLoadingBar = new ProgressDialog(getActivity());
+                postLoadingBar.setTitle("Add New Post");
+                postLoadingBar.setMessage("Please wait, while we are adding your new post...");
+                postLoadingBar.show();
+                postLoadingBar.setCanceledOnTouchOutside(true);
+
+                if(PostImageUri==null){
+                    SavingPostInformationToDatabase();
+                }
+                else {
+                    StoringImageToFirebaseStorage();
+                }
+            }else if(Description.isEmpty() && PostImageUri !=null){
+                postLoadingBar = new ProgressDialog(getActivity());
+                postLoadingBar.setTitle("Add New Post");
+                postLoadingBar.setMessage("Please wait, while we are adding your new post...");
+                postLoadingBar.show();
+                postLoadingBar.setCanceledOnTouchOutside(true);
+
                 StoringImageToFirebaseStorage();
+            }else if(Description.isEmpty() && PostImageUri == null){
+                Toast.makeText(getActivity(),"Cannot create this post since Description and Image are empty.",Toast.LENGTH_SHORT).show();
             }
+
         }
 
         private void StoringImageToFirebaseStorage() {
@@ -497,15 +584,42 @@ public class GroupFragment extends Fragment {
         }
 
         private void SavingPostInformationToDatabase() {
-            PostsRef.addValueEventListener(new ValueEventListener() {
+            PostsRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     if (dataSnapshot.exists()){
                         countPosts = dataSnapshot.getChildrenCount();
                     }
-                    else{
-                        countPosts = 0;
-                    }
+
+
+                    HashMap postsMap = new HashMap();
+                    postsMap.put("uid",currentUserID);
+                    postsMap.put("date",saveCurrentDates);
+                    postsMap.put("time",saveCurrentTime);
+                    postsMap.put("description",Description);
+                    if (!groupDownloadUrl.equals(""))
+                        postsMap.put("postimage",groupDownloadUrl);
+                    postsMap.put("fullname",current_user_name);
+                    postsMap.put("counter",countPosts);
+                    postsMap.put("groupid", groupidhldr);
+                    PostsRef.child(currentUserID + postRandomName).updateChildren(postsMap)
+                            .addOnCompleteListener(new OnCompleteListener() {
+                                @Override
+                                public void onComplete(@NonNull Task task) {
+                                    if(task.isSuccessful()){
+                                        Toast.makeText(getActivity(),"New Post is added successfully",Toast.LENGTH_SHORT).show();
+                                        postdialog.dismiss();
+                                        postLoadingBar.dismiss();
+                                        countPosts = 0;
+                                        groupadapter.notifyDataSetChanged();
+                                        yourgroupsadapter.notifyDataSetChanged();
+
+                                    }
+                                    else{
+                                        Toast.makeText(getActivity(),"Error occurred while updating your post",Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
                 }
 
                 @Override
@@ -513,35 +627,6 @@ public class GroupFragment extends Fragment {
 
                 }
             });
-
-
-            HashMap postsMap = new HashMap();
-            postsMap.put("uid",currentUserID);
-            postsMap.put("date",saveCurrentDates);
-            postsMap.put("time",saveCurrentTime);
-            postsMap.put("description",Description);
-            if (!groupDownloadUrl.equals(""))
-                postsMap.put("postimage",groupDownloadUrl);
-            postsMap.put("fullname",current_user_name);
-            postsMap.put("counter",countPosts);
-            postsMap.put("groupid", groupidhldr);
-            PostsRef.child(currentUserID + postRandomName).updateChildren(postsMap)
-                    .addOnCompleteListener(new OnCompleteListener() {
-                        @Override
-                        public void onComplete(@NonNull Task task) {
-                            if(task.isSuccessful()){
-                                Toast.makeText(getActivity(),"New Post is added successfully",Toast.LENGTH_SHORT).show();
-                                postdialog.dismiss();
-                                postLoadingBar.dismiss();
-                                countPosts = 0;
-                                groupadapter.notifyDataSetChanged();
-
-                            }
-                            else{
-                                Toast.makeText(getActivity(),"Error occurred while updating your post",Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
         }
     }
 
@@ -564,17 +649,42 @@ public class GroupFragment extends Fragment {
                     String groupcreatedate = group.getCreate_date();
 
                     if(groupname != null){
+                        String finalProfilepicstring = profilepicstring;
+                        UsersRef.child(currentUserID).child("following").addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                for (DataSnapshot dataSnapshot : snapshot.getChildren()){
+                                    if(groupSnapshot.child("Members").hasChild(dataSnapshot.child("uid").getValue().toString())){
+                                        if(groupSnapshot.child("Members").hasChild(currentUserID)){
+                                            if(groupSnapshot.child("Members").child(currentUserID).child("status").getValue().toString().equals("Pending")){
+                                                groupList.add(new Groups(groupSnapshot.getKey(), groupname, finalProfilepicstring, grouptype, groupstatus, groupcreatedate, ""));
+                                            }
+                                        }else{
+                                            groupList.add(new Groups(groupSnapshot.getKey(), groupname, finalProfilepicstring, grouptype, groupstatus, groupcreatedate, ""));
+                                        }
+
+                                    }
+                                    Collections.shuffle(groupList);
+                                    groupadapter.notifyDataSetChanged();
+                                    yourgroupsadapter.notifyDataSetChanged();
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
                         if(groupSnapshot.child("Members").hasChild(currentUserID)){
                             String groupmembershipstatus = "Pending";
                             if(groupSnapshot.child("Members").child(currentUserID).child("status").getValue().toString().equals("Accepted")){
                                 groupmembershipstatus = "Joined";
                             }
-                            groupList.add(new Groups(groupSnapshot.getKey(), groupname, profilepicstring, grouptype, groupstatus, groupcreatedate, groupmembershipstatus));
                             joinedGroupList.add(new Groups(groupSnapshot.getKey(), groupname, profilepicstring, grouptype, groupstatus, groupcreatedate, groupmembershipstatus));
-                        }else{
-                            groupList.add(new Groups(groupSnapshot.getKey(), groupname, profilepicstring, grouptype, groupstatus, groupcreatedate, ""));
                         }
+                        Collections.shuffle(joinedGroupList);
                         groupadapter.notifyDataSetChanged();
+                        yourgroupsadapter.notifyDataSetChanged();
                     }
                 }
             }
@@ -743,12 +853,12 @@ public class GroupFragment extends Fragment {
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                         if (LikeChecker.equals(true)) {
                                             if (dataSnapshot.hasChild(currentUserID)) {
-                                                Toast.makeText(getActivity(), "remove like", Toast.LENGTH_SHORT).show();
                                                 LikesRef.child(PostKey).child("Likes").child(currentUserID).child(currentUserID).removeValue();
                                                 LikesRef.child(PostKey).child("Likes").child(currentUserID).child("Timestamp").removeValue();
+                                                LikesRef.child(PostKey).child("Likes").child(currentUserID).child("isSeen").removeValue();
+                                                LikesRef.child(PostKey).child("Likes").child(currentUserID).child("groupID").removeValue();
                                                 LikeChecker = false;
                                             } else {
-                                                Toast.makeText(getActivity(), "add like", Toast.LENGTH_SHORT).show();
                                                 LikesRef.child(PostKey).child("Likes").child(currentUserID).child(currentUserID).setValue(true);
                                                 Calendar calForDate = Calendar.getInstance();
                                                 SimpleDateFormat currentDate = new SimpleDateFormat("MM-dd-yyyy");
@@ -788,6 +898,15 @@ public class GroupFragment extends Fragment {
                                         viewHolder.mView.setVisibility(View.GONE);
                                         viewHolder.lp.setVisibility(View.GONE);
                                     }
+
+                                    viewHolder.profilell.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            Intent profileIntent =  new Intent(getActivity(), ViewOthersProfile.class);
+                                            profileIntent.putExtra("profileId",posts.getUid());
+                                            getActivity().startActivity(profileIntent);
+                                        }
+                                    });
                                 }
                             }
 
@@ -816,7 +935,7 @@ public class GroupFragment extends Fragment {
         TextView DisplayNoOfLikes, optionMenuP;
         int countLikes;
         String currentUserId;
-        LinearLayout lp;
+        LinearLayout lp, profilell;
         DatabaseReference LikesRef;
         ImageView PostImage;
 
@@ -828,6 +947,7 @@ public class GroupFragment extends Fragment {
             CommentBtn = mView.findViewById(R.id.comment_button);
             optionMenuP = mView.findViewById(R.id.post_options);
             lp = mView.findViewById(R.id.linear_posts);
+            profilell = mView.findViewById(R.id.profile_ll);
 //            LikepostButton = mView.findViewById(R.id.like_button);
 //            CommentPostButton = mView.findViewById(R.id.comment_button);
             DisplayNoOfLikes = mView.findViewById(R.id.display_no_of_likes);
@@ -870,6 +990,12 @@ public class GroupFragment extends Fragment {
                 Picasso.with(ctx).load(R.drawable.profile).into(image);
             else
                 Picasso.with(ctx).load(profileimage).placeholder(R.drawable.profile).into(image);
+            image.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                }
+            });
         }
         public void setTime(String time, String date) {
             TextView PostTime = (TextView) mView.findViewById(R.id.post_time);
@@ -891,6 +1017,7 @@ public class GroupFragment extends Fragment {
         public void setPostimage(Context ctx, String postimage) {
             ImageView PostImage = (ImageView) mView.findViewById(R.id.post_image);
             Picasso.with(ctx).load(postimage).into(PostImage);
+//            Picasso.with(ctx).load(postimage).fit().centerCrop().into(PostImage);
         }
     }
 

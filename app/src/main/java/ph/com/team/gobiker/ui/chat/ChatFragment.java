@@ -2,15 +2,11 @@ package ph.com.team.gobiker.ui.chat;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,19 +20,16 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -46,7 +39,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.squareup.picasso.Picasso;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -60,11 +52,9 @@ import java.util.List;
 import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-import ph.com.team.gobiker.GroupChats;
-import ph.com.team.gobiker.NavActivity;
 import ph.com.team.gobiker.R;
-import ph.com.team.gobiker.SearchAutoComplete;
-import ph.com.team.gobiker.SearchAutoCompleteAdapter;
+import ph.com.team.gobiker.ui.search.SearchAutoComplete;
+import ph.com.team.gobiker.ui.search.SearchAutoCompleteAdapter;
 
 public class ChatFragment extends Fragment {
 
@@ -106,6 +96,7 @@ public class ChatFragment extends Fragment {
         super.onPause();
         fragmentActive = false;
         mListener.setChatFragmentStatus(fragmentActive);
+
     }
 
     @Override
@@ -382,6 +373,8 @@ public class ChatFragment extends Fragment {
             messageTextBody.put("date",saveCurrentDate);
             messageTextBody.put("type","text");
             messageTextBody.put("from",currentUserID);
+            messageTextBody.put("isSeen", false);
+
 
             Map messageBodyDetails = new HashMap();
             messageBodyDetails.put(message_sender_ref+"/"+message_push_id,messageTextBody);
@@ -428,6 +421,7 @@ public class ChatFragment extends Fragment {
         UsersRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                profileList.clear();
                 for (DataSnapshot suggestionSnapshot : dataSnapshot.getChildren()){
                     if(!suggestionSnapshot.getKey().equals(currentUserID)){
                         String suggestion = suggestionSnapshot.child("fullname").getValue(String.class);
@@ -530,8 +524,9 @@ public class ChatFragment extends Fragment {
                                                 if(!chatitems.contains(chatItem)){
                                                     chatitems.add(chatItem);
                                                 }
+                                                Collections.sort(chatitems, new TimeStampComparator());
+                                                Collections.reverse(chatitems);
                                                 chatadapter.notifyDataSetChanged();
-
                                             }
                                         }
 

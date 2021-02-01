@@ -48,7 +48,7 @@ public class GroupsRecyclerAdapter extends RecyclerView.Adapter<GroupsRecyclerAd
 
         holder.groupname.setText(listItem.getGroup_name());
         holder.grouptype.setText(listItem.getGroup_type());
-        holder.groupjoined.setText(listItem.getCurr_user_joined());
+//        holder.groupjoined.setText(listItem.getCurr_user_joined());
 
         holder.grouplayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,11 +74,10 @@ public class GroupsRecyclerAdapter extends RecyclerView.Adapter<GroupsRecyclerAd
 
         public ViewHolder(View itemView){
             super(itemView);
-
             grouppicture = (CircleImageView) itemView.findViewById(R.id.group_pic);
             grouptype = (TextView) itemView.findViewById(R.id.group_type);
             groupname = (TextView) itemView.findViewById(R.id.group_name);
-            groupjoined = (TextView) itemView.findViewById(R.id.group_joined);
+//            groupjoined = (TextView) itemView.findViewById(R.id.group_joined);
             grouplayout = (RelativeLayout) itemView.findViewById(R.id.relativeLayout);
 
         }

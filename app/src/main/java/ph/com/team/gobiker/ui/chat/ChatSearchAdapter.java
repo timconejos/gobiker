@@ -1,8 +1,6 @@
 package ph.com.team.gobiker.ui.chat;
 
-import android.app.LauncherActivity;
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,17 +13,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
 
-import java.util.Comparator;
 import java.util.List;
 
 
 import de.hdodenhof.circleimageview.CircleImageView;
-import ph.com.team.gobiker.CommentsActivity;
-import ph.com.team.gobiker.FindFriendsActivity;
-import ph.com.team.gobiker.LikesActivity;
-import ph.com.team.gobiker.PersonProfileActivity;
 import ph.com.team.gobiker.R;
-import ph.com.team.gobiker.ui.notifications.Notifications;
 
 public class ChatSearchAdapter extends RecyclerView.Adapter<ChatSearchAdapter.ViewHolder> {
 

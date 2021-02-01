@@ -1,4 +1,4 @@
-package ph.com.team.gobiker;
+package ph.com.team.gobiker.ui.chat;
 
 import java.util.ArrayList;
 

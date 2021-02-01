@@ -19,7 +19,7 @@
 
     <fragment
         android:id="@+id/navigation_dashboard"
-        android:name="ph.com.team.gobiker.ui.dashboard.DashboardFragment"
+        android:name="ph.com.team.gobiker.ui.profile.DashboardFragment"
         android:label="@string/title_dashboard"
         tools:layout="@layout/fragment_dashboard" />
 

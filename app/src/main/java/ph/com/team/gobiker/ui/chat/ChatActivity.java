@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -21,13 +20,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -53,9 +48,6 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -66,10 +58,7 @@ import java.util.List;
 import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-import ph.com.team.gobiker.Messages;
-import ph.com.team.gobiker.MessagesAdapter;
 import ph.com.team.gobiker.R;
-import ph.com.team.gobiker.ui.home.GroupDetailsActivity;
 
 public class ChatActivity extends AppCompatActivity {
     private Toolbar ChattoolBar;
@@ -84,8 +73,10 @@ public class ChatActivity extends AppCompatActivity {
 
     private TextView receiverName, userLastSeen;
     private CircleImageView receiverProfileImage;
-    private DatabaseReference RootRef, UsersRef;
+    private DatabaseReference RootRef, UsersRef, MessagesRef;
     private FirebaseAuth mAuth;
+
+    private ValueEventListener mListener;
 
     //chat attachments variables
     final static int PICTURE_RESULT = 0;
@@ -97,12 +88,26 @@ public class ChatActivity extends AppCompatActivity {
     public static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 123;
 
     @Override
+    public void onPause() {
+        super.onPause();
+        MessagesRef.child(messageSenderID).child(messageReceiverID).removeEventListener(mListener);
+
+    }
+
+    @Override
+    public void onStop(){
+        super.onStop();
+        MessagesRef.child(messageSenderID).child(messageReceiverID).removeEventListener(mListener);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
         RootRef = FirebaseDatabase.getInstance().getReference();
         UsersRef = FirebaseDatabase.getInstance().getReference().child("Users");
+        MessagesRef = FirebaseDatabase.getInstance().getReference().child("Messages");
         mAuth = FirebaseAuth.getInstance();
         messageSenderID = mAuth.getCurrentUser().getUid();
 
@@ -178,11 +183,11 @@ public class ChatActivity extends AppCompatActivity {
                     userMessagesList.smoothScrollToPosition(messageAdapter.getItemCount());
                     messageAdapter.notifyDataSetChanged();
                 }
-                if(dataSnapshot.child("isSeen").exists()){
-                    if(!(boolean) dataSnapshot.child("isSeen").getValue()){
-                        RootRef.child("Messages").child(messageSenderID).child(messageReceiverID).child(dataSnapshot.getKey()).child("isSeen").setValue(true);
-                    }
-                }
+//                if(dataSnapshot.child("isSeen").exists()){
+//                    if(!(boolean) dataSnapshot.child("isSeen").getValue()){
+//                        RootRef.child("Messages").child(messageSenderID).child(messageReceiverID).child(dataSnapshot.getKey()).child("isSeen").setValue(true);
+//                    }
+//                }
             }
 
             @Override
@@ -379,6 +384,8 @@ public class ChatActivity extends AppCompatActivity {
         userMessagesList.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
         userMessagesList.setLayoutManager(linearLayoutManager);
         userMessagesList.setAdapter(messageAdapter);
+
+        messagesSeen();
     }
 
     @Override
@@ -531,6 +538,28 @@ public class ChatActivity extends AppCompatActivity {
         }
     }
 
+    private void messagesSeen(){
+        mListener = MessagesRef.child(messageSenderID).child(messageReceiverID).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.exists()){
+                    for (DataSnapshot childSnapshot: snapshot.getChildren()) {
+                        if(childSnapshot.child("isSeen").exists()){
+                            if(!(boolean) childSnapshot.child("isSeen").getValue()){
+                                MessagesRef.child(messageSenderID).child(messageReceiverID).child(childSnapshot.getKey()).child("isSeen").setValue(true);
+                            }
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
     public void showDialog(final String msg, final Context context,
                            final String permission) {
         AlertDialog.Builder alertBuilder = new AlertDialog.Builder(context);
@@ -567,8 +596,7 @@ public class ChatActivity extends AppCompatActivity {
         }
     }
 
-    private String getfileExtension(Uri uri)
-    {
+    private String getfileExtension(Uri uri){
         String extension;
         ContentResolver contentResolver = getContentResolver();
         MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();

@@ -1,10 +1,11 @@
-package ph.com.team.gobiker.ui.dashboard;
+package ph.com.team.gobiker.ui.profile;
+
+import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
 import java.util.ArrayList;
@@ -28,7 +29,11 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
         return fragmentArrayList.size();
     }
 
-    public void addFragment(Fragment fragment, String title){
+    public void addFragment(Fragment fragment, String title, String uid){
+        Bundle args1 = new Bundle();
+        args1.putString("profileId",uid);
+        fragment.setArguments(args1);
+
         fragmentArrayList.add(fragment);
         fragmentTitle.add(title);
     }

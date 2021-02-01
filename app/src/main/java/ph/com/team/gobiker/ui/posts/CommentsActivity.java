@@ -1,4 +1,4 @@
-    package ph.com.team.gobiker;
+    package ph.com.team.gobiker.ui.posts;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -31,6 +31,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import ph.com.team.gobiker.R;
 
     public class CommentsActivity extends AppCompatActivity {
 

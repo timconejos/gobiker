@@ -2579,7 +2579,7 @@ public class SettingsActivity extends AppCompatActivity {
                     if (task.isSuccessful()){
                         Intent selfIntent = new Intent(SettingsActivity.this,SettingsActivity.class);
                         startActivity(selfIntent);
-                        SendUserToMainActivity();
+//                        SendUserToMainActivity();
                         Toast.makeText(SettingsActivity.this,"Account Settings Updated Successfully", Toast.LENGTH_SHORT).show();
                     }
                     else{

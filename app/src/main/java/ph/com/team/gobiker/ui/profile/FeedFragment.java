@@ -1,21 +1,15 @@
-package ph.com.team.gobiker.ui.dashboard;
+package ph.com.team.gobiker.ui.profile;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.ColorSpace;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.TextUtils;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -25,24 +19,16 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.widget.Toolbar;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.transition.AutoTransition;
-import androidx.transition.TransitionManager;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -59,37 +45,24 @@ import java.util.Date;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-import ph.com.team.gobiker.ClickPostActivity;
-import ph.com.team.gobiker.CommentsActivity;
-import ph.com.team.gobiker.CreateAccount;
-import ph.com.team.gobiker.FindFriendsActivity;
-import ph.com.team.gobiker.LikesActivity;
-import ph.com.team.gobiker.PostActivity;
+import ph.com.team.gobiker.ui.posts.ClickPostActivity;
+import ph.com.team.gobiker.ui.posts.CommentsActivity;
+import ph.com.team.gobiker.ui.posts.LikesActivity;
+import ph.com.team.gobiker.ui.posts.PostActivity;
 import ph.com.team.gobiker.R;
 import ph.com.team.gobiker.ui.home.HomeViewModel;
 import ph.com.team.gobiker.ui.home.Posts;
-import ph.com.team.gobiker.ui.login.MainLoginActivity;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
 public class FeedFragment extends Fragment {
 
     private HomeViewModel homeViewModel;
     private FloatingActionButton addNewPost;
-    private NavigationView navigationView;
-    private DrawerLayout drawerLayout;
-    private ActionBarDrawerToggle actionBarDrawerToggle;
     private RecyclerView postList;
-    private Toolbar mToolbar;
-
-    private CircleImageView NavProfileImage;
-    private TextView NavProfileUsername;
-    private ImageButton AddNewPostButton;
 
     private FirebaseAuth mAuth;
     private DatabaseReference UsersRef, PostsRef, LikesRef;
-    private Button searchButton;
-    private AutoCompleteTextView SearchInputText;
-    private String currentUserID;
+    private String profileID, currentUserId;
     private View root;
     private SwipeRefreshLayout swipe;
 
@@ -112,6 +85,9 @@ public class FeedFragment extends Fragment {
             }
         });
 
+        profileID = getArguments().getString("profileId");
+
+
         addNewPost = root.findViewById(R.id.add_new_post);
         addNewPost.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,13 +102,15 @@ public class FeedFragment extends Fragment {
         PostsRef = FirebaseDatabase.getInstance().getReference().child("Posts");
         LikesRef = FirebaseDatabase.getInstance().getReference().child("Likes");
 
+        mAuth = FirebaseAuth.getInstance();
+        currentUserId = mAuth.getCurrentUser().getUid();
+
         postList = root.findViewById(R.id.all_users_post_list);
         postList.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         linearLayoutManager.setReverseLayout(true);
         linearLayoutManager.setStackFromEnd(true);
         postList.setLayoutManager(linearLayoutManager);
-        currentUserID = mAuth.getCurrentUser().getUid();
 
         DisplayAllUsersPosts();
 
@@ -157,7 +135,7 @@ public class FeedFragment extends Fragment {
 
 
     private void DisplayAllUsersPosts() {
-        Query SortPostsInDescendingOrder = PostsRef.orderByChild("uid").equalTo(currentUserID);
+        Query SortPostsInDescendingOrder = PostsRef.orderByChild("uid").equalTo(profileID);
         FirebaseRecyclerAdapter<Posts, PostsViewHolder> firebaseRecyclerAdapter =
                 new FirebaseRecyclerAdapter<Posts, PostsViewHolder>(Posts.class,
                         R.layout.all_posts_layout,
@@ -204,7 +182,7 @@ public class FeedFragment extends Fragment {
                                 viewHolder.setPostimage(getActivity().getApplicationContext(), posts.getPostimage());
                             }
 
-                            viewHolder.setLikeButtonStatus(PostKey);
+                            viewHolder.setLikeButtonStatus(PostKey, profileID);
 
                             viewHolder.PostImage.setOnClickListener(new View.OnClickListener() {
                                 @Override
@@ -287,12 +265,13 @@ public class FeedFragment extends Fragment {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                             if (LikeChecker.equals(true)) {
-                                                if (dataSnapshot.hasChild(currentUserID)) {
-                                                    LikesRef.child(PostKey).child("Likes").child(currentUserID).child(currentUserID).removeValue();
-                                                    LikesRef.child(PostKey).child("Likes").child(currentUserID).child("Timestamp").removeValue();
+                                                if (dataSnapshot.hasChild(currentUserId)) {
+                                                    LikesRef.child(PostKey).child("Likes").child(currentUserId).child(currentUserId).removeValue();
+                                                    LikesRef.child(PostKey).child("Likes").child(currentUserId).child("Timestamp").removeValue();
+                                                    LikesRef.child(PostKey).child("Likes").child(currentUserId).child("isSeen").removeValue();
                                                     LikeChecker = false;
                                                 } else {
-                                                    LikesRef.child(PostKey).child("Likes").child(currentUserID).child(currentUserID).setValue(true);
+                                                    LikesRef.child(PostKey).child("Likes").child(currentUserId).child(currentUserId).setValue(true);
                                                     Calendar calForDate = Calendar.getInstance();
                                                     SimpleDateFormat currentDate = new SimpleDateFormat("MM-dd-yyyy");
                                                     String saveCurrentDate = currentDate.format(calForDate.getTime());
@@ -303,8 +282,8 @@ public class FeedFragment extends Fragment {
                                                     SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm:ss");
                                                     String saveCurrentTime = currentTime.format(calForDate.getTime());
 
-                                                    LikesRef.child(PostKey).child("Likes").child(currentUserID).child("Timestamp").setValue(saveCurrentDate+" "+saveCurrentTime);
-                                                    LikesRef.child(PostKey).child("Likes").child(currentUserID).child("isSeen").setValue(false);
+                                                    LikesRef.child(PostKey).child("Likes").child(currentUserId).child("Timestamp").setValue(saveCurrentDate+" "+saveCurrentTime);
+                                                    LikesRef.child(PostKey).child("Likes").child(currentUserId).child("isSeen").setValue(false);
                                                     LikeChecker = false;
                                                 }
                                             }
@@ -318,10 +297,10 @@ public class FeedFragment extends Fragment {
                                 }
                             });
 
-                            UsersRef.child(currentUserID).child("following").addValueEventListener(new ValueEventListener() {
+                            UsersRef.child(profileID).child("following").addValueEventListener(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    if (dataSnapshot.hasChild(posts.getUid()) || posts.getUid().equals(currentUserID)){
+                                    if (dataSnapshot.hasChild(posts.getUid()) || posts.getUid().equals(profileID)){
                                         viewHolder.mView.setVisibility(View.VISIBLE);
                                         viewHolder.lp.setVisibility(View.VISIBLE);
                                     }
@@ -350,7 +329,6 @@ public class FeedFragment extends Fragment {
         Button CommentBtn;
         TextView DisplayNoOfLikes, optionMenuP;
         int countLikes;
-        String currentUserId;
         LinearLayout lp;
         DatabaseReference LikesRef;
         ImageView PostImage;
@@ -369,16 +347,13 @@ public class FeedFragment extends Fragment {
             DisplayNoOfLikes = mView.findViewById(R.id.display_no_of_likes);
 
             LikesRef = FirebaseDatabase.getInstance().getReference().child("Likes");
-            currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
-
         }
 
-        public void setLikeButtonStatus(final String PostKey){
+        public void setLikeButtonStatus(final String PostKey, final String profileId){
             LikesRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    if(dataSnapshot.child(PostKey).child("Likes").hasChild(currentUserId)){
+                    if(dataSnapshot.child(PostKey).child("Likes").hasChild(profileId)){
                         countLikes = (int) dataSnapshot.child(PostKey).child("Likes").getChildrenCount();
                         LikeBtn.setImageResource(R.drawable.ic_favorite_border_red_24dp);
                         DisplayNoOfLikes.setText(Integer.toString(countLikes));

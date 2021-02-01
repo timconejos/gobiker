@@ -1,4 +1,4 @@
-package ph.com.team.gobiker;
+package ph.com.team.gobiker.ui.posts;
 
 public class Likes {
     public String profileimage, fullname, uid;

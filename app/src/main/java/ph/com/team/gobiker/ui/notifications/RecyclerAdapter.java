@@ -1,6 +1,5 @@
 package ph.com.team.gobiker.ui.notifications;
 
-import android.app.LauncherActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -20,12 +19,11 @@ import java.util.List;
 
 
 import de.hdodenhof.circleimageview.CircleImageView;
-import ph.com.team.gobiker.CommentsActivity;
-import ph.com.team.gobiker.FindFriendsActivity;
-import ph.com.team.gobiker.LikesActivity;
-import ph.com.team.gobiker.PersonProfileActivity;
+import ph.com.team.gobiker.ui.posts.CommentsActivity;
+import ph.com.team.gobiker.ui.posts.LikesActivity;
 import ph.com.team.gobiker.R;
 import ph.com.team.gobiker.ui.home.GroupDetailsActivity;
+import ph.com.team.gobiker.ui.profile.PersonProfileActivity;
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHolder> {
 

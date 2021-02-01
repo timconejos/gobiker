@@ -29,30 +29,31 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
         </provider>
-        <activity android:name=".PhotoFullScreenActivity"></activity>
+        <activity android:name=".ui.profile.ViewOthersProfile"></activity>
+        <activity android:name=".ui.posts.PhotoFullScreenActivity"></activity>
         <activity android:name=".ui.home.GroupDetailsActivity"></activity>
-        <activity android:name=".FollowingActivity"></activity>
-        <activity android:name=".FollowersActivity" />
-        <activity android:name=".ClickCommentActivity" />
-        <activity android:name=".LikesActivity" />
+        <activity android:name=".ui.following.FollowingActivity"></activity>
+        <activity android:name=".ui.followers.FollowersActivity" />
+        <activity android:name=".ui.posts.ClickCommentActivity" />
+        <activity android:name=".ui.posts.LikesActivity" />
         <activity android:name=".LogoutActivity" />
+        <activity android:name=".ui.profile.PersonProfileActivity" />
         <activity
             android:name=".ui.chat.ChatActivity"
-            android:parentActivityName=".PersonProfileActivity" />
-        <activity android:name=".PersonProfileActivity" />
-        <activity android:name=".FindFriendsActivity" />
+            android:parentActivityName=".ui.profile.PersonProfileActivity" />
+        <activity android:name=".ui.search.FindFriendsActivity" />
         <activity android:name=".ui.chat.ChatGroupActivity" />
         <activity
             android:name=".SettingsActivity"
             android:parentActivityName=".NavActivity" />
         <activity android:name=".SetupActivity" />
         <activity
-            android:name=".CommentsActivity"
+            android:name=".ui.posts.CommentsActivity"
             android:parentActivityName=".NavActivity" />
         <activity
-            android:name=".PostActivity"
+            android:name=".ui.posts.PostActivity"
             android:parentActivityName=".NavActivity" />
-        <activity android:name=".ClickPostActivity" />
+        <activity android:name=".ui.posts.ClickPostActivity" />
         <activity
             android:name=".NavActivity"
             android:label="@string/title_activity_nav" />

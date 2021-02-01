@@ -1,74 +1,64 @@
-package ph.com.team.gobiker;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+package ph.com.team.gobiker.ui.search;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageButton;
+import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import ph.com.team.gobiker.R;
+import ph.com.team.gobiker.ui.home.HomeViewModel;
+import ph.com.team.gobiker.ui.profile.PersonProfileActivity;
 
-public class FindFriendsActivity extends AppCompatActivity {
-    private Toolbar mToolbar;
-    private Button searchButton;
-    private EditText SearchInputText;
-
+public class PersonSearchFragment extends Fragment {
+    private View root;
     private RecyclerView SearchResultList;
-
     private DatabaseReference allUsersDatabaseRef;
+    private String searchTag;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_find_friends);
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             ViewGroup container, Bundle savedInstanceState) {
+
+        root = inflater.inflate(R.layout.fragment_search_results, container, false);
 
         allUsersDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Users");
 
-        SearchResultList = findViewById(R.id.search_result_list);
+        SearchResultList = root.findViewById(R.id.search_result_list);
         SearchResultList.setHasFixedSize(true);
-        SearchResultList.setLayoutManager(new LinearLayoutManager(this));
+        SearchResultList.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        searchButton = findViewById(R.id.search_people_friends_button);
-        SearchInputText = findViewById(R.id.search_box_input);
+        searchTag = getArguments().getString("searchTag");
 
-        if (!getIntent().getExtras().get("searchKey").toString().equals("")) {
-            SearchInputText.setText(getIntent().getExtras().get("searchKey").toString());
-            SearchPeopleAndFriends(getIntent().getExtras().get("searchKey").toString());
-        }
+        SearchPeopleAndFriends(searchTag);
 
-        searchButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!SearchInputText.getText().toString().equals("")){
-                    String searchBoxInput = SearchInputText.getText().toString();
-                    SearchPeopleAndFriends(searchBoxInput);
-                }
-            }
-        });
+        return root;
     }
 
     private void SearchPeopleAndFriends(String searchBoxInput) {
-        //Toast.makeText(this,"Searching...", Toast.LENGTH_LONG).show();
-
         Query searchPeopleandFriendsQuery = allUsersDatabaseRef.orderByChild("fullname")
                 .startAt(searchBoxInput).endAt(searchBoxInput + "\uf8ff");
 
-        FirebaseRecyclerAdapter<FindFriends,FindFriendsViewHolder> firebaseRecyclerAdapter
+        FirebaseRecyclerAdapter<FindFriends, FindFriendsViewHolder> firebaseRecyclerAdapter
                 = new FirebaseRecyclerAdapter<FindFriends, FindFriendsViewHolder>(
                 FindFriends.class,
                 R.layout.all_users_display_layout,
@@ -79,13 +69,13 @@ public class FindFriendsActivity extends AppCompatActivity {
             protected void populateViewHolder(FindFriendsViewHolder findFriendsViewHolder, FindFriends findFriends, int i) {
                 findFriendsViewHolder.setFullname(findFriends.getFullname());
 
-                findFriendsViewHolder.setProfileimage(getApplicationContext(), findFriends.getProfileimage());
+                findFriendsViewHolder.setProfileimage(getActivity(), findFriends.getProfileimage());
                 final String visit_user_id = getRef(i).getKey();
 
                 findFriendsViewHolder.mView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Intent profileIntent =  new Intent(FindFriendsActivity.this,PersonProfileActivity.class);
+                        Intent profileIntent =  new Intent(getActivity(), PersonProfileActivity.class);
                         profileIntent.putExtra("visit_user_id",visit_user_id);
                         startActivity(profileIntent);
                     }

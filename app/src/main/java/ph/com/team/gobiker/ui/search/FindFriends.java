@@ -1,16 +1,16 @@
-package ph.com.team.gobiker;
+package ph.com.team.gobiker.ui.search;
 
-public class Followers {
-    public String profileimage, fullname, uid;
+public class FindFriends {
+    public String profileimage, fullname, status;
 
-    public Followers(){
+    public FindFriends(){
 
     }
 
-    public Followers(String profileimage, String fullname) {
+    public FindFriends(String profileimage, String fullname, String status) {
         this.profileimage = profileimage;
         this.fullname = fullname;
-        this.uid = uid;
+        this.status = status;
     }
 
     public String getProfileimage() {
@@ -29,11 +29,11 @@ public class Followers {
         this.fullname = fullname;
     }
 
-    public String getUid() {
-        return uid;
+    public String getStatus() {
+        return status;
     }
 
-    public void setUid(String uid) {
-        this.uid = uid;
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

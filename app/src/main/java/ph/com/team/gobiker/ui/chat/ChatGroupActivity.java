@@ -61,12 +61,9 @@ import java.util.List;
 import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-import ph.com.team.gobiker.GroupChats;
-import ph.com.team.gobiker.Messages;
-import ph.com.team.gobiker.MessagesAdapter;
 import ph.com.team.gobiker.R;
-import ph.com.team.gobiker.SearchAutoComplete;
-import ph.com.team.gobiker.SearchAutoCompleteAdapter;
+import ph.com.team.gobiker.ui.search.SearchAutoComplete;
+import ph.com.team.gobiker.ui.search.SearchAutoCompleteAdapter;
 
 public class ChatGroupActivity extends AppCompatActivity {
     private Toolbar ChattoolBar;
