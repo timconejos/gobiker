@@ -24,33 +24,74 @@
             android:id="@+id/create_room_pass"
             android:layout_marginRight="20dp"
             android:layout_marginLeft="20dp"
-            android:layout_marginBottom="20dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text=""
             android:inputType="number"
             android:maxLength="4"
-            android:hint="PIN: (optional)"/>
+            android:hint="Pin Code (optional)"/>
     </com.google.android.material.textfield.TextInputLayout>
-    <Spinner
-        android:layout_marginRight="20dp"
-        android:layout_marginLeft="20dp"
-        android:id="@+id/create_room_privacy"
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        style="@style/CustomDropDownTilStyle"
+        >
+        <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+            android:id="@+id/create_room_privacy"
+            android:layout_marginRight="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:padding="20dp"
+            android:focusable="false"
+            android:inputType="none"
+            android:hint="Privacy"/>
+    </com.google.android.material.textfield.TextInputLayout>
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/create_room_groups_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/CustomDropDownTilStyle"
+        android:visibility="gone"
+        >
+        <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+            android:id="@+id/create_room_groups"
+            android:layout_marginRight="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginBottom="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:padding="20dp"
+            android:focusable="false"
+            android:inputType="none"
+            android:hint="Groups" />
+    </com.google.android.material.textfield.TextInputLayout>
     <RadioGroup
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="20dp">
-        <RadioButton android:id="@+id/radio_pirates"
+        <RadioButton android:id="@+id/create_room_private"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Private" />
-        <RadioButton android:id="@+id/radio_ninjas"
+        <RadioButton android:id="@+id/create_room_public"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Public" />
     </RadioGroup>
+
+    <Button
+        android:enabled="false"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/create_room_submit"
+        android:text="Submit"
+        style="@style/SecondaryBtn.Positive"/>
 
 
 </LinearLayout>

@@ -166,7 +166,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         setupMapIfNeeded();
         setUpLocationManager();
         runTimer();
-        getAllLocationAvailable();
         return v;
     }
 
@@ -323,6 +322,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
 
         //separate threads for shareLocation and showing allLocation
         showAllLocationAvailable();
+        getAllLocationAvailable();
     }
 
     private void showAllLocationAvailable() {

@@ -290,5 +290,15 @@
         <item name="colorPrimary">@color/colorAccent</item>
     </style>
 
+    <style name="CustomDropDownTilStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+
+        <item name="boxCornerRadiusBottomEnd">3dp</item>
+        <item name="boxCornerRadiusBottomStart">3dp</item>
+        <item name="boxCornerRadiusTopEnd">3dp</item>
+        <item name="boxCornerRadiusTopStart">3dp</item>
+    </style>
+
 </resources>
 

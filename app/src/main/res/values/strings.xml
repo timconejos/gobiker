@@ -127,5 +127,11 @@
     <string name="create_profile">Create Profile</string>
     <string name="current_location">Current Location</string>
     <string name="no_of_rides">No. of Rides</string>
+    
+    <string-array name="create_room_options">
+        <item>Private</item>
+        <item>Group</item>
+        <item>Public</item>
+    </string-array>
 
 </resources>
