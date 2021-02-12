@@ -41,7 +41,7 @@ public class ClickCommentActivity extends AppCompatActivity {
         EditPostButton = findViewById(R.id.edit_comment_button);
         DeletePostButton = findViewById(R.id.delete_comment_button);
 
-        ClickPostRef.addValueEventListener(new ValueEventListener() {
+        ClickPostRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {

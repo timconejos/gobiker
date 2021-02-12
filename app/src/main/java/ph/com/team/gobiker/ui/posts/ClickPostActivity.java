@@ -70,7 +70,7 @@ public class ClickPostActivity extends AppCompatActivity {
         });
 
 
-        ClickPostRef.addValueEventListener(new ValueEventListener() {
+        ClickPostRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
@@ -94,7 +94,7 @@ public class ClickPostActivity extends AppCompatActivity {
                         EditPostButton.setVisibility(View.VISIBLE);
                     }
 
-                    UsersRef.child(databaseUserID).addValueEventListener(new ValueEventListener() {
+                    UsersRef.child(databaseUserID).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             if (snapshot.exists()){
