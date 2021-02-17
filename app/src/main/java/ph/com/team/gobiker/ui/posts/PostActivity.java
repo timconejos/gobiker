@@ -159,7 +159,7 @@ public class PostActivity extends AppCompatActivity {
     }
 
     private void SavingPostInformationToDatabase() {
-        postRef.addValueEventListener(new ValueEventListener() {
+        postRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()){
@@ -175,7 +175,7 @@ public class PostActivity extends AppCompatActivity {
 
             }
         });
-        usersRef.child(current_user_id).addValueEventListener(new ValueEventListener() {
+        usersRef.child(current_user_id).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(dataSnapshot.exists()){

@@ -74,7 +74,7 @@ import ph.com.team.gobiker.R;
             PostCommentButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    UsersRef.child(current_user_id).addValueEventListener(new ValueEventListener() {
+                    UsersRef.child(current_user_id).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             if (dataSnapshot.exists()){
