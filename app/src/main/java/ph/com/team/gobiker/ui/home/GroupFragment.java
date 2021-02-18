@@ -107,7 +107,7 @@ public class GroupFragment extends Fragment {
     ImageButton SelectPostImage_;
     ImageView SelectedPostImage;
     Button SelectPostImage;
-    Button UpdatePostButton;
+//    Button UpdatePostButton;
     EditText PostDescription;
     Spinner GroupToPost;
     StorageReference PostsImageReference;

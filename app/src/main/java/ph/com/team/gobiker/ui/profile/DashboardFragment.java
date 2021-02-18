@@ -28,9 +28,9 @@ import com.squareup.picasso.Picasso;
 
 
 import de.hdodenhof.circleimageview.CircleImageView;
-import ph.com.team.gobiker.FollowersActivity;
-import ph.com.team.gobiker.FollowingActivity;
-import ph.com.team.gobiker.PersonProfileActivity;
+import ph.com.team.gobiker.ui.followers.FollowersActivity;
+import ph.com.team.gobiker.ui.following.FollowingActivity;
+import ph.com.team.gobiker.ui.profile.PersonProfileActivity;
 import ph.com.team.gobiker.R;
 import ph.com.team.gobiker.SettingsActivity;
 
