@@ -7,42 +7,39 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginTop="3dp"
-        android:layout_marginBottom="3dp"
         android:id="@+id/linear_posts"
-        android:layout_marginLeft="6dp"
-        android:layout_marginRight="6dp"
         android:background="@color/white">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="1dp"
-            android:padding="5dp"
-            android:orientation="horizontal">
+            android:layout_marginTop="0dp"
+            android:padding="10dp"
+            android:orientation="horizontal"
+            android:background="@drawable/border_bottom">
             <de.hdodenhof.circleimageview.CircleImageView
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:src="@drawable/profile"
                 android:id="@+id/notification_profile_image"
                 android:scaleType="centerCrop"
-                android:layout_marginLeft="4dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginRight="4dp"/>
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginRight="4dp"
+                android:layout_gravity="center"/>
 
             <RelativeLayout
-                android:layout_width="297dp"
-                android:layout_height="wrap_content">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp">
 
                 <TextView
                     android:id="@+id/notification_desc"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="2dp"
                     android:text="description"
                     android:textAlignment="textStart"
-                    android:textColor="@android:color/black"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
+                    style="@style/Headings.H5"/>
 
                 <TextView
                     android:id="@+id/notification_time"
@@ -50,8 +47,8 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/notification_desc"
                     android:text="Date"
-                    android:textColor="@color/subtitleText"
-                    android:textSize="12sp" />
+                    style="@style/Subtitle.H7"
+                    android:textColor="@color/subtitleText"/>
             </RelativeLayout>
         </LinearLayout>
 

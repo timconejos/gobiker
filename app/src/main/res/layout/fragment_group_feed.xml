@@ -51,7 +51,7 @@
         android:id="@+id/swiperefresh"
         android:layout_below="@+id/relativeLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:background="@color/lighterColor">
 
         <androidx.core.widget.NestedScrollView
@@ -63,7 +63,7 @@
             <LinearLayout
                 android:layout_below="@+id/current_groups_label"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="vertical">
 
                 <TextView
@@ -71,17 +71,19 @@
                     android:layout_height="wrap_content"
                     android:text="Groups with people you follow"
                     android:id="@+id/active_groups_label"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
                     android:layout_marginLeft="10dp"
-                    style="@style/Headings.H4"
                     android:textAlignment="textStart"
                     android:textColor="@color/black"
+                    style="@style/Subtitle.H6"
                     />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/all_groups_view"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"/>
 
                 <TextView
                     android:layout_width="match_parent"
@@ -105,17 +107,21 @@
                     android:layout_height="wrap_content"
                     android:text="Group Posts"
                     android:id="@+id/current_groups_label"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginTop="10dp"
                     android:layout_marginLeft="10dp"
-                    style="@style/Headings.H4"
+                    android:layout_marginBottom="10dp"
                     android:textAlignment="textStart"
                     android:textColor="@color/black"
+                    style="@style/Subtitle.H6"
                     />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/all_users_post_list"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="true"
+
+                    />
             </LinearLayout>
 
 

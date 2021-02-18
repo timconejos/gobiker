@@ -52,8 +52,10 @@
             android:parentActivityName=".NavActivity" />
         <activity
             android:name=".ui.posts.PostActivity"
-            android:parentActivityName=".NavActivity" />
-        <activity android:name=".ui.posts.ClickPostActivity" />
+            android:parentActivityName=".NavActivity" 
+            android:windowSoftInputMode="adjustResize"/>
+        <activity android:name=".ui.posts.ClickPostActivity"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".NavActivity"
             android:label="@string/title_activity_nav" />

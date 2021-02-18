@@ -27,7 +27,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/main_logo_wbg"
-                android:layout_marginBottom="50dp" />
+                android:layout_marginBottom="100dp" />
 
             <Button
                 android:id="@+id/login"

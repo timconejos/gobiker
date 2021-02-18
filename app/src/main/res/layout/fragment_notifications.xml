@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".ui.notifications.NotificationsFragment">
 
+
     <TextView
         android:id="@+id/text_notifications"
         android:layout_width="match_parent"
@@ -22,10 +23,36 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/lightestColor">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:id="@+id/notificationLabel"
+            android:background="@color/lighterColor">
+            <TextView
+                android:id="@+id/title_notifications"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="8dp"
+                android:textAlignment="textStart"
+                android:textSize="14sp"
+                style="@style/Headings.H6"
+                android:text="@string/title_notifications"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </RelativeLayout>
+
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/all_notifications_list"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:layout_marginTop="40dp"/>
     </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

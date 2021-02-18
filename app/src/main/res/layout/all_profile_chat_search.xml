@@ -1,19 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/linear_posts"
     android:paddingStart="10dp"
     android:paddingEnd="10dp"
-    android:paddingTop="20dp"
-    android:paddingBottom="20dp"
+    android:paddingTop="7dp"
+    android:paddingBottom="7dp"
     android:background="@drawable/border_bottom">
     <de.hdodenhof.circleimageview.CircleImageView
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginStart="10dp"
         android:src="@drawable/profile"
-        android:id="@+id/all_users_profile_image" />
+        android:id="@+id/all_users_profile_image"
+        app:civ_border_color="@color/lightColor"
+        app:civ_border_width="1dp
+"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -32,7 +36,8 @@
                 android:textAlignment="textStart"
                 style="@style/Headings.H3"
                 android:id="@+id/all_users_profile_name"
-                android:layout_weight="1.5"/>
+                android:layout_weight="1.5"
+                android:layout_marginLeft="10dp"/>
 
             <Button
                 android:id="@+id/remove_profile"

@@ -28,7 +28,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minHeight="?attr/actionBarSize"
-            android:background="@color/colorPrimary"
+            android:background="@drawable/border_bottom"
             android:theme="@style/ToolbarTheme"
             app:titleTextAppearance="@style/Toolbar.TitleText"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
@@ -74,17 +74,23 @@
         <!--            style="@style/TextAppearance.AppCompat"-->
         <!--            android:text="You can also search users to invite to this group." />-->
 
-        <TextView
-            android:id="@+id/note_new"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:padding="8dp"
-            android:text="Tap on a user to either APPROVE or DISAPPROVE their join request."
-            android:textColor="@color/colorPrimary"
-            style="@style/TextAppearance.AppCompat"
-            />
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:background="@color/lighterColor">
+          <TextView
+              android:id="@+id/note_new"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_gravity="center"
+              android:padding="8dp"
+              android:text="Tap on a user to either APPROVE or DISAPPROVE their join request."
+              android:textColor="@color/black"
 
+              style="@style/Subtitle.H6"
+              />
+
+      </LinearLayout>
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -99,7 +105,7 @@
                 android:id="@+id/linearLayout"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:background="@color/colorAccent"
+                android:background="@drawable/border_top"
                 android:paddingHorizontal="20dp"
                 android:paddingVertical="10dp"
                 android:orientation="horizontal"

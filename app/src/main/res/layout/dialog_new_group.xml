@@ -22,7 +22,9 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="10dp"
                 android:src="@drawable/profile"
-                android:id="@+id/setup_group_profile_image"/>
+                android:id="@+id/setup_group_profile_image"
+                app:civ_border_color="@color/lightColor"
+                app:civ_border_width="1dp"/>
 
             <TextView
                 android:id="@+id/add_pic2"
@@ -83,7 +85,8 @@
                 android:id="@+id/linearLayout"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:background="@color/colorAccent"
+                android:background="@drawable/border_top"
+                android:backgroundTint="@color/lighterColor"
                 android:paddingHorizontal="20dp"
                 android:paddingVertical="10dp"
                 android:orientation="horizontal"

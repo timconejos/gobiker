@@ -25,7 +25,7 @@
     <string name="time">Time</string>
     <string name="distance">Distance</string>
     <string name="calories">Calories</string>
-    <string name="add_directions">Add Direction</string>
+    <string name="add_directions">Add direction</string>
     <string name="start">Start</string>
 
 
@@ -41,6 +41,11 @@
         <item>Public</item>
     </string-array>
     <string name="group_details">Group Details</string>
+    <string name="edit_group">Edit group</string>
+    <string name="join_request">Join requests</string>
+    <string name="start_ride">Start Ride</string>
+    <string name="view_members">View Members</string>
+
 
     <!--    LOGIN SCREEN STRINGS -->
     <string name="title_activity_main_login">Sign in</string>
@@ -123,7 +128,7 @@
     <string name="type">Type</string>
     <string name="ride_type">Bike / Motor</string>
     <string name="level">Level</string>
-    <string name="distance_traveled">Distance Travelled</string>
+    <string name="distance_traveled">Distance travelled</string>
     <string name="create_profile">Create Profile</string>
     <string name="current_location">Current Location</string>
     <string name="no_of_rides">No. of Rides</string>

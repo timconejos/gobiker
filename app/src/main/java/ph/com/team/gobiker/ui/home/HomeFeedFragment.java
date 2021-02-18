@@ -2,6 +2,7 @@ package ph.com.team.gobiker.ui.home;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
@@ -359,9 +360,12 @@ public class HomeFeedFragment extends Fragment {
             LikesRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
                     if(dataSnapshot.child(PostKey).child("Likes").hasChild(currentUserId)){
                         countLikes = (int) dataSnapshot.child(PostKey).child("Likes").getChildrenCount();
-                        LikeBtn.setImageResource(R.drawable.ic_favorite_border_red_24dp);
+                        LikeBtn.setImageResource(R.drawable.baseline_favorite_24);
+
+
                         DisplayNoOfLikes.setText(Integer.toString(countLikes));
                     }
                     else{

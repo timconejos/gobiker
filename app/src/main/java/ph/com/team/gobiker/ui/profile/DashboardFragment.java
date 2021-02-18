@@ -1,9 +1,12 @@
 package ph.com.team.gobiker.ui.profile;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 
@@ -25,7 +28,11 @@ import com.squareup.picasso.Picasso;
 
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import ph.com.team.gobiker.FollowersActivity;
+import ph.com.team.gobiker.FollowingActivity;
+import ph.com.team.gobiker.PersonProfileActivity;
 import ph.com.team.gobiker.R;
+import ph.com.team.gobiker.SettingsActivity;
 
 public class DashboardFragment extends Fragment {
 
@@ -33,6 +40,7 @@ public class DashboardFragment extends Fragment {
     private View root;
     private FirebaseAuth mAuth;
     private TextView userProfName, userEmail, userPhone , numRides;
+    private Button updateProfileButton, seeallfollowerButton, seeallfollowingButton;
     private CircleImageView userProfileImage;
     private DatabaseReference profileUserRef,UsersRef;
     private String currentUserId;
@@ -56,11 +64,37 @@ public class DashboardFragment extends Fragment {
 
         getProfileDetails();
 
+        updateProfileButton = root.findViewById(R.id.myUpdateProfileButton);
+        seeallfollowerButton = root.findViewById(R.id.seeAllFollowersButton);
+        seeallfollowingButton = root.findViewById(R.id.seeAllFollowingButton);
+
         viewPager = root.findViewById(R.id.profilecontainer);
         tabLayout = root.findViewById(R.id.profilenavbar);
 
         setupViewPager(viewPager);
         tabLayout.setupWithViewPager(viewPager);
+
+        seeallfollowerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SendUserToFollowersActivity();
+            }
+        });
+        seeallfollowingButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SendUserToFollowingActivity();
+            }
+        });
+
+
+
+        updateProfileButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SendUserToSettingsActivity();
+            }
+        });
 
         return root;
     }
@@ -83,11 +117,22 @@ public class DashboardFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()){
 
+                    long numFollowing = 0;
                     String myBike = dataSnapshot.child("bike").getValue().toString();
 
                     String myProfileName = dataSnapshot.child("fullname").getValue().toString();
                     String myEmail = dataSnapshot.child("email").getValue().toString();
                     String myPhone = dataSnapshot.child("phone").getValue().toString();
+
+
+                    if (dataSnapshot.hasChild("following")){
+                        numFollowing = dataSnapshot.child("following").getChildrenCount();
+                    }
+
+                    seeallfollowingButton.setText((Html.fromHtml("<big>"
+                            + numFollowing + "</big><br/>"
+                            + "<small>" + "Following"
+                            + "</small>")));
 
                     if (dataSnapshot.hasChild("profileimage")){
                         String myProfileImage = dataSnapshot.child("profileimage").getValue().toString();
@@ -114,7 +159,10 @@ public class DashboardFragment extends Fragment {
                                 if (dataSnapshot.child("bike_number_of_rides").getValue().toString().equals(""))
                                     numRides.setText("No Rides yet");
                                 else
-                                    numRides.setText(dataSnapshot.child("bike_number_of_rides").getValue().toString()+" Rides");
+                                    numRides.setText((Html.fromHtml("<big>"
+                                            + dataSnapshot.child("bike_number_of_rides").getValue().toString() + "</big><br/>"
+                                            + "<small>" + "Rides"
+                                            + "</small>")));
                             }
                             else{
                                 numRides.setText("No Rides yet");
@@ -140,6 +188,39 @@ public class DashboardFragment extends Fragment {
 
             }
         });
+
+        UsersRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                int f = 0;
+                if (dataSnapshot.exists()) {
+                    for(DataSnapshot snapshot: dataSnapshot.getChildren()){
+                        if (snapshot.hasChild("following")) {
+                            if (snapshot.child("following").hasChild(currentUserId)) {
+                                f++;
+                            }
+                        }
+                    }
+                }
+
+                String followerTxt = "Follower";
+                if (f==1)
+                    followerTxt = "Follower";
+                else
+                    followerTxt = "Followers";
+
+                seeallfollowerButton.setText((Html.fromHtml("<big>"
+                        + f + "</big><br/>"
+                        + "<small>" + followerTxt
+                        + "</small>")));
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
     }
 
     private void setupViewPager(ViewPager viewPager) {
@@ -149,5 +230,22 @@ public class DashboardFragment extends Fragment {
         viewPager.setAdapter(adapter);
     }
 
+
+    private void SendUserToFollowersActivity() {
+        Intent loginIntent = new Intent(getActivity(), FollowersActivity.class);
+        loginIntent.putExtra("visit_user_id",mAuth.getCurrentUser().getUid());
+        startActivity(loginIntent);
+    }
+
+    private void SendUserToFollowingActivity() {
+        Intent loginIntent = new Intent(getActivity(), FollowingActivity.class);
+        loginIntent.putExtra("visit_user_id",mAuth.getCurrentUser().getUid());
+        startActivity(loginIntent);
+    }
+
+    private void SendUserToSettingsActivity() {
+        Intent loginIntent = new Intent(getActivity(), SettingsActivity.class);
+        startActivity(loginIntent);
+    }
 
 }

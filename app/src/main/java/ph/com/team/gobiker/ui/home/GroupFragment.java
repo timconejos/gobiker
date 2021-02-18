@@ -103,8 +103,11 @@ public class GroupFragment extends Fragment {
     ProgressDialog postLoadingBar;
     String current_user_name;
     FloatingActionButton addGroupPost;
-    ImageButton SelectPostImage;
     Button UpdatePostButton, CancelPostButton;
+    ImageButton SelectPostImage_;
+    ImageView SelectedPostImage;
+    Button SelectPostImage;
+    Button UpdatePostButton;
     EditText PostDescription;
     Spinner GroupToPost;
     StorageReference PostsImageReference;
@@ -476,6 +479,7 @@ public class GroupFragment extends Fragment {
             postdialog.setContentView(R.layout.dialog_group_create_post);
 
             SelectPostImage = postdialog.findViewById(R.id.select_post_image);
+            SelectedPostImage = postdialog.findViewById(R.id.selected_post_image);
             UpdatePostButton = postdialog.findViewById(R.id.update_post_button);
             CancelPostButton = postdialog.findViewById(R.id.cancel_post_button);
             PostDescription = postdialog.findViewById(R.id.post_description);
@@ -962,7 +966,7 @@ public class GroupFragment extends Fragment {
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     if(dataSnapshot.child(PostKey).child("Likes").hasChild(currentUserId)){
                         countLikes = (int) dataSnapshot.child(PostKey).child("Likes").getChildrenCount();
-                        LikeBtn.setImageResource(R.drawable.ic_favorite_border_red_24dp);
+                        LikeBtn.setImageResource(R.drawable.baseline_favorite_24);
                         DisplayNoOfLikes.setText(Integer.toString(countLikes));
                     }
                     else{
@@ -1043,8 +1047,9 @@ public class GroupFragment extends Fragment {
                 loadingBar.setMessage("Please wait, while we are saving your Post Image...");
                 loadingBar.setCanceledOnTouchOutside(true);
                 loadingBar.show();
-
-                SelectPostImage.setImageURI(PostImageUri);
+                SelectedPostImage.setImageURI(PostImageUri);
+                SelectedPostImage.getLayoutParams().height = 100;
+//                SelectPostImage.setImageURI(PostImageUri);
             }
 
             loadingBar.dismiss();

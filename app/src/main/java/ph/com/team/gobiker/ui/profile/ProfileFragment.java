@@ -30,7 +30,7 @@ public class ProfileFragment extends Fragment {
 
     private FirebaseAuth mAuth;
     private Button signOutButton, updateProfileButton, seeallfollowerButton, seeallfollowingButton;
-    private TextView userGender, userBM, userWeight, userHeight, userAge, level, overall_distance, address, weightlabel, heightlabel, agelabel, addrlabel;
+    private TextView userGender, userBM, userWeight, userHeight, userAge, level, overall_distance, address, weightlabel, heightlabel, agelabel, addrlabel, numRides;
     private CircleImageView userProfileImage;
     private DatabaseReference profileUserRef,UsersRef;
     private String profileID;
@@ -59,34 +59,35 @@ public class ProfileFragment extends Fragment {
         overall_distance = root.findViewById(R.id.my_distance_traveled);
         address = root.findViewById(R.id.my_address);
         addrlabel = root.findViewById(R.id.address_lbl);
+        numRides = root.findViewById(R.id.my_no_rides);
 
         weightlabel = root.findViewById(R.id.weight_lbl);
         heightlabel = root.findViewById(R.id.height_lbl);
         agelabel = root.findViewById(R.id.age_lbl);
 
-        updateProfileButton = root.findViewById(R.id.myUpdateProfileButton);
+//        updateProfileButton = root.findViewById(R.id.myUpdateProfileButton);
 
         signOutButton = root.findViewById(R.id.signOutButton);
 
-
-        seeallfollowerButton = root.findViewById(R.id.seeAllFollowersButton);
-
-        seeallfollowerButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SendUserToFollowersActivity();
-            }
-        });
-
-        seeallfollowingButton = root.findViewById(R.id.seeAllFollowingButton);
-
-
-        seeallfollowingButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SendUserToFollowingActivity();
-            }
-        });
+//
+//        seeallfollowerButton = root.findViewById(R.id.seeAllFollowersButton);
+//
+//        seeallfollowerButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                SendUserToFollowersActivity();
+//            }
+//        });
+//
+//        seeallfollowingButton = root.findViewById(R.id.seeAllFollowingButton);
+//
+//
+//        seeallfollowingButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                SendUserToFollowingActivity();
+//            }
+//        });
 
         signOutButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,53 +96,53 @@ public class ProfileFragment extends Fragment {
             }
         });
 
-        updateProfileButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SendUserToSettingsActivity();
-            }
-        });
+//        updateProfileButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                SendUserToSettingsActivity();
+//            }
+//        });
 
-        UsersRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                int f = 0;
-                if (dataSnapshot.exists()) {
-                    for(DataSnapshot snapshot: dataSnapshot.getChildren()){
-                        if (snapshot.hasChild("following")) {
-                            if (snapshot.child("following").hasChild(profileID)) {
-                                f++;
-                            }
-                        }
-                    }
-                }
-                if (f==1)
-                    seeallfollowerButton.setText(f+" follower");
-                else
-                    seeallfollowerButton.setText(f+" followers");
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
+//        UsersRef.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                int f = 0;
+//                if (dataSnapshot.exists()) {
+//                    for(DataSnapshot snapshot: dataSnapshot.getChildren()){
+//                        if (snapshot.hasChild("following")) {
+//                            if (snapshot.child("following").hasChild(currentUserId)) {
+//                                f++;
+//                            }
+//                        }
+//                    }
+//                }
+//                if (f==1)
+//                    seeallfollowerButton.setText(f+" follower");
+//                else
+//                    seeallfollowerButton.setText(f+" followers");
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
 
         profileUserRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()){
 
-                    long numFollowing = 0;
+//                    long numFollowing = 0;
 
                     String myGender = dataSnapshot.child("gender").getValue().toString();
                     String myBike = dataSnapshot.child("bike").getValue().toString();
 
-                    if (dataSnapshot.hasChild("following")){
-                        numFollowing = dataSnapshot.child("following").getChildrenCount();
-                    }
-
-                    seeallfollowingButton.setText(numFollowing+" following");
+//                    if (dataSnapshot.hasChild("following")){
+//                        numFollowing = dataSnapshot.child("following").getChildrenCount();
+//                    }
+//
+//                    seeallfollowingButton.setText(numFollowing+" following");
 
                     if (dataSnapshot.child("check_address").getValue().toString().equals("true")){
                         if (dataSnapshot.child("province").getValue().toString().equals("")) {
@@ -238,14 +239,14 @@ public class ProfileFragment extends Fragment {
 
                             if (dataSnapshot.hasChild("bike_level")) {
                                 if (dataSnapshot.child("bike_level").getValue().toString().equals("")) {
-                                    level.setText("1");
+                                    level.setText("Lvl. 1");
                                 }
                                 else{
-                                    level.setText(dataSnapshot.child("bike_level").getValue().toString());
+                                    level.setText("Lvl. "+dataSnapshot.child("bike_level").getValue().toString());
                                 }
                             }
                             else{
-                                level.setText("1");
+                                level.setText("Lvl. 1");
                             }
 
                             if (dataSnapshot.hasChild("bike_overall_distance")) {
@@ -259,18 +260,29 @@ public class ProfileFragment extends Fragment {
                             else{
                                 overall_distance.setText("0 m");
                             }
+
+                            if (dataSnapshot.hasChild("bike_number_of_rides")){
+                                if (dataSnapshot.child("bike_number_of_rides").getValue().toString().equals(""))
+                                    numRides.setText("0");
+                                else
+                                    numRides.setText(dataSnapshot.child("bike_number_of_rides").getValue().toString());
+                            }
+                            else{
+                                numRides.setText("0");
+                            }
                         }
+
                         else{
                             if (dataSnapshot.hasChild("motor_level")) {
                                 if (dataSnapshot.child("motor_level").getValue().toString().equals("")) {
-                                    level.setText("1");
+                                    level.setText("Lvl. 1");
                                 }
                                 else{
-                                    level.setText(dataSnapshot.child("motor_level").getValue().toString());
+                                    level.setText("Lvl. "+dataSnapshot.child("motor_level").getValue().toString());
                                 }
                             }
                             else{
-                                level.setText("1");
+                                level.setText("Lvl. 1");
                             }
 
                             if (dataSnapshot.hasChild("motor_overall_distance")) {
@@ -283,6 +295,17 @@ public class ProfileFragment extends Fragment {
                             }
                             else{
                                 overall_distance.setText("0 m");
+                            }
+
+
+                            if (dataSnapshot.hasChild("motor_number_of_rides")){
+                                if (dataSnapshot.child("motor_number_of_rides").getValue().toString().equals(""))
+                                    numRides.setText("0");
+                                else
+                                    numRides.setText(dataSnapshot.child("motor_number_of_rides").getValue().toString());
+                            }
+                            else{
+                                numRides.setText("0");
                             }
                         }
                     }
@@ -320,16 +343,16 @@ public class ProfileFragment extends Fragment {
         startActivity(loginIntent);
     }
 
-    private void SendUserToFollowersActivity() {
-        Intent loginIntent = new Intent(getActivity(), FollowersActivity.class);
-        loginIntent.putExtra("visit_user_id",profileID);
-        startActivity(loginIntent);
-    }
-
-    private void SendUserToFollowingActivity() {
-        Intent loginIntent = new Intent(getActivity(), FollowingActivity.class);
-        loginIntent.putExtra("visit_user_id",profileID);
-        startActivity(loginIntent);
-    }
+//    private void SendUserToFollowersActivity() {
+//        Intent loginIntent = new Intent(getActivity(), FollowersActivity.class);
+//        loginIntent.putExtra("visit_user_id",mAuth.getCurrentUser().getUid());
+//        startActivity(loginIntent);
+//    }
+//
+//    private void SendUserToFollowingActivity() {
+//        Intent loginIntent = new Intent(getActivity(), FollowingActivity.class);
+//        loginIntent.putExtra("visit_user_id",mAuth.getCurrentUser().getUid());
+//        startActivity(loginIntent);
+//    }
 
 }
