@@ -138,7 +138,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
 
                     shape.setColor(Color.parseColor("#D6D6D6"));
                     holder.SenderMessageText.setBackground(shape);
-                    holder.SenderMessageText.setTextColor(Color.rgb(74, 74, 74));
+                    holder.SenderMessageText.setTextColor(Color.rgb(51, 50, 48));
                     holder.SenderMessageText.setGravity(Gravity.LEFT);
                     holder.SenderMessageText.setText(messages.getMessage()+"\n"+messages.getDate()+" "+sdf2.format(date3));
                 }
