@@ -472,7 +472,12 @@ public class ChatFragment extends Fragment {
                                             isSeen = (boolean) childSnapshot.child("isSeen").getValue();
                                             if(!isSeen){
                                                 chatctr++;
-                                                mListener.passChatCtr(chatctr, dataSnapshot.child("fullname").getValue().toString(), childSnapshot.child("message").getValue().toString());
+                                                if(!childSnapshot.child("from").getValue().toString().equals(currentUserID)){
+                                                    mListener.passChatCtr(chatctr, dataSnapshot.child("fullname").getValue().toString(), childSnapshot.child("message").getValue().toString());
+                                                }else{
+                                                    mListener.passChatCtr(chatctr, "none", "");
+                                                }
+
                                             }else{
                                                 mListener.passChatCtr(chatctr, "none", "");
                                             }
