@@ -151,7 +151,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
                     holder.ReceiverMessageText.setBackground(shape);
                     holder.ReceiverMessageText.setTextColor(Color.WHITE);
                     holder.ReceiverMessageText.setGravity(Gravity.LEFT);
-                    holder.ReceiverMessageText.setText(messages.getMessage()+"\n"+messages.getDate()+" "+sdf2.format(date3));
+                    holder.ReceiverMessageText.setText(messages.getFrom()+"\n"+messages.getMessage()+"\n"+messages.getDate()+" "+sdf2.format(date3));
                 }
             }catch(ParseException e){
                 e.printStackTrace();

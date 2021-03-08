@@ -214,13 +214,14 @@ public class NavActivity extends AppCompatActivity implements NotificationsFragm
     }
 
     @Override
-    public void passChatCtr(int chatctr) {
+    public void passChatCtr(int chatctr, String from, String message) {
         if(!ChatFragmentStatus){
             if(chatctr != 0){
                 navView.getOrCreateBadge(R.id.navigation_chat).setNumber(chatctr);
             }else{
                 navView.removeBadge(R.id.navigation_chat);
             }
+            notifyThis(from, message);
         }else{
             navView.removeBadge(R.id.navigation_chat);
         }
@@ -236,8 +237,8 @@ public class NavActivity extends AppCompatActivity implements NotificationsFragm
 
         NotificationCompat.BigTextStyle bigText = new NotificationCompat.BigTextStyle();;
         mBuilder.setContentIntent(pendingIntent);
-        mBuilder.setSmallIcon(R.drawable.logo);
-        mBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.logo));
+        mBuilder.setSmallIcon(R.drawable.main_logo_wbg);
+        mBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.main_logo_wbg));
         mBuilder.setContentTitle(title);
         mBuilder.setContentText(message);
         mBuilder.setPriority(Notification.PRIORITY_MAX);
