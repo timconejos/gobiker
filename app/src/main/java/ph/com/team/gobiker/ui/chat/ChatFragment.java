@@ -2,10 +2,18 @@ package ph.com.team.gobiker.ui.chat;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +28,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -52,6 +61,7 @@ import java.util.List;
 import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import ph.com.team.gobiker.NavActivity;
 import ph.com.team.gobiker.R;
 import ph.com.team.gobiker.ui.search.SearchAutoComplete;
 import ph.com.team.gobiker.ui.search.SearchAutoCompleteAdapter;
@@ -108,7 +118,7 @@ public class ChatFragment extends Fragment {
 
     public interface Listener {
         public void setChatFragmentStatus(boolean fragStatus);
-        public void passChatCtr(int chatctr);
+        public void passChatCtr(int chatctr, String from, String message);
     }
 
     private Listener mListener;
@@ -452,15 +462,34 @@ public class ChatFragment extends Fragment {
                 chatctr = 0;
                 for(DataSnapshot idsnapshot : snapshot.getChildren()) {
                     for (DataSnapshot childSnapshot: idsnapshot.getChildren()) {
-                        boolean isSeen;
                         if(childSnapshot.child("isSeen").exists()){
-                            isSeen = (boolean) childSnapshot.child("isSeen").getValue();
-                            if(!isSeen){
-                                chatctr++;
-                                mListener.passChatCtr(chatctr);
-                            }else{
-                                mListener.passChatCtr(chatctr);
-                            }
+                            UsersRef.child(childSnapshot.child("from").getValue().toString()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    if (dataSnapshot.exists()) {
+                                        boolean isSeen;
+                                        if(dataSnapshot.hasChild("fullname")){
+                                            isSeen = (boolean) childSnapshot.child("isSeen").getValue();
+                                            if(!isSeen){
+                                                chatctr++;
+                                                if(!childSnapshot.child("from").getValue().toString().equals(currentUserID)){
+                                                    mListener.passChatCtr(chatctr, dataSnapshot.child("fullname").getValue().toString(), childSnapshot.child("message").getValue().toString());
+                                                }else{
+                                                    mListener.passChatCtr(chatctr, "none", "");
+                                                }
+
+                                            }else{
+                                                mListener.passChatCtr(chatctr, "none", "");
+                                            }
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
                         }
 
                     }
@@ -474,6 +503,7 @@ public class ChatFragment extends Fragment {
             }
         });
     }
+
 
     private void RetrieveAllUsersMsgs(){
         MessagesRef.addValueEventListener(new ValueEventListener() {

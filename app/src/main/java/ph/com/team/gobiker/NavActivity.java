@@ -214,57 +214,59 @@ public class NavActivity extends AppCompatActivity implements NotificationsFragm
     }
 
     @Override
-    public void passChatCtr(int chatctr) {
+    public void passChatCtr(int chatctr, String from, String message) {
         if(!ChatFragmentStatus){
             if(chatctr != 0){
                 navView.getOrCreateBadge(R.id.navigation_chat).setNumber(chatctr);
             }else{
                 navView.removeBadge(R.id.navigation_chat);
             }
+            notifyThis(from, message);
         }else{
             navView.removeBadge(R.id.navigation_chat);
         }
     }
 
     private void notifyThis(String title, String message){
-        NotificationManager mNotificationManager;
+        if(title != "none"){
+            NotificationManager mNotificationManager;
 
-        NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(NavActivity.this, "notify_001");
-        Intent ii = new Intent(NavActivity.this, NavActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(NavActivity.this, 0, ii, 0);
+            NotificationCompat.Builder mBuilder =
+                    new NotificationCompat.Builder(NavActivity.this, "notify_001");
+            Intent ii = new Intent(NavActivity.this, NavActivity.class);
+            PendingIntent pendingIntent = PendingIntent.getActivity(NavActivity.this, 0, ii, 0);
 
-        NotificationCompat.BigTextStyle bigText = new NotificationCompat.BigTextStyle();;
-        mBuilder.setContentIntent(pendingIntent);
-        mBuilder.setSmallIcon(R.drawable.logo);
-        mBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.logo));
-        mBuilder.setContentTitle(title);
-        mBuilder.setContentText(message);
-        mBuilder.setPriority(Notification.PRIORITY_MAX);
-        mBuilder.setDefaults(Notification.DEFAULT_LIGHTS| Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE);
-        mBuilder.setContentInfo("GoBiker");
-        mBuilder.setStyle(bigText);
+            NotificationCompat.BigTextStyle bigText = new NotificationCompat.BigTextStyle();;
+            mBuilder.setContentIntent(pendingIntent);
+            mBuilder.setSmallIcon(R.drawable.main_logo_wbg);
+            mBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.main_logo_wbg));
+            mBuilder.setContentTitle(title);
+            mBuilder.setContentText(message);
+            mBuilder.setPriority(Notification.PRIORITY_MAX);
+            mBuilder.setDefaults(Notification.DEFAULT_LIGHTS| Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE);
+            mBuilder.setContentInfo("GoBiker");
+            mBuilder.setStyle(bigText);
 
-        mNotificationManager =
-                (NotificationManager) NavActivity.this.getSystemService(Context.NOTIFICATION_SERVICE);
+            mNotificationManager =
+                    (NotificationManager) NavActivity.this.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-        {
-            String channelId = "1003";
-            NotificationChannel channel = new NotificationChannel(
-                    channelId,
-                    "GoBiker Notification Channel",
-                    NotificationManager.IMPORTANCE_HIGH);
-            channel.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION), null);
-            channel.setLightColor(Color.GREEN);
-            channel.enableVibration(true);
-            channel.enableLights(true);
-            mNotificationManager.createNotificationChannel(channel);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+            {
+                String channelId = "1003";
+                NotificationChannel channel = new NotificationChannel(
+                        channelId,
+                        "GoBiker Notification Channel",
+                        NotificationManager.IMPORTANCE_HIGH);
+                channel.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION), null);
+                channel.setLightColor(Color.GREEN);
+                channel.enableVibration(true);
+                channel.enableLights(true);
+                mNotificationManager.createNotificationChannel(channel);
 
 
-            mBuilder.setChannelId(channelId);
+                mBuilder.setChannelId(channelId);
+            }
+            mNotificationManager.notify(0, mBuilder.build());
         }
-
-        mNotificationManager.notify(0, mBuilder.build());
     }
 }
