@@ -54,6 +54,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
     private Uri urihldr;
     ProgressDialog pd;
     private long downloadID;
+    String fromUserName = "";
 
 
     public MessagesAdapter() {
@@ -105,11 +106,171 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
             usersDatabaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    fromUserName = dataSnapshot.child("fullname").getValue().toString();
                     if (dataSnapshot.exists() &&  dataSnapshot.child("profileimage").getValue() !=null){
                         String image = dataSnapshot.child("profileimage").getValue().toString();
-
                         Picasso.with(holder.receiverProfileImage.getContext()).load(image)
                                 .placeholder(R.drawable.profile).into(holder.receiverProfileImage);
+                    }
+
+
+                    if (fromMessageType.equals("text")){
+                        holder.ReceiverMessageFile.setVisibility(View.GONE);
+                        holder.SenderMessageFile.setVisibility(View.GONE);
+
+                        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+                        try{
+                            Date date3 = sdf.parse(messages.getTime());
+                            SimpleDateFormat sdf2 = new SimpleDateFormat("hh:mm aa");
+                            GradientDrawable shape = new GradientDrawable();
+                            shape.setShape(GradientDrawable.RECTANGLE);
+                            shape.setCornerRadii(new float[] { 15, 15, 15, 15, 15, 15, 15, 15 });
+                            if (fromUserID.equals(messageSenderID)){
+                                holder.receiverProfileImage.setVisibility(View.GONE);
+                                holder.ReceiverMessageText.setVisibility(View.GONE);
+                                holder.SenderMessageText.setVisibility(View.VISIBLE);
+
+                                shape.setColor(Color.parseColor("#D6D6D6"));
+                                holder.SenderMessageText.setBackground(shape);
+                                holder.SenderMessageText.setTextColor(Color.rgb(51, 50, 48));
+                                holder.SenderMessageText.setGravity(Gravity.LEFT);
+                                holder.SenderMessageText.setText(messages.getMessage()+"\n"+messages.getDate()+" "+sdf2.format(date3));
+                            }
+                            else{
+                                holder.receiverProfileImage.setVisibility(View.VISIBLE);
+                                holder.ReceiverMessageText.setVisibility(View.VISIBLE);
+                                holder.SenderMessageText.setVisibility(View.GONE);
+
+                                shape.setColor(Color.parseColor("#3F6634"));
+                                holder.ReceiverMessageText.setBackground(shape);
+                                holder.ReceiverMessageText.setTextColor(Color.WHITE);
+                                holder.ReceiverMessageText.setGravity(Gravity.LEFT);
+                                holder.ReceiverMessageText.setText(fromUserName+"\n\n"+messages.getMessage()+"\n"+messages.getDate()+" "+sdf2.format(date3));
+                            }
+                        }catch(ParseException e){
+                            e.printStackTrace();
+                        }
+                    }else if (fromMessageType.equals("image")){
+                        holder.ReceiverMessageFile.setVisibility(View.VISIBLE);
+                        holder.SenderMessageFile.setVisibility(View.VISIBLE);
+
+                        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+                        try{
+                            Date date3 = sdf.parse(messages.getTime());
+                            SimpleDateFormat sdf2 = new SimpleDateFormat("hh:mm aa");
+                            GradientDrawable shape = new GradientDrawable();
+                            shape.setShape(GradientDrawable.RECTANGLE);
+                            shape.setCornerRadii(new float[] { 15, 15, 15, 15, 15, 15, 15, 15 });
+                            if (fromUserID.equals(messageSenderID)){
+                                holder.receiverProfileImage.setVisibility(View.GONE);
+                                holder.ReceiverMessageText.setVisibility(View.GONE);
+                                holder.SenderMessageText.setVisibility(View.VISIBLE);
+
+                                shape.setColor(Color.parseColor("#D6D6D6"));
+                                holder.SenderMessageText.setBackground(shape);
+                                holder.SenderMessageText.setTextColor(Color.rgb(74, 74, 74));
+                                holder.SenderMessageText.setGravity(Gravity.LEFT);
+                                holder.SenderMessageText.setText(messages.getMessage()+"\n"+messages.getDate()+" "+sdf2.format(date3));
+                                Picasso.with(context)
+                                        .load(messages.getFileString())
+                                        .placeholder(R.drawable.image_placeholder)
+                                        .into(holder.SenderMessageFile);
+                                holder.SenderMessageFile.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        Intent intent = new Intent(context, PhotoFullScreenActivity.class);
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                        intent.putExtra("filestring", messages.getFileString());
+                                        context.startActivity(intent);
+                                    }
+                                });
+                            }
+                            else{
+                                holder.receiverProfileImage.setVisibility(View.VISIBLE);
+                                holder.ReceiverMessageText.setVisibility(View.VISIBLE);
+                                holder.SenderMessageText.setVisibility(View.GONE);
+
+                                shape.setColor(Color.parseColor("#3F6634"));
+                                holder.ReceiverMessageText.setBackground(shape);
+                                holder.ReceiverMessageText.setTextColor(Color.WHITE);
+                                holder.ReceiverMessageText.setGravity(Gravity.LEFT);
+                                holder.ReceiverMessageText.setText(fromUserName+"\n\n"+messages.getMessage()+"\n"+messages.getDate()+" "+sdf2.format(date3));
+                                Picasso.with(context)
+                                        .load(messages.getFileString())
+                                        .placeholder(R.drawable.image_placeholder)
+                                        .into(holder.ReceiverMessageFile);
+                                holder.ReceiverMessageFile.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        Intent intent = new Intent(context, PhotoFullScreenActivity.class);
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                        intent.putExtra("filestring", messages.getFileString());
+                                        context.startActivity(intent);
+
+                                    }
+                                });
+
+
+                            }
+                        }catch(ParseException e){
+                            e.printStackTrace();
+                        }
+                    }else if (fromMessageType.equals("file")){
+                        holder.ReceiverMessageFile.setVisibility(View.GONE);
+                        holder.SenderMessageFile.setVisibility(View.GONE);
+
+                        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+                        try{
+                            Date date3 = sdf.parse(messages.getTime());
+                            SimpleDateFormat sdf2 = new SimpleDateFormat("hh:mm aa");
+                            GradientDrawable shape = new GradientDrawable();
+                            shape.setShape(GradientDrawable.RECTANGLE);
+                            shape.setCornerRadii(new float[] { 15, 15, 15, 15, 15, 15, 15, 15 });
+                            if (fromUserID.equals(messageSenderID)){
+                                holder.receiverProfileImage.setVisibility(View.GONE);
+                                holder.ReceiverMessageText.setVisibility(View.GONE);
+                                holder.SenderMessageText.setVisibility(View.VISIBLE);
+
+                                shape.setColor(Color.parseColor("#D6D6D6"));
+                                holder.SenderMessageText.setBackground(shape);
+                                holder.SenderMessageText.setTextColor(Color.rgb(74, 74, 74));
+                                holder.SenderMessageText.setGravity(Gravity.LEFT);
+                                holder.SenderMessageText.setText(messages.getMessage()+"\n"+messages.getDate()+" "+sdf2.format(date3));
+                                holder.SenderMessageText.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        try {
+                                            downloadfile(messages.getFileString());
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                });
+                            }
+                            else{
+                                holder.receiverProfileImage.setVisibility(View.VISIBLE);
+                                holder.ReceiverMessageText.setVisibility(View.VISIBLE);
+                                holder.SenderMessageText.setVisibility(View.GONE);
+
+                                shape.setColor(Color.parseColor("#3F6634"));
+                                holder.ReceiverMessageText.setBackground(shape);
+                                holder.ReceiverMessageText.setTextColor(Color.WHITE);
+                                holder.ReceiverMessageText.setGravity(Gravity.LEFT);
+                                holder.ReceiverMessageText.setText(fromUserName+"\n\n"+messages.getMessage()+"\n"+messages.getDate()+" "+sdf2.format(date3));
+                                holder.ReceiverMessageText.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        try {
+                                            downloadfile(messages.getFileString());
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                });
+                            }
+                        }catch(ParseException e){
+                            e.printStackTrace();
+                        }
                     }
                 }
 
@@ -120,164 +281,6 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
             });
         }
 
-        if (fromMessageType.equals("text")){
-            holder.ReceiverMessageFile.setVisibility(View.GONE);
-            holder.SenderMessageFile.setVisibility(View.GONE);
-
-            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-            try{
-                Date date3 = sdf.parse(messages.getTime());
-                SimpleDateFormat sdf2 = new SimpleDateFormat("hh:mm aa");
-                GradientDrawable shape = new GradientDrawable();
-                shape.setShape(GradientDrawable.RECTANGLE);
-                shape.setCornerRadii(new float[] { 15, 15, 15, 15, 15, 15, 15, 15 });
-                if (fromUserID.equals(messageSenderID)){
-                    holder.receiverProfileImage.setVisibility(View.GONE);
-                    holder.ReceiverMessageText.setVisibility(View.GONE);
-                    holder.SenderMessageText.setVisibility(View.VISIBLE);
-
-                    shape.setColor(Color.parseColor("#D6D6D6"));
-                    holder.SenderMessageText.setBackground(shape);
-                    holder.SenderMessageText.setTextColor(Color.rgb(51, 50, 48));
-                    holder.SenderMessageText.setGravity(Gravity.LEFT);
-                    holder.SenderMessageText.setText(messages.getMessage()+"\n"+messages.getDate()+" "+sdf2.format(date3));
-                }
-                else{
-                    holder.receiverProfileImage.setVisibility(View.VISIBLE);
-                    holder.ReceiverMessageText.setVisibility(View.VISIBLE);
-                    holder.SenderMessageText.setVisibility(View.GONE);
-
-                    shape.setColor(Color.parseColor("#3F6634"));
-                    holder.ReceiverMessageText.setBackground(shape);
-                    holder.ReceiverMessageText.setTextColor(Color.WHITE);
-                    holder.ReceiverMessageText.setGravity(Gravity.LEFT);
-                    holder.ReceiverMessageText.setText(messages.getFrom()+"\n"+messages.getMessage()+"\n"+messages.getDate()+" "+sdf2.format(date3));
-                }
-            }catch(ParseException e){
-                e.printStackTrace();
-            }
-        }else if (fromMessageType.equals("image")){
-            holder.ReceiverMessageFile.setVisibility(View.VISIBLE);
-            holder.SenderMessageFile.setVisibility(View.VISIBLE);
-
-            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-            try{
-                Date date3 = sdf.parse(messages.getTime());
-                SimpleDateFormat sdf2 = new SimpleDateFormat("hh:mm aa");
-                GradientDrawable shape = new GradientDrawable();
-                shape.setShape(GradientDrawable.RECTANGLE);
-                shape.setCornerRadii(new float[] { 15, 15, 15, 15, 15, 15, 15, 15 });
-                if (fromUserID.equals(messageSenderID)){
-                    holder.receiverProfileImage.setVisibility(View.GONE);
-                    holder.ReceiverMessageText.setVisibility(View.GONE);
-                    holder.SenderMessageText.setVisibility(View.VISIBLE);
-
-                    shape.setColor(Color.parseColor("#D6D6D6"));
-                    holder.SenderMessageText.setBackground(shape);
-                    holder.SenderMessageText.setTextColor(Color.rgb(74, 74, 74));
-                    holder.SenderMessageText.setGravity(Gravity.LEFT);
-                    holder.SenderMessageText.setText(messages.getMessage()+"\n"+messages.getDate()+" "+sdf2.format(date3));
-                    Picasso.with(context)
-                            .load(messages.getFileString())
-                            .placeholder(R.drawable.image_placeholder)
-                            .into(holder.SenderMessageFile);
-                    holder.SenderMessageFile.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Intent intent = new Intent(context, PhotoFullScreenActivity.class);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            intent.putExtra("filestring", messages.getFileString());
-                            context.startActivity(intent);
-                        }
-                    });
-                }
-                else{
-                    holder.receiverProfileImage.setVisibility(View.VISIBLE);
-                    holder.ReceiverMessageText.setVisibility(View.VISIBLE);
-                    holder.SenderMessageText.setVisibility(View.GONE);
-
-                    shape.setColor(Color.parseColor("#3F6634"));
-                    holder.ReceiverMessageText.setBackground(shape);
-                    holder.ReceiverMessageText.setTextColor(Color.WHITE);
-                    holder.ReceiverMessageText.setGravity(Gravity.LEFT);
-                    holder.ReceiverMessageText.setText(messages.getMessage()+"\n"+messages.getDate()+" "+sdf2.format(date3));
-                    Picasso.with(context)
-                            .load(messages.getFileString())
-                            .placeholder(R.drawable.image_placeholder)
-                            .into(holder.ReceiverMessageFile);
-                    holder.ReceiverMessageFile.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Intent intent = new Intent(context, PhotoFullScreenActivity.class);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            intent.putExtra("filestring", messages.getFileString());
-                            context.startActivity(intent);
-
-                        }
-                    });
-
-
-                }
-            }catch(ParseException e){
-                e.printStackTrace();
-            }
-        }else if (fromMessageType.equals("file")){
-            holder.ReceiverMessageFile.setVisibility(View.GONE);
-            holder.SenderMessageFile.setVisibility(View.GONE);
-
-            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-            try{
-                Date date3 = sdf.parse(messages.getTime());
-                SimpleDateFormat sdf2 = new SimpleDateFormat("hh:mm aa");
-                GradientDrawable shape = new GradientDrawable();
-                shape.setShape(GradientDrawable.RECTANGLE);
-                shape.setCornerRadii(new float[] { 15, 15, 15, 15, 15, 15, 15, 15 });
-                if (fromUserID.equals(messageSenderID)){
-                    holder.receiverProfileImage.setVisibility(View.GONE);
-                    holder.ReceiverMessageText.setVisibility(View.GONE);
-                    holder.SenderMessageText.setVisibility(View.VISIBLE);
-
-                    shape.setColor(Color.parseColor("#D6D6D6"));
-                    holder.SenderMessageText.setBackground(shape);
-                    holder.SenderMessageText.setTextColor(Color.rgb(74, 74, 74));
-                    holder.SenderMessageText.setGravity(Gravity.LEFT);
-                    holder.SenderMessageText.setText(messages.getMessage()+"\n"+messages.getDate()+" "+sdf2.format(date3));
-                    holder.SenderMessageText.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            try {
-                                downloadfile(messages.getFileString());
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    });
-                }
-                else{
-                    holder.receiverProfileImage.setVisibility(View.VISIBLE);
-                    holder.ReceiverMessageText.setVisibility(View.VISIBLE);
-                    holder.SenderMessageText.setVisibility(View.GONE);
-
-                    shape.setColor(Color.parseColor("#3F6634"));
-                    holder.ReceiverMessageText.setBackground(shape);
-                    holder.ReceiverMessageText.setTextColor(Color.WHITE);
-                    holder.ReceiverMessageText.setGravity(Gravity.LEFT);
-                    holder.ReceiverMessageText.setText(messages.getMessage()+"\n"+messages.getDate()+" "+sdf2.format(date3));
-                    holder.ReceiverMessageText.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            try {
-                                downloadfile(messages.getFileString());
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    });
-                }
-            }catch(ParseException e){
-                e.printStackTrace();
-            }
-        }
     }
 
     private void downloadfile(String storageurl) throws IOException {

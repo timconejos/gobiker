@@ -474,7 +474,7 @@ public class ChatFragment extends Fragment {
                                                 chatctr++;
                                                 mListener.passChatCtr(chatctr, dataSnapshot.child("fullname").getValue().toString(), childSnapshot.child("message").getValue().toString());
                                             }else{
-                                                mListener.passChatCtr(chatctr, dataSnapshot.child("fullname").getValue().toString(), childSnapshot.child("message").getValue().toString());
+                                                mListener.passChatCtr(chatctr, "none", "");
                                             }
                                         }
                                     }
