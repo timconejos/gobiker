@@ -106,16 +106,19 @@ public class ChatGroupActivity extends AppCompatActivity {
     ContentValues values;
     public static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 123;
     private ChildEventListener ChildEventListener;
+    public static boolean chatNotifier = false;
 
     @Override
     public void onPause() {
         super.onPause();
+        chatNotifier = false;
         RootRef.child("Messages").child(messageSenderID).child(gcKey).removeEventListener(ChildEventListener);
     }
 
     @Override
     public void onStop(){
         super.onStop();
+        chatNotifier = false;
         RootRef.child("Messages").child(messageSenderID).child(gcKey).removeEventListener(ChildEventListener);
     }
 
@@ -123,6 +126,7 @@ public class ChatGroupActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
+        chatNotifier = true;
 
         RootRef = FirebaseDatabase.getInstance().getReference();
         UsersRef = FirebaseDatabase.getInstance().getReference().child("Users");

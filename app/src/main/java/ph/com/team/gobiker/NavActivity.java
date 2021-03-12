@@ -62,6 +62,7 @@ public class NavActivity extends AppCompatActivity implements NotificationsFragm
     private ChatFragment chatFrag;
     private boolean NotifFragmentStatus = false;
     private boolean ChatFragmentStatus = false;
+    private ArrayList<String> chatNotifArr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +83,7 @@ public class NavActivity extends AppCompatActivity implements NotificationsFragm
         chatFrag.InitializeVariables();
         chatFrag.chatNotifListener();
 
+        chatNotifArr = new ArrayList<>();
 
         context = new GeoApiContext.Builder().apiKey(getString(R.string.google_maps_key)).build();
         // Passing each menu ID as a set of Ids because each
@@ -214,20 +216,24 @@ public class NavActivity extends AppCompatActivity implements NotificationsFragm
     }
 
     @Override
-    public void passChatCtr(int chatctr, String from, String message) {
+    public void passChatCtr(int chatctr, String from, String message, String messageid) {
         if(!ChatFragmentStatus){
             if(chatctr != 0){
                 navView.getOrCreateBadge(R.id.navigation_chat).setNumber(chatctr);
             }else{
                 navView.removeBadge(R.id.navigation_chat);
             }
-            notifyThis(from, message);
+            if(!chatNotifArr.contains(messageid)){
+                chatNotifArr.add(messageid);
+                notifyThis(from, message, chatctr);
+            }
         }else{
+            chatNotifArr.clear();
             navView.removeBadge(R.id.navigation_chat);
         }
     }
 
-    private void notifyThis(String title, String message){
+    private void notifyThis(String title, String message, int notifid){
         if(title != "none"){
             NotificationManager mNotificationManager;
 
@@ -266,7 +272,7 @@ public class NavActivity extends AppCompatActivity implements NotificationsFragm
 
                 mBuilder.setChannelId(channelId);
             }
-            mNotificationManager.notify(0, mBuilder.build());
+            mNotificationManager.notify(notifid, mBuilder.build());
         }
     }
 }

@@ -86,10 +86,12 @@ public class ChatActivity extends AppCompatActivity {
     private Uri cameraUri;
     ContentValues values;
     public static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 123;
+    public static boolean chatNotifier = false;
 
     @Override
     public void onPause() {
         super.onPause();
+        chatNotifier = false;
         MessagesRef.child(messageSenderID).child(messageReceiverID).removeEventListener(mListener);
 
     }
@@ -97,6 +99,7 @@ public class ChatActivity extends AppCompatActivity {
     @Override
     public void onStop(){
         super.onStop();
+        chatNotifier = false;
         MessagesRef.child(messageSenderID).child(messageReceiverID).removeEventListener(mListener);
     }
 
@@ -104,7 +107,7 @@ public class ChatActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
-
+        chatNotifier = true;
         RootRef = FirebaseDatabase.getInstance().getReference();
         UsersRef = FirebaseDatabase.getInstance().getReference().child("Users");
         MessagesRef = FirebaseDatabase.getInstance().getReference().child("Messages");

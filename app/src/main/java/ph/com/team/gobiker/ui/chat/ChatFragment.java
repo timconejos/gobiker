@@ -15,6 +15,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,6 +40,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -74,12 +76,15 @@ public class ChatFragment extends Fragment {
     private String currentUserID, vid;
     private Button newChatBtn;
     public boolean fragmentActive = false;
+    public ChatGroupActivity gcActivity;
+    public ChatActivity chatActivity;
 
     //new chat variables
     private List<SearchAutoComplete> profileList;
     private RecyclerView profileSelectedView;
     private ChatSearchAdapter profileadapter;
     private List<ChatProfile> profileSelectedList;
+
 
     EditText gc_name;
     CircleImageView gc_image;
@@ -89,6 +94,7 @@ public class ChatFragment extends Fragment {
     private ChatRecyclerAdapter chatadapter;
     private List<FindChat> chatitems;
     private int chatctr = 0;
+    private ArrayList<String> idTempArr;
 
     //attachments variables
     final static int Gallery_Pick = 1;
@@ -99,6 +105,7 @@ public class ChatFragment extends Fragment {
         super.onResume();
         fragmentActive = true;
         mListener.setChatFragmentStatus(fragmentActive);
+        chatNotifListener();
     }
 
     @Override
@@ -106,7 +113,6 @@ public class ChatFragment extends Fragment {
         super.onPause();
         fragmentActive = false;
         mListener.setChatFragmentStatus(fragmentActive);
-
     }
 
     @Override
@@ -118,7 +124,7 @@ public class ChatFragment extends Fragment {
 
     public interface Listener {
         public void setChatFragmentStatus(boolean fragStatus);
-        public void passChatCtr(int chatctr, String from, String message);
+        public void passChatCtr(int chatctr, String from, String message, String messageid);
     }
 
     private Listener mListener;
@@ -189,7 +195,6 @@ public class ChatFragment extends Fragment {
         UsersRef = FirebaseDatabase.getInstance().getReference().child("Users");
         GroupChatRef = FirebaseDatabase.getInstance().getReference().child("GroupChats");
         MessagesRef = FirebaseDatabase.getInstance().getReference().child("Messages").child(currentUserID);
-
     }
 
     public class ViewChatDialog {
@@ -459,41 +464,69 @@ public class ChatFragment extends Fragment {
         MessagesRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                chatctr = 0;
-                for(DataSnapshot idsnapshot : snapshot.getChildren()) {
-                    for (DataSnapshot childSnapshot: idsnapshot.getChildren()) {
-                        if(childSnapshot.child("isSeen").exists()){
-                            UsersRef.child(childSnapshot.child("from").getValue().toString()).addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    if (dataSnapshot.exists()) {
-                                        boolean isSeen;
-                                        if(dataSnapshot.hasChild("fullname")){
-                                            isSeen = (boolean) childSnapshot.child("isSeen").getValue();
-                                            if(!isSeen){
-                                                chatctr++;
-                                                if(!childSnapshot.child("from").getValue().toString().equals(currentUserID)){
-                                                    mListener.passChatCtr(chatctr, dataSnapshot.child("fullname").getValue().toString(), childSnapshot.child("message").getValue().toString());
-                                                }else{
-                                                    mListener.passChatCtr(chatctr, "none", "");
+                if(!gcActivity.chatNotifier && !chatActivity.chatNotifier){
+                    chatctr = 0;
+                    idTempArr = new ArrayList<>();
+                    for(DataSnapshot idsnapshot : snapshot.getChildren()) {
+                        Query q = MessagesRef.child(idsnapshot.getKey()).orderByKey().limitToLast(1);
+                        q.addChildEventListener(new ChildEventListener() {
+                            @Override
+                            public void onChildAdded(@NonNull DataSnapshot childSnapshot, @Nullable String previousChildName) {
+                                UsersRef.child(childSnapshot.child("from").getValue().toString()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                        if (dataSnapshot.exists()) {
+                                            boolean isSeen;
+                                            if(!idTempArr.contains(childSnapshot.getKey()+","+childSnapshot.child("from").getValue().toString())){
+                                                if(dataSnapshot.hasChild("fullname")){
+                                                    isSeen = (boolean) childSnapshot.child("isSeen").getValue();
+                                                    if(!isSeen){
+                                                        if(!childSnapshot.child("from").getValue().toString().equals(currentUserID)){
+                                                            chatctr++;
+                                                            mListener.passChatCtr(chatctr, dataSnapshot.child("fullname").getValue().toString(), childSnapshot.child("message").getValue().toString(), childSnapshot.getKey());
+                                                        }else{
+                                                            mListener.passChatCtr(chatctr, "none", "", "");
+                                                        }
+                                                    }else{
+                                                        mListener.passChatCtr(chatctr, "none", "", "");
+                                                    }
+                                                    idTempArr.add(childSnapshot.getKey()+","+childSnapshot.child("from").getValue().toString());
                                                 }
-
-                                            }else{
-                                                mListener.passChatCtr(chatctr, "none", "");
                                             }
                                         }
                                     }
-                                }
 
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError error) {
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
 
-                                }
-                            });
-                        }
+                                    }
+                                });
+                            }
 
+                            @Override
+                            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+                            }
+
+                            @Override
+                            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+                            }
+
+                            @Override
+                            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
                     }
-
+                }else{
+                    chatctr = 0;
+                    idTempArr = new ArrayList<>();
                 }
             }
 

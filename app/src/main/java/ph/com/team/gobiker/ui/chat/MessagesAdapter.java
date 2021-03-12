@@ -68,7 +68,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
 
     public class MessageViewHolder extends RecyclerView.ViewHolder {
 
-        public TextView SenderMessageText, ReceiverMessageText;
+        public TextView SenderMessageText, ReceiverMessageText, ReceiverName;
         public ImageView SenderMessageFile, ReceiverMessageFile;
         public CircleImageView receiverProfileImage;
 
@@ -76,6 +76,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
         public MessageViewHolder(@NonNull View itemView) {
             super(itemView);
             SenderMessageText = itemView.findViewById(R.id.sender_message_text);
+            ReceiverName = itemView.findViewById(R.id.receiver_name);
             ReceiverMessageText = itemView.findViewById(R.id.receiver_message_text);
             receiverProfileImage = itemView.findViewById(R.id.message_profile_image);
             SenderMessageFile = itemView.findViewById(R.id.sender_message_file);
@@ -128,6 +129,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
                         if (fromUserID.equals(messageSenderID)){
                             holder.receiverProfileImage.setVisibility(View.GONE);
                             holder.ReceiverMessageText.setVisibility(View.GONE);
+                            holder.ReceiverName.setVisibility(View.GONE);
                             holder.SenderMessageText.setVisibility(View.VISIBLE);
 
                             shape.setColor(Color.parseColor("#D6D6D6"));
@@ -138,14 +140,16 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
                         }
                         else{
                             holder.receiverProfileImage.setVisibility(View.VISIBLE);
+                            holder.ReceiverName.setVisibility(View.VISIBLE);
                             holder.ReceiverMessageText.setVisibility(View.VISIBLE);
                             holder.SenderMessageText.setVisibility(View.GONE);
 
                             shape.setColor(Color.parseColor("#3F6634"));
+                            holder.ReceiverName.setText(fromUserName);
                             holder.ReceiverMessageText.setBackground(shape);
                             holder.ReceiverMessageText.setTextColor(Color.WHITE);
                             holder.ReceiverMessageText.setGravity(Gravity.LEFT);
-                            holder.ReceiverMessageText.setText(fromUserName+"\n\n"+messages.getMessage()+"\n"+messages.getDate()+" "+sdf2.format(date3));
+                            holder.ReceiverMessageText.setText(messages.getMessage()+"\n"+messages.getDate()+" "+sdf2.format(date3));
                         }
                     }catch(ParseException e){
                         e.printStackTrace();
@@ -164,6 +168,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
                         if (fromUserID.equals(messageSenderID)){
                             holder.receiverProfileImage.setVisibility(View.GONE);
                             holder.ReceiverMessageText.setVisibility(View.GONE);
+                            holder.ReceiverName.setVisibility(View.GONE);
                             holder.SenderMessageText.setVisibility(View.VISIBLE);
 
                             shape.setColor(Color.parseColor("#D6D6D6"));
@@ -188,13 +193,15 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
                         else{
                             holder.receiverProfileImage.setVisibility(View.VISIBLE);
                             holder.ReceiverMessageText.setVisibility(View.VISIBLE);
+                            holder.ReceiverName.setVisibility(View.VISIBLE);
                             holder.SenderMessageText.setVisibility(View.GONE);
 
                             shape.setColor(Color.parseColor("#3F6634"));
+                            holder.ReceiverName.setText(fromUserName);
                             holder.ReceiverMessageText.setBackground(shape);
                             holder.ReceiverMessageText.setTextColor(Color.WHITE);
                             holder.ReceiverMessageText.setGravity(Gravity.LEFT);
-                            holder.ReceiverMessageText.setText(fromUserName+"\n\n"+messages.getMessage()+"\n"+messages.getDate()+" "+sdf2.format(date3));
+                            holder.ReceiverMessageText.setText(messages.getMessage()+"\n"+messages.getDate()+" "+sdf2.format(date3));
                             Picasso.with(context)
                                     .load(messages.getFileString())
                                     .placeholder(R.drawable.image_placeholder)
@@ -229,6 +236,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
                         if (fromUserID.equals(messageSenderID)){
                             holder.receiverProfileImage.setVisibility(View.GONE);
                             holder.ReceiverMessageText.setVisibility(View.GONE);
+                            holder.ReceiverName.setVisibility(View.GONE);
                             holder.SenderMessageText.setVisibility(View.VISIBLE);
 
                             shape.setColor(Color.parseColor("#D6D6D6"));
@@ -249,14 +257,16 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
                         }
                         else{
                             holder.receiverProfileImage.setVisibility(View.VISIBLE);
+                            holder.ReceiverName.setVisibility(View.VISIBLE);
                             holder.ReceiverMessageText.setVisibility(View.VISIBLE);
                             holder.SenderMessageText.setVisibility(View.GONE);
 
                             shape.setColor(Color.parseColor("#3F6634"));
+                            holder.ReceiverName.setText(fromUserName);
                             holder.ReceiverMessageText.setBackground(shape);
                             holder.ReceiverMessageText.setTextColor(Color.WHITE);
                             holder.ReceiverMessageText.setGravity(Gravity.LEFT);
-                            holder.ReceiverMessageText.setText(fromUserName+"\n\n"+messages.getMessage()+"\n"+messages.getDate()+" "+sdf2.format(date3));
+                            holder.ReceiverMessageText.setText(messages.getMessage()+"\n"+messages.getDate()+" "+sdf2.format(date3));
                             holder.ReceiverMessageText.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
