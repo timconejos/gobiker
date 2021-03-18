@@ -109,6 +109,8 @@ public class GroupFragment extends Fragment {
     Spinner GroupToPost;
     StorageReference PostsImageReference;
 
+    TextView groupspeopleheader, yourgroupsheader, grouppostsheader;
+
     private String Description, saveCurrentDate, saveCurrentTime, postRandomName, groupDownloadUrl = "", current_user_id, saveCurrentDates;
     private long countPosts = 0;
     private String groupidhldr, usernamehldr;
@@ -145,6 +147,14 @@ public class GroupFragment extends Fragment {
 
 
         RetrieveCurrentUserDetails();
+
+        groupspeopleheader = root.findViewById(R.id.active_groups_label);
+        yourgroupsheader = root.findViewById(R.id.your_groups_label);
+        grouppostsheader = root.findViewById(R.id.current_groups_label);
+
+        groupspeopleheader.setVisibility(View.INVISIBLE);
+        yourgroupsheader.setVisibility(View.INVISIBLE);
+        grouppostsheader.setVisibility(View.INVISIBLE);
 
         groupView = (RecyclerView) root.findViewById(R.id.all_groups_view);
         groupView.setHasFixedSize(true);
@@ -685,6 +695,22 @@ public class GroupFragment extends Fragment {
                         Collections.shuffle(joinedGroupList);
                         groupadapter.notifyDataSetChanged();
                         yourgroupsadapter.notifyDataSetChanged();
+
+                        if(!groupList.isEmpty()){
+                            groupspeopleheader.setVisibility(View.VISIBLE);
+                            groupspeopleheader.setText("Groups with people you follow");
+                        }else{
+                            groupspeopleheader.setVisibility(View.VISIBLE);
+                            groupspeopleheader.setText("Follow people to see what groups they follow");
+                        }
+
+                        if(!joinedGroupList.isEmpty()){
+                            yourgroupsheader.setVisibility(View.VISIBLE);
+                            yourgroupsheader.setText("Your Groups");
+                        }else{
+                            yourgroupsheader.setVisibility(View.VISIBLE);
+                            yourgroupsheader.setText("Join groups to see them here");
+                        }
                     }
                 }
             }
@@ -892,6 +918,10 @@ public class GroupFragment extends Fragment {
                                 if(snapshot.exists()){
                                     viewHolder.setFullname(usernamehldr+" > "+snapshot.child("group_name").getValue().toString());
                                     if(snapshot.child("Members").child(currentUserID).exists()){
+
+                                        grouppostsheader.setVisibility(View.VISIBLE);
+                                        grouppostsheader.setText("Group Posts");
+
                                         viewHolder.mView.setVisibility(View.VISIBLE);
                                         viewHolder.lp.setVisibility(View.VISIBLE);
                                     }else{

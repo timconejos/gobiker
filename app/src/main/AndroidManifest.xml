@@ -46,7 +46,10 @@
         <activity
             android:name=".SettingsActivity"
             android:parentActivityName=".NavActivity" />
-        <activity android:name=".SetupActivity" />
+        <activity
+            android:name=".SetupActivity"
+            android:configChanges="orientation|screenSize"
+            />
         <activity
             android:name=".ui.posts.CommentsActivity"
             android:parentActivityName=".NavActivity" />

@@ -23,6 +23,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -75,8 +77,16 @@ public class GroupRequestAdapter extends RecyclerView.Adapter<GroupRequestAdapte
                     public void onClick(DialogInterface dialog, int which) {
                         switch (which){
                             case DialogInterface.BUTTON_POSITIVE:
+                                Calendar calForDate = Calendar.getInstance();
+                                SimpleDateFormat currentDate = new SimpleDateFormat("MM-dd-yyyy");
+                                String saveCurrentDate = currentDate.format(calForDate.getTime());
+
+                                SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm:ss");
+                                String saveCurrentTime = currentTime.format(calForDate.getTime());
+
                                 requestBody.put("role", "Member");
                                 requestBody.put("status","Accepted");
+                                requestBody.put("timestamp_joined", saveCurrentDate+" "+saveCurrentTime);
 
                                 requestBodyDetails.put(member_ref,requestBody);
 

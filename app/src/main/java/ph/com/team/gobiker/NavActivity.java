@@ -12,11 +12,7 @@ import android.media.RingtoneManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.Toast;
 
-import com.google.android.material.bottomnavigation.BottomNavigationItemView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -30,25 +26,21 @@ import com.google.maps.GeoApiContext;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
+import ph.com.team.gobiker.ui.chat.ChatActivity;
 import ph.com.team.gobiker.ui.chat.ChatFragment;
-import ph.com.team.gobiker.ui.login.MainLoginActivity;
+import ph.com.team.gobiker.ui.chat.ChatGroupActivity;
 import ph.com.team.gobiker.ui.notifications.NotificationSeenCheck;
-import ph.com.team.gobiker.ui.notifications.Notifications;
 import ph.com.team.gobiker.ui.notifications.NotificationsFragment;
 
 public class NavActivity extends AppCompatActivity implements NotificationsFragment.Listener, ChatFragment.Listener{
@@ -57,12 +49,13 @@ public class NavActivity extends AppCompatActivity implements NotificationsFragm
     private DatabaseReference UsersRef;
     public static GeoApiContext context;
     protected PowerManager.WakeLock mWakeLock;
-    public BottomNavigationView navView;
+    public static BottomNavigationView navView;
     private NotificationsFragment notifFrag;
     private ChatFragment chatFrag;
     private boolean NotifFragmentStatus = false;
     private boolean ChatFragmentStatus = false;
     private ArrayList<String> chatNotifArr;
+    public static int globalchatctr = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +77,7 @@ public class NavActivity extends AppCompatActivity implements NotificationsFragm
         chatFrag.chatNotifListener();
 
         chatNotifArr = new ArrayList<>();
+
 
         context = new GeoApiContext.Builder().apiKey(getString(R.string.google_maps_key)).build();
         // Passing each menu ID as a set of Ids because each
@@ -216,7 +210,7 @@ public class NavActivity extends AppCompatActivity implements NotificationsFragm
     }
 
     @Override
-    public void passChatCtr(int chatctr, String from, String message, String messageid) {
+    public void passChatCtr(int chatctr, String from, String message, String messageid, String chatid, String chattype) {
         if(!ChatFragmentStatus){
             if(chatctr != 0){
                 navView.getOrCreateBadge(R.id.navigation_chat).setNumber(chatctr);
@@ -225,25 +219,41 @@ public class NavActivity extends AppCompatActivity implements NotificationsFragm
             }
             if(!chatNotifArr.contains(messageid)){
                 chatNotifArr.add(messageid);
-                notifyThis(from, message, chatctr);
+                notifyThis(from, message, chatctr, chatid, chattype);
             }
+            globalchatctr = chatctr;
         }else{
             chatNotifArr.clear();
             navView.removeBadge(R.id.navigation_chat);
         }
     }
 
-    private void notifyThis(String title, String message, int notifid){
+    private void notifyThis(String title, String message, int notifid, String chatid, String chattype){
         if(title != "none"){
             NotificationManager mNotificationManager;
 
             NotificationCompat.Builder mBuilder =
                     new NotificationCompat.Builder(NavActivity.this, "notify_001");
-            Intent ii = new Intent(NavActivity.this, NavActivity.class);
-            PendingIntent pendingIntent = PendingIntent.getActivity(NavActivity.this, 0, ii, 0);
+
+            if(chattype.equals("single")){
+                Intent ii = new Intent(NavActivity.this, ChatActivity.class);
+                ii.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                ii.putExtra("visit_user_id",chatid);
+                ii.putExtra("from", "notification");
+                ii.setAction("notification");
+                PendingIntent pendingIntent = PendingIntent.getActivity(NavActivity.this, 0, ii, PendingIntent.FLAG_UPDATE_CURRENT);
+                mBuilder.setContentIntent(pendingIntent);
+            }else{
+                Intent ii = new Intent(NavActivity.this, ChatGroupActivity.class);
+                ii.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                ii.putExtra("gcKey", chatid);
+                ii.putExtra("from", "notification");
+                ii.setAction("notification");
+                PendingIntent pendingIntent = PendingIntent.getActivity(NavActivity.this, 0, ii, PendingIntent.FLAG_UPDATE_CURRENT);
+                mBuilder.setContentIntent(pendingIntent);
+            }
 
             NotificationCompat.BigTextStyle bigText = new NotificationCompat.BigTextStyle();;
-            mBuilder.setContentIntent(pendingIntent);
             mBuilder.setSmallIcon(R.drawable.main_logo_wbg);
             mBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.main_logo_wbg));
             mBuilder.setContentTitle(title);

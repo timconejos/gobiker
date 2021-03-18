@@ -49,6 +49,7 @@ public class ProfileFragment extends Fragment {
         profileID = getArguments().getString("profileId");
         profileUserRef = FirebaseDatabase.getInstance().getReference().child("Users").child(profileID);
         UsersRef = FirebaseDatabase.getInstance().getReference().child("Users");
+        mAuth = FirebaseAuth.getInstance();
 
         userGender = root.findViewById(R.id.my_gender);
         userBM = root.findViewById(R.id.my_bike_motor);
@@ -65,8 +66,15 @@ public class ProfileFragment extends Fragment {
         agelabel = root.findViewById(R.id.age_lbl);
 
         updateProfileButton = root.findViewById(R.id.myUpdateProfileButton);
-
         signOutButton = root.findViewById(R.id.signOutButton);
+
+        if(!profileID.equals(mAuth.getCurrentUser().getUid())){
+            updateProfileButton.setVisibility(View.GONE);
+            signOutButton.setVisibility(View.GONE);
+        }else{
+            updateProfileButton.setVisibility(View.VISIBLE);
+            signOutButton.setVisibility(View.VISIBLE);
+        }
 
 
         seeallfollowerButton = root.findViewById(R.id.seeAllFollowersButton);

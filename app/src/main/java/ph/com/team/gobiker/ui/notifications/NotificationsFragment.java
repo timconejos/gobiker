@@ -222,7 +222,7 @@ public class NotificationsFragment extends Fragment {
                                         if(commentSnapshot.exists()){
                                             Posts post = postSnapshot.getValue(Posts.class);
                                             Comments comment = commentSnapshot.getValue(Comments.class);
-                                            if(!currentUserID.equals(post.getUid())){
+                                            if(currentUserID.equals(post.getUid())){
                                                 UsersRef.child(comment.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                                                     @Override
                                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

@@ -2418,8 +2418,8 @@ public class SettingsActivity extends AppCompatActivity {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
                                             if(task.isSuccessful()){
-                                                Intent selfIntent = new Intent(SettingsActivity.this, SettingsActivity.class);
-                                                startActivity(selfIntent);
+//                                                Intent selfIntent = new Intent(SettingsActivity.this, SettingsActivity.class);
+//                                                startActivity(selfIntent);
                                                 Toast.makeText(SettingsActivity.this,"Profile Image stored to firebase storage successfully .",Toast.LENGTH_SHORT).show();
                                             }
                                             else{
@@ -2577,9 +2577,7 @@ public class SettingsActivity extends AppCompatActivity {
                 @Override
                 public void onComplete(@NonNull Task task) {
                     if (task.isSuccessful()){
-                        Intent selfIntent = new Intent(SettingsActivity.this,SettingsActivity.class);
-                        startActivity(selfIntent);
-//                        SendUserToMainActivity();
+                        finish();
                         Toast.makeText(SettingsActivity.this,"Account Settings Updated Successfully", Toast.LENGTH_SHORT).show();
                     }
                     else{

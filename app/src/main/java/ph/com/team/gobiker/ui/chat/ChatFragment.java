@@ -124,7 +124,7 @@ public class ChatFragment extends Fragment {
 
     public interface Listener {
         public void setChatFragmentStatus(boolean fragStatus);
-        public void passChatCtr(int chatctr, String from, String message, String messageid);
+        public void passChatCtr(int chatctr, String from, String message, String messageid, String chatid, String chattype);
     }
 
     private Listener mListener;
@@ -482,13 +482,27 @@ public class ChatFragment extends Fragment {
                                                     isSeen = (boolean) childSnapshot.child("isSeen").getValue();
                                                     if(!isSeen){
                                                         if(!childSnapshot.child("from").getValue().toString().equals(currentUserID)){
-                                                            chatctr++;
-                                                            mListener.passChatCtr(chatctr, dataSnapshot.child("fullname").getValue().toString(), childSnapshot.child("message").getValue().toString(), childSnapshot.getKey());
+                                                            UsersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                                @Override
+                                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                                    chatctr++;
+                                                                    if(snapshot.hasChild(idsnapshot.getKey())){
+                                                                        mListener.passChatCtr(chatctr, dataSnapshot.child("fullname").getValue().toString(), childSnapshot.child("message").getValue().toString(), childSnapshot.getKey(), idsnapshot.getKey(), "single");
+                                                                    }else{
+                                                                        mListener.passChatCtr(chatctr, dataSnapshot.child("fullname").getValue().toString(), childSnapshot.child("message").getValue().toString(), childSnapshot.getKey(), idsnapshot.getKey(), "group");
+                                                                    }
+                                                                }
+
+                                                                @Override
+                                                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                                                }
+                                                            });
                                                         }else{
-                                                            mListener.passChatCtr(chatctr, "none", "", "");
+                                                            mListener.passChatCtr(chatctr, "none", "", "", "", "");
                                                         }
                                                     }else{
-                                                        mListener.passChatCtr(chatctr, "none", "", "");
+                                                        mListener.passChatCtr(chatctr, "none", "", "", "", "");
                                                     }
                                                     idTempArr.add(childSnapshot.getKey()+","+childSnapshot.child("from").getValue().toString());
                                                 }

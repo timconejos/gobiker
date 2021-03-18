@@ -237,7 +237,8 @@ public class GroupDetailsActivity extends AppCompatActivity {
                         editGroupBtn.setVisibility(View.GONE);
                         groupRideBtn.setVisibility(View.GONE);
                     }
-                }else if(group.getGroup_type().equals("Private")){
+                }
+                else if(group.getGroup_type().equals("Private")){
                     if(dataSnapshot.child("Members").hasChild(currentUserID)){
                         if(dataSnapshot.child("Members").child(currentUserID).child("status").exists()){
                             if(dataSnapshot.child("Members").child(currentUserID).child("status").getValue().equals("Pending")){
@@ -248,7 +249,8 @@ public class GroupDetailsActivity extends AppCompatActivity {
                                 requestsBtn.setVisibility(View.GONE);
                                 btnDivider.setVisibility(View.GONE);
                                 groupRideBtn.setVisibility(View.GONE);
-                            }else if(dataSnapshot.child("Members").child(currentUserID).child("status").getValue().equals("Accepted")){
+                            }
+                            else if(dataSnapshot.child("Members").child(currentUserID).child("status").getValue().equals("Accepted")){
                                 RetrievePostsFromGroup();
                                 groupLabel.setText("Posts from this group");
                                 joinBtn.setText("Leave Group");
@@ -295,9 +297,6 @@ public class GroupDetailsActivity extends AppCompatActivity {
         SimpleDateFormat currentDate = new SimpleDateFormat("MM-dd-yyyy");
         String saveCurrentDate = currentDate.format(calForDate.getTime());
 
-        SimpleDateFormat currentDates = new SimpleDateFormat("MMMM dd, yyyy");
-        String saveCurrentDates = currentDates.format(calForDate.getTime());
-
         SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm:ss");
         String saveCurrentTime = currentTime.format(calForDate.getTime());
 
@@ -305,7 +304,7 @@ public class GroupDetailsActivity extends AppCompatActivity {
             joinBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    ProgressDialog loadingBarLeave = new ProgressDialog(getApplicationContext());
+                    ProgressDialog loadingBarLeave = new ProgressDialog(GroupDetailsActivity.this);
                     loadingBarLeave.setTitle("Loading");
                     loadingBarLeave.setMessage("Leaving group, please wait...");
                     loadingBarLeave.setCanceledOnTouchOutside(true);
@@ -340,6 +339,12 @@ public class GroupDetailsActivity extends AppCompatActivity {
                                     }
                                 }
                         );
+                    }else{
+                        GroupsRef.child(currentGroupID).child("Members").child(currentUserID).removeValue();
+                        Toast.makeText(GroupDetailsActivity.this, "You have left the group.", Toast.LENGTH_SHORT).show();
+                        joinBtn.setText("Join");
+                        groupSpecificPostList.setVisibility(View.GONE);
+                        loadingBarLeave.dismiss();
                     }
                 }
             });
@@ -388,7 +393,7 @@ public class GroupDetailsActivity extends AppCompatActivity {
     }
 
     private void RetrievePostsFromGroup() {
-        ProgressDialog loadingBar = new ProgressDialog(this);
+        ProgressDialog loadingBar = new ProgressDialog(GroupDetailsActivity.this);
         loadingBar.setTitle("Loading");
         loadingBar.setMessage("Please wait, while we are loading the posts...");
         loadingBar.setCanceledOnTouchOutside(true);
