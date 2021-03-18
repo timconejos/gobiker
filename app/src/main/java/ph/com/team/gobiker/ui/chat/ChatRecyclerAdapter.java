@@ -72,10 +72,12 @@ public class ChatRecyclerAdapter extends RecyclerView.Adapter<ChatRecyclerAdapte
                 if(listItem.getChattype().equals("single")){
                     Intent profileIntent =  new Intent(context,ChatActivity.class);
                     profileIntent.putExtra("visit_user_id",listItem.getId());
+                    profileIntent.putExtra("from", "chatfragment");
                     context.startActivity(profileIntent);
                 }else if(listItem.getChattype().equals("group")){
                     Intent profileIntent =  new Intent(context,ChatGroupActivity.class);
                     profileIntent.putExtra("gcKey",listItem.getId());
+                    profileIntent.putExtra("from", "chatfragment");
                     context.startActivity(profileIntent);
                 }
             }

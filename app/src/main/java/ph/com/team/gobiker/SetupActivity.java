@@ -6,6 +6,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -35,6 +38,7 @@ import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -53,11 +57,15 @@ public class SetupActivity extends AppCompatActivity {
     private StorageReference UserProfileImageRef;
     private Spinner Gender, WUnit, HUnit, province, city, active_ride;
 
+    ArrayAdapter<String> genderadapter, wunitadapter, hunitadapter, adapterActiveRide, provinceadapter, cityadapter;
+
     private TextView wt, ht, at, bn, bioinfo, aclabel;
     private View divider;
 
     String currentUserID;
     final static int Gallery_Pick = 1;
+
+    private static final String PREFS = "SetupClassPrefs";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,7 +97,7 @@ public class SetupActivity extends AppCompatActivity {
 
         active_ride = findViewById(R.id.setup_active_ride);
         String[] itemsActiveRide = new String[]{"Bicycle", "Motorcycle"};
-        ArrayAdapter<String> adapterActiveRide = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, itemsActiveRide);
+        adapterActiveRide = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, itemsActiveRide);
         active_ride.setAdapter(adapterActiveRide);
 
         aclabel = findViewById(R.id.active_ride_label2);
@@ -99,6 +107,233 @@ public class SetupActivity extends AppCompatActivity {
         province = findViewById(R.id.setup_province);
         city = findViewById(R.id.setup_city);
 
+        SetupLocationsPicker();
+
+        WUnit = findViewById(R.id.setup_weight_unit);
+        String[] itemsW = new String[]{"kgs", "lbs"};
+        wunitadapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, itemsW);
+        WUnit.setAdapter(wunitadapter);
+
+        HUnit = findViewById(R.id.setup_height_unit);
+        String[] itemsH = new String[]{"cm", "in"};
+        hunitadapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, itemsH);
+        HUnit.setAdapter(hunitadapter);
+
+        /*wt.setVisibility(View.GONE);
+        ht.setVisibility(View.GONE);
+        at.setVisibility(View.GONE);
+        bn.setVisibility(View.GONE);
+        weight.setVisibility(View.GONE);
+        height.setVisibility(View.GONE);
+        age.setVisibility(View.GONE);
+        WUnit.setVisibility(View.GONE);
+        HUnit.setVisibility(View.GONE);
+        divider.setVisibility(View.GONE);
+        bioinfo.setVisibility(View.GONE);
+        active_ride.setVisibility(View.GONE);
+        aclabel.setVisibility(View.GONE);*/
+
+        checkBike.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                /*if (checkBike.isChecked()){
+                    wt.setVisibility(View.VISIBLE);
+                    ht.setVisibility(View.VISIBLE);
+                    at.setVisibility(View.VISIBLE);
+                    bn.setVisibility(View.VISIBLE);
+                    weight.setVisibility(View.VISIBLE);
+                    height.setVisibility(View.VISIBLE);
+                    age.setVisibility(View.VISIBLE);
+                    WUnit.setVisibility(View.VISIBLE);
+                    HUnit.setVisibility(View.VISIBLE);
+                    divider.setVisibility(View.VISIBLE);
+                    bioinfo.setVisibility(View.VISIBLE);
+                }
+                else{
+                    wt.setVisibility(View.GONE);
+                    ht.setVisibility(View.GONE);
+                    at.setVisibility(View.GONE);
+                    bn.setVisibility(View.GONE);
+                    weight.setVisibility(View.GONE);
+                    height.setVisibility(View.GONE);
+                    age.setVisibility(View.GONE);
+                    WUnit.setVisibility(View.GONE);
+                    HUnit.setVisibility(View.GONE);
+                    divider.setVisibility(View.GONE);
+                    bioinfo.setVisibility(View.GONE);
+                }*/
+
+                if (checkBike.isChecked() && checkMotor.isChecked()){
+                    active_ride.setVisibility(View.VISIBLE);
+                    aclabel.setVisibility(View.VISIBLE);
+                }
+                else{
+                    active_ride.setVisibility(View.GONE);
+                    aclabel.setVisibility(View.GONE);
+                }
+            }
+        });
+
+        checkMotor.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (checkBike.isChecked() && checkMotor.isChecked()){
+                    active_ride.setVisibility(View.VISIBLE);
+                    aclabel.setVisibility(View.VISIBLE);
+                }
+                else{
+                    active_ride.setVisibility(View.GONE);
+                    aclabel.setVisibility(View.GONE);
+                }
+            }
+        });
+
+        Gender = findViewById(R.id.setup_gender);
+        String[] items = new String[]{"Male", "Female","Rather Not Say"};
+        genderadapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items);
+        Gender.setAdapter(genderadapter);
+
+        FullName = findViewById(R.id.setup_full_name);
+        SaveInformationbutton = findViewById(R.id.setup_information_button);
+        ProfileImage = findViewById(R.id.setup_profile_image);
+        loadingBar = new ProgressDialog(this);
+
+        FormPlot();
+
+        SaveInformationbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SaveAccountSetupInformation();
+            }
+        });
+
+        ProfileImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent galleryIntent = new Intent();
+                galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
+                galleryIntent.setType("image/*");
+                startActivityForResult(galleryIntent,Gallery_Pick);
+            }
+        });
+
+        UsersRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()){
+                    if(dataSnapshot.hasChild("profileimage")) {
+                        String image = dataSnapshot.child("profileimage").getValue().toString();
+                        Picasso.with(SetupActivity.this).load(image).placeholder(R.drawable.profile).into(ProfileImage);
+                    }
+                    else{
+                        Toast.makeText(SetupActivity.this,"Please select profile image first...",Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode==Gallery_Pick && resultCode==RESULT_OK && data!=null){
+            ImageUri = data.getData();
+            loadingBar.setTitle("Profile Image");
+            loadingBar.setMessage("Please wait, while we are updating your Profile Image...");
+            loadingBar.setCanceledOnTouchOutside(true);
+            loadingBar.show();
+
+            FormSave();
+
+            ProfileImage.setImageURI(ImageUri);
+
+            final StorageReference filePath = UserProfileImageRef.child(currentUserID+".jpg");
+            filePath.putFile(ImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    filePath.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            String downloadUrl = uri.toString();
+                            Toast.makeText(SetupActivity.this, "Image uploaded successfully to storage", Toast.LENGTH_SHORT).show();
+                            UsersRef.child("profileimage").setValue(downloadUrl)
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if(task.isSuccessful()){
+                                                Toast.makeText(SetupActivity.this,"Profile Image stored to firebase storage successfully .",Toast.LENGTH_SHORT).show();
+                                            }
+                                            else{
+                                                Toast.makeText(SetupActivity.this,"Error occurred:"+task.getException().getMessage(),Toast.LENGTH_SHORT).show();
+                                            }
+                                            loadingBar.dismiss();
+                                        }
+                                    });
+                        }
+                    });
+                }
+            });
+        }
+
+        /*if (requestCode==Gallery_Pick && resultCode==RESULT_OK && data!=null){
+            Uri ImageUri = data.getData();
+            CropImage.activity().setGuidelines(CropImageView.Guidelines.ON)
+                    .setAspectRatio(1,1)
+                    .start(this);
+        }
+
+        if (requestCode==CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE){
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == RESULT_OK){
+                loadingBar.setTitle("Profile Image");
+                loadingBar.setMessage("Please wait, while we are updating your Profile Image...");
+                loadingBar.setCanceledOnTouchOutside(true);
+                loadingBar.show();
+
+                Uri resultUri = result.getUri();
+                final StorageReference filePath = UserProfileImageRef.child(currentUserID+".jpg");
+                filePath.putFile(resultUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        filePath.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                String downloadUrl = uri.toString();
+                                Toast.makeText(SetupActivity.this, "Image uploaded successfully to storage", Toast.LENGTH_SHORT).show();
+                                UsersRef.child("profileimage").setValue(downloadUrl)
+                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                if(task.isSuccessful()){
+                                                    Intent selfIntent = new Intent(SetupActivity.this, SetupActivity.class);
+                                                    startActivity(selfIntent);
+                                                    Toast.makeText(SetupActivity.this,"Profile Image stored to firebase storage successfully .",Toast.LENGTH_SHORT).show();
+                                                }
+                                                else{
+                                                    Toast.makeText(SetupActivity.this,"Error occurred:"+task.getException().getMessage(),Toast.LENGTH_SHORT).show();
+                                                }
+                                                loadingBar.dismiss();
+                                            }
+                                        });
+                            }
+                        });
+                    }
+                });
+            }
+            else{
+                Toast.makeText(SetupActivity.this,"Error occurred: Image cannot be cropped. Try again.",Toast.LENGTH_SHORT).show();
+                loadingBar.dismiss();
+            }
+        }*/
+    }
+
+    private void SetupLocationsPicker(){
         ArrayList<String> itemsP = new ArrayList<String>();
         itemsP.add("Abra");
         itemsP.add("Agusan del Norte");
@@ -151,10 +386,11 @@ public class SetupActivity extends AppCompatActivity {
         itemsP.add("Misamis Occidental");
         itemsP.add("Misamis Oriental");
         itemsP.add("Mountain Province");
-        itemsP.add("NCR, 3rd district");
-        itemsP.add("NCR, 4th district");
-        itemsP.add("NCR, 2nd district");
-        itemsP.add("NCR, City of Manila, 1st district");
+        itemsP.add("Metro Manila");
+//        itemsP.add("NCR, 3rd district");
+//        itemsP.add("NCR, 4th district");
+//        itemsP.add("NCR, 2nd district");
+//        itemsP.add("NCR, City of Manila, 1st district");
         itemsP.add("Negros Occidental");
         itemsP.add("Negros Oriental");
         itemsP.add("Northern Samar");
@@ -202,8 +438,8 @@ public class SetupActivity extends AppCompatActivity {
             }
         });*/
 
-        ArrayAdapter<String> adapterP = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, itemsP);
-        province.setAdapter(adapterP);
+        provinceadapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, itemsP);
+        province.setAdapter(provinceadapter);
 
         ArrayList<String> itemsC_Abra = new ArrayList<String>();
         ArrayList<String> itemsC_Agusan_del_Norte = new ArrayList<String>();
@@ -2023,227 +2259,6 @@ public class SetupActivity extends AppCompatActivity {
 
             }
         });
-
-        WUnit = findViewById(R.id.setup_weight_unit);
-        String[] itemsW = new String[]{"kgs", "lbs"};
-        ArrayAdapter<String> adapterW = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, itemsW);
-        WUnit.setAdapter(adapterW);
-
-        HUnit = findViewById(R.id.setup_height_unit);
-        String[] itemsH = new String[]{"cm", "in"};
-        ArrayAdapter<String> adapterH = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, itemsH);
-        HUnit.setAdapter(adapterH);
-
-        /*wt.setVisibility(View.GONE);
-        ht.setVisibility(View.GONE);
-        at.setVisibility(View.GONE);
-        bn.setVisibility(View.GONE);
-        weight.setVisibility(View.GONE);
-        height.setVisibility(View.GONE);
-        age.setVisibility(View.GONE);
-        WUnit.setVisibility(View.GONE);
-        HUnit.setVisibility(View.GONE);
-        divider.setVisibility(View.GONE);
-        bioinfo.setVisibility(View.GONE);
-        active_ride.setVisibility(View.GONE);
-        aclabel.setVisibility(View.GONE);*/
-
-        checkBike.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                /*if (checkBike.isChecked()){
-                    wt.setVisibility(View.VISIBLE);
-                    ht.setVisibility(View.VISIBLE);
-                    at.setVisibility(View.VISIBLE);
-                    bn.setVisibility(View.VISIBLE);
-                    weight.setVisibility(View.VISIBLE);
-                    height.setVisibility(View.VISIBLE);
-                    age.setVisibility(View.VISIBLE);
-                    WUnit.setVisibility(View.VISIBLE);
-                    HUnit.setVisibility(View.VISIBLE);
-                    divider.setVisibility(View.VISIBLE);
-                    bioinfo.setVisibility(View.VISIBLE);
-                }
-                else{
-                    wt.setVisibility(View.GONE);
-                    ht.setVisibility(View.GONE);
-                    at.setVisibility(View.GONE);
-                    bn.setVisibility(View.GONE);
-                    weight.setVisibility(View.GONE);
-                    height.setVisibility(View.GONE);
-                    age.setVisibility(View.GONE);
-                    WUnit.setVisibility(View.GONE);
-                    HUnit.setVisibility(View.GONE);
-                    divider.setVisibility(View.GONE);
-                    bioinfo.setVisibility(View.GONE);
-                }*/
-
-                if (checkBike.isChecked() && checkMotor.isChecked()){
-                    active_ride.setVisibility(View.VISIBLE);
-                    aclabel.setVisibility(View.VISIBLE);
-                }
-                else{
-                    active_ride.setVisibility(View.GONE);
-                    aclabel.setVisibility(View.GONE);
-                }
-            }
-        });
-
-        checkMotor.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (checkBike.isChecked() && checkMotor.isChecked()){
-                    active_ride.setVisibility(View.VISIBLE);
-                    aclabel.setVisibility(View.VISIBLE);
-                }
-                else{
-                    active_ride.setVisibility(View.GONE);
-                    aclabel.setVisibility(View.GONE);
-                }
-            }
-        });
-
-        Gender = findViewById(R.id.setup_gender);
-        String[] items = new String[]{"Male", "Female","Rather Not Say"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items);
-        Gender.setAdapter(adapter);
-
-        FullName = findViewById(R.id.setup_full_name);
-        SaveInformationbutton = findViewById(R.id.setup_information_button);
-        ProfileImage = findViewById(R.id.setup_profile_image);
-        loadingBar = new ProgressDialog(this);
-
-        SaveInformationbutton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SaveAccountSetupInformation();
-            }
-        });
-
-        ProfileImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent galleryIntent = new Intent();
-                galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
-                galleryIntent.setType("image/*");
-                startActivityForResult(galleryIntent,Gallery_Pick);
-            }
-        });
-
-        UsersRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists()){
-                    if(dataSnapshot.hasChild("profileimage")) {
-                        String image = dataSnapshot.child("profileimage").getValue().toString();
-                        Picasso.with(SetupActivity.this).load(image).placeholder(R.drawable.profile).into(ProfileImage);
-                    }
-                    else{
-                        Toast.makeText(SetupActivity.this,"Please select profile image first...",Toast.LENGTH_SHORT).show();
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode==Gallery_Pick && resultCode==RESULT_OK && data!=null){
-            ImageUri = data.getData();
-            loadingBar.setTitle("Profile Image");
-            loadingBar.setMessage("Please wait, while we are updating your Profile Image...");
-            loadingBar.setCanceledOnTouchOutside(true);
-            loadingBar.show();
-
-            ProfileImage.setImageURI(ImageUri);
-
-            final StorageReference filePath = UserProfileImageRef.child(currentUserID+".jpg");
-            filePath.putFile(ImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    filePath.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                        @Override
-                        public void onSuccess(Uri uri) {
-                            String downloadUrl = uri.toString();
-                            Toast.makeText(SetupActivity.this, "Image uploaded successfully to storage", Toast.LENGTH_SHORT).show();
-                            UsersRef.child("profileimage").setValue(downloadUrl)
-                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            if(task.isSuccessful()){
-                                                Intent selfIntent = new Intent(SetupActivity.this, SetupActivity.class);
-                                                startActivity(selfIntent);
-                                                Toast.makeText(SetupActivity.this,"Profile Image stored to firebase storage successfully .",Toast.LENGTH_SHORT).show();
-                                            }
-                                            else{
-                                                Toast.makeText(SetupActivity.this,"Error occurred:"+task.getException().getMessage(),Toast.LENGTH_SHORT).show();
-                                            }
-                                            loadingBar.dismiss();
-                                        }
-                                    });
-                        }
-                    });
-                }
-            });
-        }
-
-        /*if (requestCode==Gallery_Pick && resultCode==RESULT_OK && data!=null){
-            Uri ImageUri = data.getData();
-            CropImage.activity().setGuidelines(CropImageView.Guidelines.ON)
-                    .setAspectRatio(1,1)
-                    .start(this);
-        }
-
-        if (requestCode==CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE){
-            CropImage.ActivityResult result = CropImage.getActivityResult(data);
-            if (resultCode == RESULT_OK){
-                loadingBar.setTitle("Profile Image");
-                loadingBar.setMessage("Please wait, while we are updating your Profile Image...");
-                loadingBar.setCanceledOnTouchOutside(true);
-                loadingBar.show();
-
-                Uri resultUri = result.getUri();
-                final StorageReference filePath = UserProfileImageRef.child(currentUserID+".jpg");
-                filePath.putFile(resultUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        filePath.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                            @Override
-                            public void onSuccess(Uri uri) {
-                                String downloadUrl = uri.toString();
-                                Toast.makeText(SetupActivity.this, "Image uploaded successfully to storage", Toast.LENGTH_SHORT).show();
-                                UsersRef.child("profileimage").setValue(downloadUrl)
-                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
-                                                if(task.isSuccessful()){
-                                                    Intent selfIntent = new Intent(SetupActivity.this, SetupActivity.class);
-                                                    startActivity(selfIntent);
-                                                    Toast.makeText(SetupActivity.this,"Profile Image stored to firebase storage successfully .",Toast.LENGTH_SHORT).show();
-                                                }
-                                                else{
-                                                    Toast.makeText(SetupActivity.this,"Error occurred:"+task.getException().getMessage(),Toast.LENGTH_SHORT).show();
-                                                }
-                                                loadingBar.dismiss();
-                                            }
-                                        });
-                            }
-                        });
-                    }
-                });
-            }
-            else{
-                Toast.makeText(SetupActivity.this,"Error occurred: Image cannot be cropped. Try again.",Toast.LENGTH_SHORT).show();
-                loadingBar.dismiss();
-            }
-        }*/
     }
 
     private void SaveAccountSetupInformation() {
@@ -2256,6 +2271,7 @@ public class SetupActivity extends AppCompatActivity {
         //String prov_city = province_city.getText().toString();
         //Boolean ckPhone = checkPhone.isChecked();
         Boolean ckAdd = checkAddress.isChecked();
+        Boolean formvalidated = true;
 
         if (TextUtils.isEmpty(fullname)) {
             Toast.makeText(this, "Please write your fullname.", Toast.LENGTH_SHORT).show();
@@ -2276,13 +2292,18 @@ public class SetupActivity extends AppCompatActivity {
             else if (checkm){
                 acRide = "Motorcycle";
             }
-            //if (checkb){
                 sh = height.getText().toString();
                 sw = weight.getText().toString();
                 yo = age.getText().toString();
 
-                if (yo.equals(""))
-                    yo = "0";
+                if (yo.equals("")){
+                    formvalidated = false;
+                    Toast.makeText(this, "Please input your age.", Toast.LENGTH_SHORT).show();
+                }else if(yo.equals("0")){
+                    formvalidated = false;
+                    Toast.makeText(this, "Age cannot be zero(0).", Toast.LENGTH_SHORT).show();
+                }
+
 
                 if (!sh.equals("")){
                     hUnit = HUnit.getSelectedItem().toString();
@@ -2290,11 +2311,13 @@ public class SetupActivity extends AppCompatActivity {
                         hei = sh;
                     else
                         hei = Double.toString((Double.parseDouble(sh)*2.54));
+                }else if(sh.equals("0")){
+                    formvalidated = false;
+                    Toast.makeText(this, "Height cannot be zero(0).", Toast.LENGTH_SHORT).show();
                 }
                 else{
-                    hei = "0";
-                    sh = "0";
-                    hUnit = "0";
+                    formvalidated = false;
+                    Toast.makeText(this, "Please input your height.", Toast.LENGTH_SHORT).show();
                 }
 
                 if (!sw.equals("")){
@@ -2304,56 +2327,159 @@ public class SetupActivity extends AppCompatActivity {
                         wei = sw;
                     else
                         wei = Double.toString((Double.parseDouble(sw)/2.205));
+                }else if(sw.equals("0")){
+                    formvalidated = false;
+                    Toast.makeText(this, "Weight cannot be zero(0).", Toast.LENGTH_SHORT).show();
                 }
                 else{
-                    wei = "0";
-                    sw = "0";
-                    wUnit = "0";
+                    formvalidated = false;
+                    Toast.makeText(this, "Please input your weight.", Toast.LENGTH_SHORT).show();
                 }
-            //}
-            loadingBar.setTitle("Saving Information");
-            loadingBar.setMessage("Please wait, while we are creating your new account...");
-            loadingBar.show();
-            loadingBar.setCanceledOnTouchOutside(true);
-            HashMap userMap = new HashMap();
-            userMap.put("fullname", fullname);
-            userMap.put("gender", gender);
-            userMap.put("bike",checkb);
-            userMap.put("motor",checkm);
-            userMap.put("height",hei);
-            userMap.put("savedheight",sh);
-            userMap.put("savedhunit",hUnit);
-            userMap.put("weight",wei);
-            userMap.put("savedweight",sw);
-            userMap.put("savedwunit",wUnit);
-            userMap.put("age",yo);
-            userMap.put("bike_level","1");
-            userMap.put("bike_overall_distance","0");
-            userMap.put("motor_level","1");
-            userMap.put("motor_overall_distance","0");
-            userMap.put("province",Province);
-            userMap.put("city",City);
-            userMap.put("active_ride",acRide);
-            userMap.put("check_address",ckAdd);
-            userMap.put("check_phone","true");
-            userMap.put("bike_number_of_rides","0");
-            userMap.put("motor_number_of_rides","0");
 
-            UsersRef.updateChildren(userMap).addOnCompleteListener(new OnCompleteListener() {
-                @Override
-                public void onComplete(@NonNull Task task) {
-                    if (task.isSuccessful()){
-                        SendUserToMainActivity();
-                        Toast.makeText(SetupActivity.this,"Your account is created successfully.",Toast.LENGTH_LONG).show();
-                    }
-                    else{
-                        String message = task.getException().getMessage();
-                        Toast.makeText(SetupActivity.this,"Error Occurred:"+message,Toast.LENGTH_SHORT).show();
-                    }
-                    loadingBar.dismiss();
+                if(formvalidated){
+                    loadingBar.setTitle("Saving Information");
+                    loadingBar.setMessage("Please wait, while we are creating your new account...");
+                    loadingBar.show();
+                    loadingBar.setCanceledOnTouchOutside(true);
+                    HashMap userMap = new HashMap();
+                    userMap.put("fullname", fullname);
+                    userMap.put("gender", gender);
+                    userMap.put("bike",checkb);
+                    userMap.put("motor",checkm);
+                    userMap.put("height",hei);
+                    userMap.put("savedheight",sh);
+                    userMap.put("savedhunit",hUnit);
+                    userMap.put("weight",wei);
+                    userMap.put("savedweight",sw);
+                    userMap.put("savedwunit",wUnit);
+                    userMap.put("age",yo);
+                    userMap.put("bike_level","1");
+                    userMap.put("bike_overall_distance","0");
+                    userMap.put("motor_level","1");
+                    userMap.put("motor_overall_distance","0");
+                    userMap.put("province",Province);
+                    userMap.put("city",City);
+                    userMap.put("active_ride",acRide);
+                    userMap.put("check_address",ckAdd);
+                    userMap.put("check_phone","true");
+                    userMap.put("bike_number_of_rides","0");
+                    userMap.put("motor_number_of_rides","0");
+
+                    UsersRef.updateChildren(userMap).addOnCompleteListener(new OnCompleteListener() {
+                        @Override
+                        public void onComplete(@NonNull Task task) {
+                            if (task.isSuccessful()){
+                                SharedPreferences preferences = getSharedPreferences(PREFS, 0);
+                                preferences.edit().clear().apply();
+                                SendUserToMainActivity();
+                                Toast.makeText(SetupActivity.this,"Your account is created successfully.",Toast.LENGTH_LONG).show();
+                            }
+                            else{
+                                String message = task.getException().getMessage();
+                                Toast.makeText(SetupActivity.this,"Error Occurred:"+message,Toast.LENGTH_SHORT).show();
+                            }
+                            loadingBar.dismiss();
+                        }
+                    });
                 }
-            });
         }
+    }
+
+    private void FormSave(){
+        String gender = Gender.getSelectedItem().toString();
+        String fullname = FullName.getText().toString();
+        Boolean checkm = checkMotor.isChecked();
+        Boolean checkb = checkBike.isChecked();
+        String Province = province.getSelectedItem().toString();
+        String City = city.getSelectedItem().toString();
+        Boolean ckAdd = checkAddress.isChecked();
+        String hei="0", wei="0", yo="0", hUnit="0", wUnit="0", sh="0", sw="0";
+        String acRide = "Bicycle";
+
+        if (checkm && checkb){
+            acRide = active_ride.getSelectedItem().toString();
+        }
+        else if (checkm){
+            acRide = "Motorcycle";
+        }
+
+        sh = height.getText().toString();
+        sw = weight.getText().toString();
+        yo = age.getText().toString();
+
+        if (yo.equals(""))
+            yo = "0";
+
+        if (!sh.equals("")){
+            hUnit = HUnit.getSelectedItem().toString();
+        }
+        else{
+            hei = "0";
+            sh = "0";
+            hUnit = "0";
+        }
+
+        if (!sw.equals("")){
+            wUnit = WUnit.getSelectedItem().toString();
+        }
+        else{
+            wei = "0";
+            sw = "0";
+            wUnit = "0";
+        }
+
+        SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
+        editor.putString("fullname", fullname);
+        editor.putString("gender", gender);
+        editor.putBoolean("bike",checkb);
+        editor.putBoolean("motor",checkm);
+        editor.putString("height",sh);
+        editor.putString("savedhunit",hUnit);
+        editor.putString("weight",sw);
+        editor.putString("savedwunit",wUnit);
+        editor.putString("age",yo);
+        editor.putString("province",Province);
+        editor.putString("city",City);
+        editor.putString("active_ride",acRide);
+        editor.putBoolean("check_address",ckAdd);
+        editor.apply();
+    }
+
+    private void FormPlot(){
+        SharedPreferences prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
+        String prefsfullname = prefs.getString("fullname", "");
+        String prefsgender = prefs.getString("gender", "Male");
+        Boolean prefsbike = prefs.getBoolean("bike", false);
+        Boolean prefsmotor = prefs.getBoolean("bike", false);
+        String prefsheight = prefs.getString("height", "");
+        String prefssavedhunit = prefs.getString("savedhunit", "kgs");
+        String prefsweight = prefs.getString("weight", "");
+        String prefssavedwunit = prefs.getString("savedwunit", "cm");
+        String prefsage = prefs.getString("age", "");
+        String prefsprovince = prefs.getString("province", "Abra");
+        String prefsactiveride = prefs.getString("active_ride", "Bicycle");
+        Boolean prefscheckaddress = prefs.getBoolean("check_address", false);
+
+        int genderPos = genderadapter.getPosition(prefsgender);
+        int savedhunitPos = hunitadapter.getPosition(prefssavedhunit);
+        int savedwunitPos = wunitadapter.getPosition(prefssavedwunit);
+        int activeridePos = adapterActiveRide.getPosition(prefsactiveride);
+        int provincePos = provinceadapter.getPosition(prefsprovince);
+
+        FullName.setText(prefsfullname);
+        Gender.setSelection(genderPos);
+        height.setText(prefsheight);
+        weight.setText(prefsweight);
+        active_ride.setSelection(activeridePos);
+        age.setText(prefsage);
+
+        HUnit.setSelection(savedhunitPos);
+        WUnit.setSelection(savedwunitPos);
+        province.setSelection(provincePos);
+
+        checkBike.setChecked(prefsbike);
+        checkMotor.setChecked(prefsmotor);
+        checkAddress.setChecked(prefscheckaddress);
     }
 
     private void SendUserToMainActivity() {
@@ -2364,7 +2490,7 @@ public class SetupActivity extends AppCompatActivity {
     }
 
     private void setCity(ArrayList<String> itemsC){
-        ArrayAdapter<String> adapterC = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, itemsC);
-        city.setAdapter(adapterC);
+        cityadapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, itemsC);
+        city.setAdapter(cityadapter);
     }
 }

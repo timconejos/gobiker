@@ -61,6 +61,7 @@ import java.util.List;
 import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import ph.com.team.gobiker.NavActivity;
 import ph.com.team.gobiker.R;
 import ph.com.team.gobiker.ui.search.SearchAutoComplete;
 import ph.com.team.gobiker.ui.search.SearchAutoCompleteAdapter;
@@ -78,7 +79,7 @@ public class ChatGroupActivity extends AppCompatActivity {
 
     private String messageReceiverID, messageSenderName, messageSenderID, saveCurrentDate, saveCurrentTime;
     private List<String> messageReceivers = new ArrayList<>();
-    private String gcKey;
+    private String gcKey, activityFrom;
 
     private TextView receiverName, userLastSeen;
     private CircleImageView receiverProfileImage;
@@ -107,6 +108,7 @@ public class ChatGroupActivity extends AppCompatActivity {
     public static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 123;
     private ChildEventListener ChildEventListener;
     public static boolean chatNotifier = false;
+    private NavActivity navActivity;
 
     @Override
     public void onPause() {
@@ -134,6 +136,16 @@ public class ChatGroupActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         messageSenderID = mAuth.getCurrentUser().getUid();
         gcKey = (String) getIntent().getExtras().get("gcKey");
+        activityFrom = (String) getIntent().getExtras().get("from");
+
+        if(activityFrom.equals("notification")){
+            if(navActivity.globalchatctr != 0){
+                navActivity.navView.getOrCreateBadge(R.id.navigation_chat).setNumber(navActivity.globalchatctr - 1);
+            }
+            if(navActivity.globalchatctr - 1 == 0){
+                navActivity.navView.removeBadge(R.id.navigation_chat);
+            }
+        }
         
         InitializeFields();
         DisplayReceiverInfo();

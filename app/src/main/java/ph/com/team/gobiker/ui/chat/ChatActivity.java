@@ -58,6 +58,7 @@ import java.util.List;
 import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import ph.com.team.gobiker.NavActivity;
 import ph.com.team.gobiker.R;
 
 public class ChatActivity extends AppCompatActivity {
@@ -69,7 +70,7 @@ public class ChatActivity extends AppCompatActivity {
     private LinearLayoutManager linearLayoutManager;
     private MessagesAdapter messageAdapter;
 
-    private String messageReceiverID, messageSenderName, messageSenderID, saveCurrentDate, saveCurrentTime;
+    private String messageReceiverID, messageSenderName, messageSenderID, saveCurrentDate, saveCurrentTime, activityFrom;
 
     private TextView receiverName, userLastSeen;
     private CircleImageView receiverProfileImage;
@@ -87,6 +88,8 @@ public class ChatActivity extends AppCompatActivity {
     ContentValues values;
     public static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 123;
     public static boolean chatNotifier = false;
+
+    private NavActivity navActivity;
 
     @Override
     public void onPause() {
@@ -115,6 +118,16 @@ public class ChatActivity extends AppCompatActivity {
         messageSenderID = mAuth.getCurrentUser().getUid();
 
         messageReceiverID = getIntent().getExtras().get("visit_user_id").toString();
+        activityFrom = (String) getIntent().getExtras().get("from");
+
+        if(activityFrom.equals("notification")){
+            if(navActivity.globalchatctr != 0){
+                navActivity.navView.getOrCreateBadge(R.id.navigation_chat).setNumber(navActivity.globalchatctr - 1);
+            }
+            if(navActivity.globalchatctr - 1 == 0){
+                navActivity.navView.removeBadge(R.id.navigation_chat);
+            }
+        }
 
         InitializeFields();
         DisplayReceiverInfo();
