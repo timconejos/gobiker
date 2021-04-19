@@ -332,6 +332,7 @@ public class PersonProfileActivity extends AppCompatActivity {
     private void SendUserToChatActivity() {
         Intent chatIntent = new Intent(PersonProfileActivity.this, ChatActivity.class);
         chatIntent.putExtra("visit_user_id",receiverUserId);
+        chatIntent.putExtra("from", receiverUserId);
         //chatIntent.putExtra("userName",myProfileName);
         startActivity(chatIntent);
     }

@@ -87,7 +87,6 @@ public class FeedFragment extends Fragment {
 
         profileID = getArguments().getString("profileId");
 
-
         addNewPost = root.findViewById(R.id.add_new_post);
         addNewPost.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -125,6 +124,13 @@ public class FeedFragment extends Fragment {
                 }
             }, 2500);
         });
+
+
+        if(!profileID.equals(mAuth.getCurrentUser().getUid())){
+            addNewPost.setVisibility(View.GONE);
+        }else{
+            addNewPost.setVisibility(View.VISIBLE);
+        }
 
         return root;
     }
