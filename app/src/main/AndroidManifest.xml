@@ -28,6 +28,7 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
         </provider>
+        <activity android:name=".ui.posts.SpecificPostActivity"></activity>
         <activity android:name=".ui.profile.ViewOthersProfile"></activity>
         <activity android:name=".ui.posts.PhotoFullScreenActivity"></activity>
         <activity android:name=".ui.home.GroupDetailsActivity"></activity>

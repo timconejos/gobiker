@@ -23,6 +23,7 @@ import ph.com.team.gobiker.ui.posts.CommentsActivity;
 import ph.com.team.gobiker.ui.posts.LikesActivity;
 import ph.com.team.gobiker.R;
 import ph.com.team.gobiker.ui.home.GroupDetailsActivity;
+import ph.com.team.gobiker.ui.posts.SpecificPostActivity;
 import ph.com.team.gobiker.ui.profile.PersonProfileActivity;
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHolder> {
@@ -66,15 +67,15 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
             @Override
             public void onClick(View view) {
                 if(listItem.getNotiftype().equals("comment")){
-                    Intent commentsIntent = new Intent(context, CommentsActivity.class);
-                    commentsIntent.putExtra("PostKey", listItem.getPostid());
-                    commentsIntent.putExtra("FeedType", "GroupFeed");
+                    Intent commentsIntent = new Intent(context, SpecificPostActivity.class);
+                    commentsIntent.putExtra("post_id", listItem.getPostid());
+                    commentsIntent.putExtra("feed_type", "HomeFeed");
                     context.startActivity(commentsIntent);
                 }
                 if(listItem.getNotiftype().equals("like")){
-                    Intent likesIntent = new Intent(context, LikesActivity.class);
-                    likesIntent.putExtra("PostKey", listItem.getPostid());
-                    likesIntent.putExtra("FeedType", "HomeFeed");
+                    Intent likesIntent = new Intent(context, SpecificPostActivity.class);
+                    likesIntent.putExtra("post_id", listItem.getPostid());
+                    likesIntent.putExtra("feed_type", "HomeFeed");
                     context.startActivity(likesIntent);
                 }
                 if(listItem.getNotiftype().equals("follow")){
@@ -83,15 +84,19 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
                     context.startActivity(profileIntent);
                 }
                 if(listItem.getNotiftype().equals("group_comment")){
-                    Intent commentsIntent = new Intent(context, CommentsActivity.class);
-                    commentsIntent.putExtra("PostKey", listItem.getPostid());
-                    commentsIntent.putExtra("FeedType", "GroupFeed");
+                    Intent commentsIntent = new Intent(context, SpecificPostActivity.class);
+//                    commentsIntent.putExtra("PostKey", listItem.getPostid());
+//                    commentsIntent.putExtra("FeedType", "GroupFeed");
+                    commentsIntent.putExtra("post_id", listItem.getPostid());
+                    commentsIntent.putExtra("feed_type", "GroupFeed");
                     context.startActivity(commentsIntent);
                 }
                 if(listItem.getNotiftype().equals("group_like")){
-                    Intent likesIntent = new Intent(context, LikesActivity.class);
-                    likesIntent.putExtra("PostKey", listItem.getPostid());
-                    likesIntent.putExtra("FeedType", "GroupFeed");
+                    Intent likesIntent = new Intent(context, SpecificPostActivity.class);
+//                    likesIntent.putExtra("PostKey", listItem.getPostid());
+//                    likesIntent.putExtra("FeedType", "GroupFeed");
+                    likesIntent.putExtra("post_id", listItem.getPostid());
+                    likesIntent.putExtra("feed_type", "GroupFeed");
                     context.startActivity(likesIntent);
                 }
                 if(listItem.getNotiftype().equals("group_join")){

@@ -54,6 +54,7 @@ import ph.com.team.gobiker.ui.posts.ClickPostActivity;
 import ph.com.team.gobiker.ui.posts.CommentsActivity;
 import ph.com.team.gobiker.ui.posts.LikesActivity;
 import ph.com.team.gobiker.R;
+import ph.com.team.gobiker.ui.posts.SpecificPostActivity;
 import ph.com.team.gobiker.ui.search.SearchAutoComplete;
 import ph.com.team.gobiker.ui.profile.ViewOthersProfile;
 import uk.co.senab.photoview.PhotoViewAttacher;
@@ -214,6 +215,7 @@ public class GroupDetailsActivity extends AppCompatActivity {
 
                 if(group.getGroup_type().equals("Public")){
                     groupLabel.setText("Posts from this group");
+                    RetrievePostsFromGroup();
                     if(dataSnapshot.child("Members").hasChild(currentUserID)) {
                         groupSpecificPostList.setVisibility(View.VISIBLE);
                         joinBtn.setText("Leave Group");
@@ -450,28 +452,40 @@ public class GroupDetailsActivity extends AppCompatActivity {
                                 }
                             });
 
-                            if(posts.getUid().equals(currentUserID)){
-                                viewHolder.optionMenuP.setVisibility(View.VISIBLE);
-                            }else{
-                                viewHolder.optionMenuP.setVisibility(View.GONE);
-                            }
-
                             viewHolder.optionMenuP.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
-
                                     //creating a popup menu
                                     PopupMenu popup = new PopupMenu(GroupDetailsActivity.this, viewHolder.optionMenuP);
                                     //inflating menu from xml resource
                                     popup.inflate(R.menu.post_menu);
+
+                                    //set enabled/disabled menu items
+                                    if(posts.getUid().equals(currentUserID)){
+                                        popup.getMenu().findItem(R.id.post_view_menu).setVisible(true);
+                                        popup.getMenu().findItem(R.id.post_edit_menu).setVisible(true);
+                                        popup.getMenu().findItem(R.id.post_delete_menu).setVisible(true);
+                                    }else{
+                                        popup.getMenu().findItem(R.id.post_view_menu).setVisible(true);
+                                        popup.getMenu().findItem(R.id.post_edit_menu).setVisible(false);
+                                        popup.getMenu().findItem(R.id.post_delete_menu).setVisible(false);
+                                    }
+
                                     //adding click listener
                                     popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                                         @Override
                                         public boolean onMenuItemClick(MenuItem item) {
                                             switch (item.getItemId()) {
+                                                case R.id.post_view_menu:
+                                                    Intent viewIntent = new Intent(GroupDetailsActivity.this, SpecificPostActivity.class);
+                                                    viewIntent.putExtra("post_id", PostKey);
+                                                    viewIntent.putExtra("feed_type", "GroupFeed");
+                                                    startActivity(viewIntent);
+                                                    return true;
                                                 case R.id.post_edit_menu:
                                                     Intent clickPostIntent = new Intent(GroupDetailsActivity.this, ClickPostActivity.class);
                                                     clickPostIntent.putExtra("PostKey", PostKey);
+                                                    clickPostIntent.putExtra("from_feed", "GroupFeed");
                                                     startActivity(clickPostIntent);
                                                     return true;
                                                 case R.id.post_delete_menu:
@@ -483,6 +497,7 @@ public class GroupDetailsActivity extends AppCompatActivity {
                                             }
                                         }
                                     });
+
                                     //displaying the popup
                                     popup.show();
 
@@ -561,7 +576,16 @@ public class GroupDetailsActivity extends AppCompatActivity {
                                             viewHolder.lp.setVisibility(View.GONE);
                                         }
 
-                                        viewHolder.profilell.setOnClickListener(new View.OnClickListener() {
+                                        viewHolder.username.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View view) {
+                                                Intent profileIntent = new Intent(GroupDetailsActivity.this, ViewOthersProfile.class);
+                                                profileIntent.putExtra("profileId",posts.getUid());
+                                                startActivity(profileIntent);
+                                            }
+                                        });
+
+                                        viewHolder.image.setOnClickListener(new View.OnClickListener() {
                                             @Override
                                             public void onClick(View view) {
                                                 Intent profileIntent = new Intent(GroupDetailsActivity.this, ViewOthersProfile.class);
@@ -708,8 +732,6 @@ public class GroupDetailsActivity extends AppCompatActivity {
             close_button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-//                    searchEditText.setText("");
-//                    profileSelectedList.clear();
                     dialog.dismiss();
                 }
             });
@@ -877,12 +899,13 @@ public class GroupDetailsActivity extends AppCompatActivity {
         View mView;
         ImageButton LikeBtn;
         Button CommentBtn;
-        TextView DisplayNoOfLikes, optionMenuP;
+        TextView DisplayNoOfLikes, optionMenuP, username;
         int countLikes;
         String currentUserId;
         LinearLayout lp, profilell;
         DatabaseReference LikesRef;
         ImageView PostImage;
+        CircleImageView image;
 
         public GroupPostsViewHolder(View itemView){
             super(itemView);
@@ -893,9 +916,10 @@ public class GroupDetailsActivity extends AppCompatActivity {
             optionMenuP = mView.findViewById(R.id.post_options);
             lp = mView.findViewById(R.id.linear_posts);
             profilell = mView.findViewById(R.id.profile_ll);
-//            LikepostButton = mView.findViewById(R.id.like_button);
-//            CommentPostButton = mView.findViewById(R.id.comment_button);
             DisplayNoOfLikes = mView.findViewById(R.id.display_no_of_likes);
+
+            username = (TextView) mView.findViewById(R.id.post_user_name);
+            image = (CircleImageView) mView.findViewById(R.id.post_profile_image);
 
             LikesRef = FirebaseDatabase.getInstance().getReference().child("GroupLikes");
             currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -925,12 +949,10 @@ public class GroupDetailsActivity extends AppCompatActivity {
         }
 
         public void setFullname(String fullname) {
-            TextView username = (TextView) mView.findViewById(R.id.post_user_name);
             username.setText(fullname);
         }
 
         public void setProfileimage(Context ctx, String profileimage) {
-            CircleImageView image = (CircleImageView) mView.findViewById(R.id.post_profile_image);
             if (profileimage.equals(""))
                 Picasso.with(ctx).load(R.drawable.profile).into(image);
             else

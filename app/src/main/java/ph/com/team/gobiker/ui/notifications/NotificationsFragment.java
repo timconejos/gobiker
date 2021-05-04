@@ -223,62 +223,64 @@ public class NotificationsFragment extends Fragment {
                                             Posts post = postSnapshot.getValue(Posts.class);
                                             Comments comment = commentSnapshot.getValue(Comments.class);
                                             if(currentUserID.equals(post.getUid())){
-                                                UsersRef.child(comment.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
-                                                    @Override
-                                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                                        if (dataSnapshot.exists()) {
-                                                            String profilepicstring = "";
-                                                            boolean isSeenVal;
-                                                            if (dataSnapshot.hasChild("profileimage"))
-                                                                profilepicstring = dataSnapshot.child("profileimage").getValue().toString();
-                                                            else
-                                                                profilepicstring = "";
+                                                if(!currentUserID.equals(comment.getUid())){
+                                                    UsersRef.child(comment.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                                        @Override
+                                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                            if (dataSnapshot.exists()) {
+                                                                String profilepicstring = "";
+                                                                boolean isSeenVal;
+                                                                if (dataSnapshot.hasChild("profileimage"))
+                                                                    profilepicstring = dataSnapshot.child("profileimage").getValue().toString();
+                                                                else
+                                                                    profilepicstring = "";
 
-                                                            if(commentSnapshot.hasChild("isSeen")){
-                                                                isSeenVal = comment.getSeen();
+                                                                if(commentSnapshot.hasChild("isSeen")){
+                                                                    isSeenVal = comment.getSeen();
 
-                                                            }else{
-                                                                isSeenVal = true;
-                                                            }
-
-                                                            //check if call is from this fragment or the main nav activity
-                                                            if(fromtype.equals("fromfragment")){
-                                                                Notifications listItem = new Notifications(
-                                                                        comment.getUid(), comment.getTime(), comment.getDate(), comment.getUsername()+" commented on your post: "+comment.getComments(), profilepicstring, "comment", postSnapshot.getKey(), isSeenVal
-                                                                );
-
-                                                                if(!listItems.contains(listItem)){
-                                                                    listItems.add(listItem);
-                                                                    adapter.notifyDataSetChanged();
+                                                                }else{
+                                                                    isSeenVal = true;
                                                                 }
 
-                                                                // check if NotificationsFragment is currently opened. IF YES update is SEEN value
-                                                                if(fragmentActive){
-                                                                    PostsRef.child(postSnapshot.getKey()).child("Comments").child(commentSnapshot.getKey()).child("isSeen").setValue(true);
-                                                                }
-
-                                                            }else{
-                                                                if(!isSeenVal){
-                                                                    NotificationSeenCheck seenItem = new NotificationSeenCheck(
-                                                                            comment.getUsername()+" commented on your post: "+comment.getComments(), isSeenVal
+                                                                //check if call is from this fragment or the main nav activity
+                                                                if(fromtype.equals("fromfragment")){
+                                                                    Notifications listItem = new Notifications(
+                                                                            comment.getUid(), comment.getTime(), comment.getDate(), comment.getUsername()+" commented on your post: "+comment.getComments(), profilepicstring, "comment", postSnapshot.getKey(), isSeenVal
                                                                     );
-                                                                    if(!notificationSeenItems.contains(seenItem)){
-                                                                        notificationSeenItems.add(seenItem);
-                                                                        mListener.passNotifCtr(notificationSeenItems);
+
+                                                                    if(!listItems.contains(listItem)){
+                                                                        listItems.add(listItem);
+                                                                        adapter.notifyDataSetChanged();
                                                                     }
 
-                                                                }
-                                                            }
+                                                                    // check if NotificationsFragment is currently opened. IF YES update is SEEN value
+                                                                    if(fragmentActive){
+                                                                        PostsRef.child(postSnapshot.getKey()).child("Comments").child(commentSnapshot.getKey()).child("isSeen").setValue(true);
+                                                                    }
 
+                                                                }else{
+                                                                    if(!isSeenVal){
+                                                                        NotificationSeenCheck seenItem = new NotificationSeenCheck(
+                                                                                comment.getUsername()+" commented on your post: "+comment.getComments(), isSeenVal
+                                                                        );
+                                                                        if(!notificationSeenItems.contains(seenItem)){
+                                                                            notificationSeenItems.add(seenItem);
+                                                                            mListener.passNotifCtr(notificationSeenItems);
+                                                                        }
+
+                                                                    }
+                                                                }
+
+
+                                                            }
+                                                        }
+
+                                                        @Override
+                                                        public void onCancelled(@NonNull DatabaseError databaseError) {
 
                                                         }
-                                                    }
-
-                                                    @Override
-                                                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                                    }
-                                                });
+                                                    });
+                                                }
                                             }
                                         }
                                     }

@@ -256,6 +256,7 @@ public class ChatFragment extends Fragment {
                     if(profileSelectedList.size() == 1){
                         Intent chatIntent = new Intent(activity,ChatActivity.class);
                         chatIntent.putExtra("visit_user_id",profileSelectedList.get(0).getUid());
+                        chatIntent.putExtra("from", profileSelectedList.get(0).getUid());
                         startActivity(chatIntent);
                     }else{
                         dialog.hide();

@@ -52,6 +52,7 @@ import ph.com.team.gobiker.ui.posts.PostActivity;
 import ph.com.team.gobiker.R;
 import ph.com.team.gobiker.ui.home.HomeViewModel;
 import ph.com.team.gobiker.ui.home.Posts;
+import ph.com.team.gobiker.ui.posts.SpecificPostActivity;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
 public class FeedFragment extends Fragment {
@@ -225,6 +226,7 @@ public class FeedFragment extends Fragment {
                                             case R.id.post_edit_menu:
                                                 Intent clickPostIntent = new Intent(getActivity(), ClickPostActivity.class);
                                                 clickPostIntent.putExtra("PostKey", PostKey);
+                                                clickPostIntent.putExtra("from_feed", "HomeFeed");
                                                 startActivity(clickPostIntent);
                                                 return true;
                                             case R.id.post_delete_menu:
@@ -243,7 +245,61 @@ public class FeedFragment extends Fragment {
                             }
                         });
 
-                            viewHolder.CommentBtn.setOnClickListener(new View.OnClickListener() {
+                        viewHolder.optionMenuP.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                //creating a popup menu
+                                PopupMenu popup = new PopupMenu(getActivity(), viewHolder.optionMenuP);
+                                //inflating menu from xml resource
+                                popup.inflate(R.menu.post_menu);
+
+                                //set enabled/disabled menu items
+                                if(posts.getUid().equals(currentUserId)){
+                                    popup.getMenu().findItem(R.id.post_view_menu).setVisible(true);
+                                    popup.getMenu().findItem(R.id.post_edit_menu).setVisible(true);
+                                    popup.getMenu().findItem(R.id.post_delete_menu).setVisible(true);
+                                }else{
+                                    popup.getMenu().findItem(R.id.post_view_menu).setVisible(true);
+                                    popup.getMenu().findItem(R.id.post_edit_menu).setVisible(false);
+                                    popup.getMenu().findItem(R.id.post_delete_menu).setVisible(false);
+                                }
+
+                                //adding click listener
+                                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                                    @Override
+                                    public boolean onMenuItemClick(MenuItem item) {
+                                        switch (item.getItemId()) {
+                                            case R.id.post_view_menu:
+                                                Intent viewIntent = new Intent(getActivity(), SpecificPostActivity.class);
+                                                viewIntent.putExtra("post_id", PostKey);
+                                                viewIntent.putExtra("feed_type", "HomeFeed");
+                                                startActivity(viewIntent);
+                                                return true;
+                                            case R.id.post_edit_menu:
+                                                Intent clickPostIntent = new Intent(getActivity(), ClickPostActivity.class);
+                                                clickPostIntent.putExtra("PostKey", PostKey);
+                                                clickPostIntent.putExtra("from_feed", "HomeFeed");
+                                                startActivity(clickPostIntent);
+                                                return true;
+                                            case R.id.post_delete_menu:
+                                                PostsRef.child(PostKey).removeValue();
+                                                DisplayAllUsersPosts();
+                                                Toast.makeText(getActivity(),"Post has been deleted.",Toast.LENGTH_SHORT).show();
+                                                return true;
+                                            default:
+                                                return false;
+                                        }
+                                    }
+                                });
+
+                                //displaying the popup
+                                popup.show();
+
+                            }
+                        });
+
+
+                        viewHolder.CommentBtn.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
                                     Intent commentsIntent = new Intent(getActivity(), CommentsActivity.class);

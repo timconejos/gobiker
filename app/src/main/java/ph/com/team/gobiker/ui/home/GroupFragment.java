@@ -66,6 +66,7 @@ import ph.com.team.gobiker.ui.posts.ClickPostActivity;
 import ph.com.team.gobiker.ui.posts.CommentsActivity;
 import ph.com.team.gobiker.ui.posts.LikesActivity;
 import ph.com.team.gobiker.R;
+import ph.com.team.gobiker.ui.posts.SpecificPostActivity;
 import ph.com.team.gobiker.ui.search.SearchAutoComplete;
 import ph.com.team.gobiker.ui.search.SearchAutoCompleteAdapter;
 import ph.com.team.gobiker.ui.chat.ChatProfile;
@@ -819,19 +820,38 @@ public class GroupFragment extends Fragment {
                         viewHolder.optionMenuP.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-
                                 //creating a popup menu
                                 PopupMenu popup = new PopupMenu(getActivity(), viewHolder.optionMenuP);
                                 //inflating menu from xml resource
                                 popup.inflate(R.menu.post_menu);
+
+
+                                //set enabled/disabled menu items
+                                if(posts.getUid().equals(currentUserID)){
+                                    popup.getMenu().findItem(R.id.post_view_menu).setVisible(true);
+                                    popup.getMenu().findItem(R.id.post_edit_menu).setVisible(true);
+                                    popup.getMenu().findItem(R.id.post_delete_menu).setVisible(true);
+                                }else{
+                                    popup.getMenu().findItem(R.id.post_view_menu).setVisible(true);
+                                    popup.getMenu().findItem(R.id.post_edit_menu).setVisible(false);
+                                    popup.getMenu().findItem(R.id.post_delete_menu).setVisible(false);
+                                }
+
                                 //adding click listener
                                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                                     @Override
                                     public boolean onMenuItemClick(MenuItem item) {
                                         switch (item.getItemId()) {
+                                            case R.id.post_view_menu:
+                                                Intent viewIntent = new Intent(getActivity(), SpecificPostActivity.class);
+                                                viewIntent.putExtra("post_id", PostKey);
+                                                viewIntent.putExtra("feed_type", "GroupFeed");
+                                                startActivity(viewIntent);
+                                                return true;
                                             case R.id.post_edit_menu:
                                                 Intent clickPostIntent = new Intent(getActivity(), ClickPostActivity.class);
                                                 clickPostIntent.putExtra("PostKey", PostKey);
+                                                clickPostIntent.putExtra("from_feed", "GroupFeed");
                                                 startActivity(clickPostIntent);
                                                 return true;
                                             case R.id.post_delete_menu:
@@ -844,11 +864,13 @@ public class GroupFragment extends Fragment {
                                         }
                                     }
                                 });
+
                                 //displaying the popup
                                 popup.show();
 
                             }
                         });
+
 
                         viewHolder.CommentBtn.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -929,7 +951,16 @@ public class GroupFragment extends Fragment {
                                         viewHolder.lp.setVisibility(View.GONE);
                                     }
 
-                                    viewHolder.profilell.setOnClickListener(new View.OnClickListener() {
+                                    viewHolder.username.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            Intent profileIntent =  new Intent(getActivity(), ViewOthersProfile.class);
+                                            profileIntent.putExtra("profileId",posts.getUid());
+                                            getActivity().startActivity(profileIntent);
+                                        }
+                                    });
+
+                                    viewHolder.image.setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
                                             Intent profileIntent =  new Intent(getActivity(), ViewOthersProfile.class);
@@ -962,7 +993,8 @@ public class GroupFragment extends Fragment {
         View mView;
         ImageButton LikeBtn;
         Button CommentBtn;
-        TextView DisplayNoOfLikes, optionMenuP;
+        TextView DisplayNoOfLikes, optionMenuP, username;
+        CircleImageView image;
         int countLikes;
         String currentUserId;
         LinearLayout lp, profilell;
@@ -981,6 +1013,9 @@ public class GroupFragment extends Fragment {
 //            LikepostButton = mView.findViewById(R.id.like_button);
 //            CommentPostButton = mView.findViewById(R.id.comment_button);
             DisplayNoOfLikes = mView.findViewById(R.id.display_no_of_likes);
+
+            username = (TextView) mView.findViewById(R.id.post_user_name);
+            image = (CircleImageView) mView.findViewById(R.id.post_profile_image);
 
             LikesRef = FirebaseDatabase.getInstance().getReference().child("GroupLikes");
             currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -1010,12 +1045,10 @@ public class GroupFragment extends Fragment {
         }
 
         public void setFullname(String fullname) {
-            TextView username = (TextView) mView.findViewById(R.id.post_user_name);
             username.setText(fullname);
         }
 
         public void setProfileimage(Context ctx, String profileimage) {
-            CircleImageView image = (CircleImageView) mView.findViewById(R.id.post_profile_image);
             if (profileimage.equals(""))
                 Picasso.with(ctx).load(R.drawable.profile).into(image);
             else
