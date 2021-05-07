@@ -1,9 +1,11 @@
 package ph.com.team.gobiker.ui.home;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -855,9 +857,30 @@ public class GroupFragment extends Fragment {
                                                 startActivity(clickPostIntent);
                                                 return true;
                                             case R.id.post_delete_menu:
-                                                PostsRef.child(PostKey).removeValue();
-                                                RetrieveGroupPosts();
-                                                Toast.makeText(getActivity(),"Post has been deleted.",Toast.LENGTH_SHORT).show();
+                                                DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialog, int which) {
+                                                        switch (which){
+                                                            case DialogInterface.BUTTON_POSITIVE:
+                                                                PostsRef.child(PostKey).removeValue();
+                                                                RetrieveGroupPosts();
+                                                                Toast.makeText(getActivity(),"Post has been deleted.",Toast.LENGTH_SHORT).show();
+                                                                break;
+                                                        }
+                                                    }
+                                                };
+
+                                                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.AlertDialogTheme);
+                                                builder.setMessage("Are you sure you want to delete this post?")
+                                                        .setPositiveButton("Yes", dialogClickListener)
+                                                        .setNegativeButton("No", dialogClickListener);
+
+                                                AlertDialog alert = builder.create();
+                                                alert.setOnShowListener(arg0 -> {
+                                                    alert.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorPrimary));
+                                                    alert.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorPrimaryDark));
+                                                });
+                                                alert.show();
                                                 return true;
                                             default:
                                                 return false;

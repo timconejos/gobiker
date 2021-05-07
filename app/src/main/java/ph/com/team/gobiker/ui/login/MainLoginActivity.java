@@ -8,7 +8,9 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -60,6 +62,7 @@ import ph.com.team.gobiker.R;
 import ph.com.team.gobiker.SetupActivity;
 import ph.com.team.gobiker.SetupWithExistingActivity;
 import ph.com.team.gobiker.login;
+import ph.com.team.gobiker.ui.home.GroupDetailsActivity;
 import ph.com.team.gobiker.ui.login.LoginViewModel;
 import ph.com.team.gobiker.ui.login.LoginViewModelFactory;
 import ph.com.team.gobiker.ui.map.PermissionUtils;
@@ -280,8 +283,30 @@ public class MainLoginActivity extends AppCompatActivity {
             CheckUserExistence();
         }
         else{
-            Toast.makeText(this,"Please verify your account first",Toast.LENGTH_SHORT).show();
-            mAuth.signOut();
+            DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    switch (which){
+                        case DialogInterface.BUTTON_NEGATIVE:
+                            user.sendEmailVerification();
+                            Toast.makeText(MainLoginActivity.this, "We have sent you a new verification email. If you have not received a new email in a few minutes please try again.", Toast.LENGTH_SHORT).show();
+                            mAuth.signOut();
+                            break;
+                    }
+                }
+            };
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(MainLoginActivity.this, R.style.AlertDialogTheme);
+            builder.setMessage("Please verify your account first")
+                    .setPositiveButton("Ok", dialogClickListener)
+                    .setNegativeButton("Re-send Email Verification", dialogClickListener);
+
+            AlertDialog alert = builder.create();
+            alert.setOnShowListener(arg0 -> {
+                alert.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorPrimary));
+                alert.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorPrimaryDark));
+            });
+            alert.show();
         }
     }
 
