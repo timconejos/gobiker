@@ -165,11 +165,12 @@ public class ChatFragment extends Fragment {
         InitializeVariables();
         chatNotifListener();
 
+        chatList = (RecyclerView) root.findViewById(R.id.all_users_msgs_list);
+
         //new chat users array
         profileList = new ArrayList<>();
 
         //chat messages adapter
-        chatList = (RecyclerView) root.findViewById(R.id.all_users_msgs_list);
         chatList.setHasFixedSize(true);
         chatList.setNestedScrollingEnabled(false);
         chatList.setItemViewCacheSize(20);
@@ -191,10 +192,15 @@ public class ChatFragment extends Fragment {
 
     public void InitializeVariables(){
         mAuth = FirebaseAuth.getInstance();
-        currentUserID = mAuth.getCurrentUser().getUid();
-        UsersRef = FirebaseDatabase.getInstance().getReference().child("Users");
-        GroupChatRef = FirebaseDatabase.getInstance().getReference().child("GroupChats");
-        MessagesRef = FirebaseDatabase.getInstance().getReference().child("Messages").child(currentUserID);
+        if(mAuth.getCurrentUser() != null){
+            currentUserID = mAuth.getCurrentUser().getUid();
+            UsersRef = FirebaseDatabase.getInstance().getReference().child("Users");
+            GroupChatRef = FirebaseDatabase.getInstance().getReference().child("GroupChats");
+
+            if(currentUserID != null){
+                MessagesRef = FirebaseDatabase.getInstance().getReference().child("Messages").child(currentUserID);
+            }
+        }
     }
 
     public class ViewChatDialog {
@@ -463,94 +469,96 @@ public class ChatFragment extends Fragment {
     }
 
     public void chatNotifListener(){
-        MessagesRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(!gcActivity.chatNotifier && !chatActivity.chatNotifier){
-                    chatctr = 0;
-                    idTempArr = new ArrayList<>();
-                    for(DataSnapshot idsnapshot : snapshot.getChildren()) {
-                        Query q = MessagesRef.child(idsnapshot.getKey()).orderByKey().limitToLast(1);
-                        q.addChildEventListener(new ChildEventListener() {
-                            @Override
-                            public void onChildAdded(@NonNull DataSnapshot childSnapshot, @Nullable String previousChildName) {
-                                UsersRef.child(childSnapshot.child("from").getValue().toString()).addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                        if (dataSnapshot.exists()) {
-                                            boolean isSeen;
-                                            if(!idTempArr.contains(childSnapshot.getKey()+","+childSnapshot.child("from").getValue().toString())){
-                                                if(dataSnapshot.hasChild("fullname")){
-                                                    isSeen = (boolean) childSnapshot.child("isSeen").getValue();
-                                                    if(!isSeen){
-                                                        if(!childSnapshot.child("from").getValue().toString().equals(currentUserID)){
-                                                            UsersRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                                                                @Override
-                                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                                    chatctr++;
-                                                                    if(snapshot.hasChild(idsnapshot.getKey())){
-                                                                        mListener.passChatCtr(chatctr, dataSnapshot.child("fullname").getValue().toString(), childSnapshot.child("message").getValue().toString(), childSnapshot.getKey(), idsnapshot.getKey(), "single");
-                                                                    }else{
-                                                                        mListener.passChatCtr(chatctr, dataSnapshot.child("fullname").getValue().toString(), childSnapshot.child("message").getValue().toString(), childSnapshot.getKey(), idsnapshot.getKey(), "group");
+        if(mAuth.getCurrentUser() != null){
+            MessagesRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if(!gcActivity.chatNotifier && !chatActivity.chatNotifier){
+                        chatctr = 0;
+                        idTempArr = new ArrayList<>();
+                        for(DataSnapshot idsnapshot : snapshot.getChildren()) {
+                            Query q = MessagesRef.child(idsnapshot.getKey()).orderByKey().limitToLast(1);
+                            q.addChildEventListener(new ChildEventListener() {
+                                @Override
+                                public void onChildAdded(@NonNull DataSnapshot childSnapshot, @Nullable String previousChildName) {
+                                    UsersRef.child(childSnapshot.child("from").getValue().toString()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                            if (dataSnapshot.exists()) {
+                                                boolean isSeen;
+                                                if(!idTempArr.contains(childSnapshot.getKey()+","+childSnapshot.child("from").getValue().toString())){
+                                                    if(dataSnapshot.hasChild("fullname")){
+                                                        isSeen = (boolean) childSnapshot.child("isSeen").getValue();
+                                                        if(!isSeen){
+                                                            if(!childSnapshot.child("from").getValue().toString().equals(currentUserID)){
+                                                                UsersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                                    @Override
+                                                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                                        chatctr++;
+                                                                        if(snapshot.hasChild(idsnapshot.getKey())){
+                                                                            mListener.passChatCtr(chatctr, dataSnapshot.child("fullname").getValue().toString(), childSnapshot.child("message").getValue().toString(), childSnapshot.getKey(), idsnapshot.getKey(), "single");
+                                                                        }else{
+                                                                            mListener.passChatCtr(chatctr, dataSnapshot.child("fullname").getValue().toString(), childSnapshot.child("message").getValue().toString(), childSnapshot.getKey(), idsnapshot.getKey(), "group");
+                                                                        }
                                                                     }
-                                                                }
 
-                                                                @Override
-                                                                public void onCancelled(@NonNull DatabaseError error) {
+                                                                    @Override
+                                                                    public void onCancelled(@NonNull DatabaseError error) {
 
-                                                                }
-                                                            });
+                                                                    }
+                                                                });
+                                                            }else{
+                                                                mListener.passChatCtr(chatctr, "none", "", "", "", "");
+                                                            }
                                                         }else{
                                                             mListener.passChatCtr(chatctr, "none", "", "", "", "");
                                                         }
-                                                    }else{
-                                                        mListener.passChatCtr(chatctr, "none", "", "", "", "");
+                                                        idTempArr.add(childSnapshot.getKey()+","+childSnapshot.child("from").getValue().toString());
                                                     }
-                                                    idTempArr.add(childSnapshot.getKey()+","+childSnapshot.child("from").getValue().toString());
                                                 }
                                             }
                                         }
-                                    }
 
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError error) {
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
 
-                                    }
-                                });
-                            }
+                                        }
+                                    });
+                                }
 
-                            @Override
-                            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                                @Override
+                                public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
 
-                            }
+                                }
 
-                            @Override
-                            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+                                @Override
+                                public void onChildRemoved(@NonNull DataSnapshot snapshot) {
 
-                            }
+                                }
 
-                            @Override
-                            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                                @Override
+                                public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
 
-                            }
+                                }
 
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
 
-                            }
-                        });
+                                }
+                            });
+                        }
+                    }else{
+                        chatctr = 0;
+                        idTempArr = new ArrayList<>();
                     }
-                }else{
-                    chatctr = 0;
-                    idTempArr = new ArrayList<>();
                 }
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
 
-            }
-        });
+                }
+            });
+        }
     }
 
 

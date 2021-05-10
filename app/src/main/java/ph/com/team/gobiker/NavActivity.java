@@ -62,32 +62,36 @@ public class NavActivity extends AppCompatActivity implements NotificationsFragm
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nav);
         mAuth = FirebaseAuth.getInstance();
-        UsersRef = FirebaseDatabase.getInstance().getReference().child("Users");
-        navView = findViewById(R.id.nav_view);
 
-        //retrieve notification counter for nav badge
-        notifFrag = new NotificationsFragment();
-        notifFrag.setListener(this);
-        notifFrag.initializeVariables();
-        notifFrag.notificationListener("fromnavactivity");
+        if(mAuth.getCurrentUser() != null){
+            UsersRef = FirebaseDatabase.getInstance().getReference().child("Users");
+            navView = findViewById(R.id.nav_view);
 
-        chatFrag = new ChatFragment();
-        chatFrag.setListener(this);
-        chatFrag.InitializeVariables();
-        chatFrag.chatNotifListener();
+            //retrieve notification counter for nav badge
+            notifFrag = new NotificationsFragment();
+            notifFrag.setListener(this);
+            notifFrag.initializeVariables();
+            notifFrag.notificationListener("fromnavactivity");
 
-        chatNotifArr = new ArrayList<>();
+            chatFrag = new ChatFragment();
+            chatFrag.setListener(this);
+            chatFrag.InitializeVariables();
+            chatFrag.chatNotifListener();
+
+            chatNotifArr = new ArrayList<>();
 
 
-        context = new GeoApiContext.Builder().apiKey(getString(R.string.google_maps_key)).build();
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications, R.id.navigation_map,R.id.navigation_chat)
-                .build();
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-        //NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-        NavigationUI.setupWithNavController(navView, navController);
+            context = new GeoApiContext.Builder().apiKey(getString(R.string.google_maps_key)).build();
+            // Passing each menu ID as a set of Ids because each
+            // menu should be considered as top level destinations.
+            AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
+                    R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications, R.id.navigation_map,R.id.navigation_chat)
+                    .build();
+            NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+            //NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+            NavigationUI.setupWithNavController(navView, navController);
+        }
+
         final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         this.mWakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "MyTag:");
         this.mWakeLock.acquire();
@@ -96,7 +100,6 @@ public class NavActivity extends AppCompatActivity implements NotificationsFragm
     @Override
     protected void onStart(){
         super.onStart();
-
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
         if (currentUser == null){

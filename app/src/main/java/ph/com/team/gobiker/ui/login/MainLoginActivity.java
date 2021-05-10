@@ -282,7 +282,9 @@ public class MainLoginActivity extends AppCompatActivity {
         emailAddressChecker = user.isEmailVerified();
 
         if (emailAddressChecker){
-            CheckUserExistence();
+            if(user != null){
+                CheckUserExistence();
+            }
         }
         else{
             DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
@@ -374,8 +376,11 @@ public class MainLoginActivity extends AppCompatActivity {
         currentStateMap.put("date",saveCurrentDate);
         currentStateMap.put("type",state);
 
-        UsersRef.child(mAuth.getCurrentUser().getUid()).child("userState")
-                .updateChildren(currentStateMap);
+        if(mAuth.getCurrentUser() != null){
+            UsersRef.child(mAuth.getCurrentUser().getUid()).child("userState")
+                    .updateChildren(currentStateMap);
+        }
+
     }
 
     private void firebaseAuthWithGoogle(String idToken) {

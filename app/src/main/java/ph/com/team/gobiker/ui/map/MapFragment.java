@@ -287,24 +287,26 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     }
 
     private void setupUser() {
-        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        currentUserUID = userId;
-        currentUserData = new User(userId);
-        FirebaseDatabase.getInstance().getReference().child("Users").child(userId).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                currentUserData.setFullname(dataSnapshot.child("fullname").getValue().toString());
-                currentUserData.setGender(dataSnapshot.child("gender").getValue().toString());
-                currentUserData.setAge(Integer.parseInt(dataSnapshot.child("age").getValue().toString()));
-                currentUserData.setHeight(Float.parseFloat(dataSnapshot.child("height").getValue().toString()));
-                currentUserData.setWeight(Float.parseFloat(dataSnapshot.child("weight").getValue().toString()));
-            }
+        if(FirebaseAuth.getInstance().getCurrentUser() != null){
+            String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+            currentUserUID = userId;
+            currentUserData = new User(userId);
+            FirebaseDatabase.getInstance().getReference().child("Users").child(userId).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    currentUserData.setFullname(dataSnapshot.child("fullname").getValue().toString());
+                    currentUserData.setGender(dataSnapshot.child("gender").getValue().toString());
+                    currentUserData.setAge(Integer.parseInt(dataSnapshot.child("age").getValue().toString()));
+                    currentUserData.setHeight(Float.parseFloat(dataSnapshot.child("height").getValue().toString()));
+                    currentUserData.setWeight(Float.parseFloat(dataSnapshot.child("weight").getValue().toString()));
+                }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
 
-            }
-        });
+                }
+            });
+        }
     }
 
     @Override

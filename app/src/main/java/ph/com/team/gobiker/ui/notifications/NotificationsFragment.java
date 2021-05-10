@@ -119,16 +119,15 @@ public class NotificationsFragment extends Fragment {
 
     public void initializeVariables(){
         mAuth = FirebaseAuth.getInstance();
-
-        UsersRef = FirebaseDatabase.getInstance().getReference().child("Users");
-        PostsRef = FirebaseDatabase.getInstance().getReference().child("Posts");
-        LikesRef = FirebaseDatabase.getInstance().getReference().child("Likes");
-        GroupsRef = FirebaseDatabase.getInstance().getReference().child("Groups");
-        GroupPostsRef = FirebaseDatabase.getInstance().getReference().child("GroupPosts");
-        GroupLikesRef = FirebaseDatabase.getInstance().getReference().child("GroupLikes");
-
-        if(mAuth != null){
+        if(mAuth.getCurrentUser() != null){
             currentUserID = mAuth.getCurrentUser().getUid();
+
+            UsersRef = FirebaseDatabase.getInstance().getReference().child("Users");
+            PostsRef = FirebaseDatabase.getInstance().getReference().child("Posts");
+            LikesRef = FirebaseDatabase.getInstance().getReference().child("Likes");
+            GroupsRef = FirebaseDatabase.getInstance().getReference().child("Groups");
+            GroupPostsRef = FirebaseDatabase.getInstance().getReference().child("GroupPosts");
+            GroupLikesRef = FirebaseDatabase.getInstance().getReference().child("GroupLikes");
         }
 
         listItems = new ArrayList<>();
@@ -136,77 +135,79 @@ public class NotificationsFragment extends Fragment {
     }
 
     public void notificationListener(String fromtype){
-        PostsRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                checkPostActivities(fromtype);
-            }
+        if(mAuth.getCurrentUser() != null){
+            PostsRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    checkPostActivities(fromtype);
+                }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
 
-            }
-        });
+                }
+            });
 
-        LikesRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                checkPostActivities(fromtype);
-            }
+            LikesRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    checkPostActivities(fromtype);
+                }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
 
-            }
-        });
+                }
+            });
 
-        UsersRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                checkPostActivities(fromtype);
-            }
+            UsersRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    checkPostActivities(fromtype);
+                }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
 
-            }
-        });
+                }
+            });
 
-        GroupsRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                checkPostActivities(fromtype);
-            }
+            GroupsRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    checkPostActivities(fromtype);
+                }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
 
-            }
-        });
+                }
+            });
 
-        GroupPostsRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                checkPostActivities(fromtype);
-            }
+            GroupPostsRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    checkPostActivities(fromtype);
+                }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
 
-            }
-        });
+                }
+            });
 
-        GroupLikesRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                checkPostActivities(fromtype);
-            }
+            GroupLikesRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    checkPostActivities(fromtype);
+                }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
 
-            }
-        });
+                }
+            });
+        }
     }
 
     public void checkPostActivities(String fromtype){
