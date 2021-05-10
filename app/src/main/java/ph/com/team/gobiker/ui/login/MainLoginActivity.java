@@ -37,6 +37,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
@@ -72,7 +73,7 @@ public class MainLoginActivity extends AppCompatActivity {
     private LoginViewModel loginViewModel;
     private Button noAccBtn, forgotPassBtn, loginButton, googleButton;
     private EditText UserEmail, UserPassword;
-    private ProgressDialog loadingBar;
+    private ProgressDialog loadingBar, confirmationLoading;
     private FirebaseAuth mAuth;
     private Boolean emailAddressChecker;
     private DatabaseReference UsersRef;
@@ -103,6 +104,7 @@ public class MainLoginActivity extends AppCompatActivity {
         noAccBtn = findViewById(R.id.login_no_account);
         forgotPassBtn = findViewById(R.id.login_forgot_pass);
         loadingBar = new ProgressDialog(this);
+        confirmationLoading = new ProgressDialog(this);
         mAuth = FirebaseAuth.getInstance();
 
         noAccBtn.setOnClickListener(new View.OnClickListener() {
@@ -286,10 +288,25 @@ public class MainLoginActivity extends AppCompatActivity {
             DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
+                    confirmationLoading.setTitle("Loading");
+                    confirmationLoading.setMessage("Please wait, while we are sending you a new verification email...");
+                    confirmationLoading.setCanceledOnTouchOutside(true);
+                    confirmationLoading.show();
                     switch (which){
                         case DialogInterface.BUTTON_NEGATIVE:
-                            user.sendEmailVerification();
-                            Toast.makeText(MainLoginActivity.this, "We have sent you a new verification email. If you have not received a new email in a few minutes please try again.", Toast.LENGTH_SHORT).show();
+                            user.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    Toast.makeText(MainLoginActivity.this, "We have sent you a new verification email. If you have not received a new email in a few minutes please try again.", Toast.LENGTH_SHORT).show();
+                                    confirmationLoading.dismiss();
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(MainLoginActivity.this, "Something went wrong. Please please try again.", Toast.LENGTH_SHORT).show();
+                                    confirmationLoading.dismiss();
+                                }
+                            });
                             mAuth.signOut();
                             break;
                     }

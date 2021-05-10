@@ -126,7 +126,10 @@ public class NotificationsFragment extends Fragment {
         GroupsRef = FirebaseDatabase.getInstance().getReference().child("Groups");
         GroupPostsRef = FirebaseDatabase.getInstance().getReference().child("GroupPosts");
         GroupLikesRef = FirebaseDatabase.getInstance().getReference().child("GroupLikes");
-        currentUserID = mAuth.getCurrentUser().getUid();
+
+        if(mAuth != null){
+            currentUserID = mAuth.getCurrentUser().getUid();
+        }
 
         listItems = new ArrayList<>();
         notificationSeenItems = new ArrayList<>();

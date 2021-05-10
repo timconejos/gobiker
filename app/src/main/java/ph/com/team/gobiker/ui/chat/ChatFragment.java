@@ -421,6 +421,7 @@ public class ChatFragment extends Fragment {
                         gcdialog.dismiss();
                         Intent profileIntent =  new Intent(getActivity().getApplicationContext(), ChatGroupActivity.class);
                         profileIntent.putExtra("gcKey", gcKey);
+                        profileIntent.putExtra("from", "chatfragment");
                         startActivity(profileIntent);
                     }
                     else{
