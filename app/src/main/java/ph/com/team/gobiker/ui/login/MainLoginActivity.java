@@ -299,15 +299,16 @@ public class MainLoginActivity extends AppCompatActivity {
                                 public void onComplete(@NonNull Task<Void> task) {
                                     Toast.makeText(MainLoginActivity.this, "We have sent you a new verification email. If you have not received a new email in a few minutes please try again.", Toast.LENGTH_SHORT).show();
                                     confirmationLoading.dismiss();
+                                    mAuth.signOut();
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
                                     Toast.makeText(MainLoginActivity.this, "Something went wrong. Please please try again.", Toast.LENGTH_SHORT).show();
                                     confirmationLoading.dismiss();
+                                    mAuth.signOut();
                                 }
                             });
-                            mAuth.signOut();
                             break;
                     }
                 }
