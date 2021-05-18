@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
@@ -60,11 +61,10 @@ public class FollowersActivity extends AppCompatActivity {
                 ) {
                     @Override
                     protected void populateViewHolder(final FollowersActivity.FollowersViewHolder likesViewHolder, Followers likes, int i) {
-                        //likesViewHolder.setUsername(getRef(i).getKey());
-
                         UsersRef.child(getRef(i).getKey()).addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                likesViewHolder.linearalllike.setVisibility(View.GONE);
                                 if (dataSnapshot.exists()) {
                                     if (dataSnapshot.hasChild("following")){
                                         if (dataSnapshot.child("following").hasChild(receiverUserId)){
@@ -73,17 +73,9 @@ public class FollowersActivity extends AppCompatActivity {
                                                 likesViewHolder.setProfileimage(getApplicationContext(), dataSnapshot.child("profileimage").getValue().toString());
                                             else
                                                 likesViewHolder.setProfileimage(getApplicationContext(), "");
+
+                                            likesViewHolder.linearalllike.setVisibility(View.VISIBLE);
                                         }
-                                        else{
-                                            likesViewHolder.image.setVisibility(View.GONE);
-                                            likesViewHolder.myUserName.setVisibility(View.GONE);
-                                            likesViewHolder.linearalllike.setVisibility(View.GONE);
-                                        }
-                                    }
-                                    else{
-                                        likesViewHolder.image.setVisibility(View.GONE);
-                                        likesViewHolder.myUserName.setVisibility(View.GONE);
-                                        likesViewHolder.linearalllike.setVisibility(View.GONE);
                                     }
                                 }
                             }
@@ -95,7 +87,6 @@ public class FollowersActivity extends AppCompatActivity {
                         });
                     }
                 };
-
         FollowersList.setAdapter(firebaseRecyclerAdapter);
     }
 
@@ -110,15 +101,14 @@ public class FollowersActivity extends AppCompatActivity {
             myUserName = mView.findViewById(R.id.likes_username);
             image = mView.findViewById(R.id.likes_profile_image);
             linearalllike = mView.findViewById(R.id.linearalllikes);
+            linearalllike.setVisibility(View.GONE);
         }
 
         public void setUsername(String username) {
-
             myUserName.setText(username);
         }
 
         public void setProfileimage(Context ctx, String profileimage) {
-
             if (profileimage.equals(""))
                 Picasso.with(ctx).load(R.drawable.profile).into(image);
             else

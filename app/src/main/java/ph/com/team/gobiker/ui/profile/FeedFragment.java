@@ -89,6 +89,14 @@ public class FeedFragment extends Fragment {
         });
 
         profileID = getArguments().getString("profileId");
+        mAuth = FirebaseAuth.getInstance();
+
+        UsersRef = FirebaseDatabase.getInstance().getReference().child("Users");
+        PostsRef = FirebaseDatabase.getInstance().getReference().child("Posts");
+        LikesRef = FirebaseDatabase.getInstance().getReference().child("Likes");
+
+        mAuth = FirebaseAuth.getInstance();
+        currentUserId = mAuth.getCurrentUser().getUid();
 
         addNewPost = root.findViewById(R.id.add_new_post);
         addNewPost.setOnClickListener(new View.OnClickListener() {
@@ -98,14 +106,13 @@ public class FeedFragment extends Fragment {
             }
         });
 
-        mAuth = FirebaseAuth.getInstance();
+        addNewPost.setVisibility(View.GONE);
 
-        UsersRef = FirebaseDatabase.getInstance().getReference().child("Users");
-        PostsRef = FirebaseDatabase.getInstance().getReference().child("Posts");
-        LikesRef = FirebaseDatabase.getInstance().getReference().child("Likes");
-
-        mAuth = FirebaseAuth.getInstance();
-        currentUserId = mAuth.getCurrentUser().getUid();
+        if(!profileID.equals(mAuth.getCurrentUser().getUid())){
+            addNewPost.setVisibility(View.GONE);
+        }else{
+            addNewPost.setVisibility(View.VISIBLE);
+        }
 
         postList = root.findViewById(R.id.all_users_post_list);
         postList.setHasFixedSize(true);
@@ -127,13 +134,6 @@ public class FeedFragment extends Fragment {
                 }
             }, 2500);
         });
-
-
-        if(!profileID.equals(mAuth.getCurrentUser().getUid())){
-            addNewPost.setVisibility(View.GONE);
-        }else{
-            addNewPost.setVisibility(View.VISIBLE);
-        }
 
         return root;
     }
