@@ -191,7 +191,7 @@ public class FeedFragment extends Fragment {
                                 viewHolder.setPostimage(getActivity().getApplicationContext(), posts.getPostimage());
                             }
 
-                            viewHolder.setLikeButtonStatus(PostKey, profileID);
+                            viewHolder.setLikeButtonStatus(PostKey, currentUserId);
 
                             viewHolder.PostImage.setOnClickListener(new View.OnClickListener() {
                                 @Override

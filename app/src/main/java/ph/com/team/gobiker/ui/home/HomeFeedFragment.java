@@ -139,12 +139,14 @@ public class HomeFeedFragment extends Fragment {
                         SortPostsInDescendingOrder) {
                     @Override
                     protected void populateViewHolder(final PostsViewHolder viewHolder, final Posts posts, int position) {
-
                         final String PostKey = getRef(position).getKey();
 
                         UsersRef.child(currentUserID).child("following").addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                viewHolder.mView.setVisibility(View.GONE);
+                                viewHolder.lp.setVisibility(View.GONE);
+
                                 if (dataSnapshot.hasChild(posts.getUid()) || posts.getUid().equals(currentUserID)){
                                     viewHolder.mView.setVisibility(View.VISIBLE);
                                     viewHolder.lp.setVisibility(View.VISIBLE);
@@ -174,7 +176,7 @@ public class HomeFeedFragment extends Fragment {
 
                                     }
                                     else {
-                                        viewHolder.setPostimage(getActivity().getApplicationContext(), posts.getPostimage());
+                                        viewHolder.setPostimage(getActivity(), posts.getPostimage());
                                     }
 
                                     viewHolder.setLikeButtonStatus(PostKey);
