@@ -51,8 +51,10 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -60,6 +62,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -588,10 +591,14 @@ public class ChatFragment extends Fragment {
 
                                                 String datetimehldr = "";
                                                 SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+                                                SimpleDateFormat format = new SimpleDateFormat("MM-dd-yyyy");
                                                 try{
+                                                    Date convertedDate = format.parse(childSnapshot.child("date").getValue().toString());
+                                                    String newDateHldr = DateFormat.getDateInstance(DateFormat.MEDIUM).format(convertedDate);
+
                                                     Date date3 = sdf.parse(childSnapshot.child("time").getValue().toString());
                                                     SimpleDateFormat sdf2 = new SimpleDateFormat("hh:mm aa");
-                                                    datetimehldr = childSnapshot.child("date").getValue().toString()+" "+sdf2.format(date3);
+                                                    datetimehldr = newDateHldr+" "+sdf2.format(date3);
                                                 }catch(ParseException e){
                                                     e.printStackTrace();
                                                 }
@@ -650,10 +657,14 @@ public class ChatFragment extends Fragment {
                                         for (DataSnapshot childGroupSnapshot: groupquerysnapshot.getChildren()) {
                                             String datetimehldr = "";
                                             SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-                                            try {
+                                            SimpleDateFormat format = new SimpleDateFormat("MM-dd-yyyy");
+                                            try{
+                                                Date convertedDate = format.parse(childGroupSnapshot.child("date").getValue().toString());
+                                                String newDateHldr = DateFormat.getDateInstance(DateFormat.MEDIUM).format(convertedDate);
+
                                                 Date date3 = sdf.parse(childGroupSnapshot.child("time").getValue().toString());
                                                 SimpleDateFormat sdf2 = new SimpleDateFormat("hh:mm aa");
-                                                datetimehldr = childGroupSnapshot.child("date").getValue().toString() + " " + sdf2.format(date3);
+                                                datetimehldr = newDateHldr + " " + sdf2.format(date3);
                                             } catch (ParseException e) {
                                                 e.printStackTrace();
                                             }
@@ -724,7 +735,23 @@ public class ChatFragment extends Fragment {
 
     public class TimeStampComparator implements Comparator<FindChat> {
         public int compare(FindChat left, FindChat right) {
-            return left.getDatetime().compareTo(right.getDatetime());
+            SimpleDateFormat datetimeformat = new SimpleDateFormat("dd MMM yyyy hh:mm aa");
+            SimpleDateFormat datetimeformat2 = new SimpleDateFormat("MM-dd-yyyy hh:mm aa");
+            Date dateHldrL = new Date();
+            Date dateHldrR = new Date();
+            String newDateL = "";
+            String newDateR = "";
+            try{
+                dateHldrL = datetimeformat.parse(left.getDatetime());
+                dateHldrR = datetimeformat.parse(right.getDatetime());
+
+                newDateL = datetimeformat2.format(dateHldrL);
+                newDateR = datetimeformat2.format(dateHldrR);
+
+            }catch(ParseException e){
+                e.printStackTrace();
+            }
+            return newDateL.compareTo(newDateR);
         }
     }
 }

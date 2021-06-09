@@ -64,7 +64,6 @@ public class FollowersActivity extends AppCompatActivity {
                         UsersRef.child(getRef(i).getKey()).addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                likesViewHolder.linearalllike.setVisibility(View.GONE);
                                 if (dataSnapshot.exists()) {
                                     if (dataSnapshot.hasChild("following")){
                                         if (dataSnapshot.child("following").hasChild(receiverUserId)){
@@ -101,7 +100,7 @@ public class FollowersActivity extends AppCompatActivity {
             myUserName = mView.findViewById(R.id.likes_username);
             image = mView.findViewById(R.id.likes_profile_image);
             linearalllike = mView.findViewById(R.id.linearalllikes);
-            linearalllike.setVisibility(View.GONE);
+            linearalllike.setVisibility(View.INVISIBLE);
         }
 
         public void setUsername(String username) {
