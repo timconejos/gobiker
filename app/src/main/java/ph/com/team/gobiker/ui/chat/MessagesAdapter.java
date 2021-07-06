@@ -36,6 +36,7 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -115,14 +116,21 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
                     }
                 }
 
+                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+                SimpleDateFormat format = new SimpleDateFormat("MM-dd-yyyy");
+                String datetimehldr = "";
+
                 if (fromMessageType.equals("text")){
                     holder.ReceiverMessageFile.setVisibility(View.GONE);
                     holder.SenderMessageFile.setVisibility(View.GONE);
 
-                    SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
                     try{
+                        Date convertedDate = format.parse(messages.getDate());
+                        String newDateHldr = DateFormat.getDateInstance(DateFormat.MEDIUM).format(convertedDate);
+
                         Date date3 = sdf.parse(messages.getTime());
                         SimpleDateFormat sdf2 = new SimpleDateFormat("hh:mm aa");
+                        datetimehldr = newDateHldr+" "+sdf2.format(date3);
                         GradientDrawable shape = new GradientDrawable();
                         shape.setShape(GradientDrawable.RECTANGLE);
                         shape.setCornerRadii(new float[] { 15, 15, 15, 15, 15, 15, 15, 15 });
@@ -136,7 +144,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
                             holder.SenderMessageText.setBackground(shape);
                             holder.SenderMessageText.setTextColor(Color.rgb(51, 50, 48));
                             holder.SenderMessageText.setGravity(Gravity.LEFT);
-                            holder.SenderMessageText.setText(messages.getMessage()+"\n"+messages.getDate()+" "+sdf2.format(date3));
+                            holder.SenderMessageText.setText(messages.getMessage()+"\n"+datetimehldr);
                         }
                         else{
                             holder.receiverProfileImage.setVisibility(View.VISIBLE);
@@ -149,7 +157,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
                             holder.ReceiverMessageText.setBackground(shape);
                             holder.ReceiverMessageText.setTextColor(Color.WHITE);
                             holder.ReceiverMessageText.setGravity(Gravity.LEFT);
-                            holder.ReceiverMessageText.setText(messages.getMessage()+"\n"+messages.getDate()+" "+sdf2.format(date3));
+                            holder.ReceiverMessageText.setText(messages.getMessage()+"\n"+datetimehldr);
                         }
                     }catch(ParseException e){
                         e.printStackTrace();
@@ -158,10 +166,14 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
                     holder.ReceiverMessageFile.setVisibility(View.VISIBLE);
                     holder.SenderMessageFile.setVisibility(View.VISIBLE);
 
-                    SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
                     try{
+                        Date convertedDate = format.parse(messages.getDate());
+                        String newDateHldr = DateFormat.getDateInstance(DateFormat.MEDIUM).format(convertedDate);
+
                         Date date3 = sdf.parse(messages.getTime());
                         SimpleDateFormat sdf2 = new SimpleDateFormat("hh:mm aa");
+                        datetimehldr = newDateHldr+" "+sdf2.format(date3);
+
                         GradientDrawable shape = new GradientDrawable();
                         shape.setShape(GradientDrawable.RECTANGLE);
                         shape.setCornerRadii(new float[] { 15, 15, 15, 15, 15, 15, 15, 15 });
@@ -175,7 +187,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
                             holder.SenderMessageText.setBackground(shape);
                             holder.SenderMessageText.setTextColor(Color.rgb(74, 74, 74));
                             holder.SenderMessageText.setGravity(Gravity.LEFT);
-                            holder.SenderMessageText.setText(messages.getMessage()+"\n"+messages.getDate()+" "+sdf2.format(date3));
+                            holder.SenderMessageText.setText(messages.getMessage()+"\n"+datetimehldr);
                             Picasso.with(context)
                                     .load(messages.getFileString())
                                     .placeholder(R.drawable.image_placeholder)
@@ -201,7 +213,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
                             holder.ReceiverMessageText.setBackground(shape);
                             holder.ReceiverMessageText.setTextColor(Color.WHITE);
                             holder.ReceiverMessageText.setGravity(Gravity.LEFT);
-                            holder.ReceiverMessageText.setText(messages.getMessage()+"\n"+messages.getDate()+" "+sdf2.format(date3));
+                            holder.ReceiverMessageText.setText(messages.getMessage()+"\n"+datetimehldr);
                             Picasso.with(context)
                                     .load(messages.getFileString())
                                     .placeholder(R.drawable.image_placeholder)
@@ -226,10 +238,13 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
                     holder.ReceiverMessageFile.setVisibility(View.GONE);
                     holder.SenderMessageFile.setVisibility(View.GONE);
 
-                    SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
                     try{
+                        Date convertedDate = format.parse(messages.getDate());
+                        String newDateHldr = DateFormat.getDateInstance(DateFormat.MEDIUM).format(convertedDate);
+
                         Date date3 = sdf.parse(messages.getTime());
                         SimpleDateFormat sdf2 = new SimpleDateFormat("hh:mm aa");
+                        datetimehldr = newDateHldr+" "+sdf2.format(date3);
                         GradientDrawable shape = new GradientDrawable();
                         shape.setShape(GradientDrawable.RECTANGLE);
                         shape.setCornerRadii(new float[] { 15, 15, 15, 15, 15, 15, 15, 15 });
@@ -243,7 +258,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
                             holder.SenderMessageText.setBackground(shape);
                             holder.SenderMessageText.setTextColor(Color.rgb(74, 74, 74));
                             holder.SenderMessageText.setGravity(Gravity.LEFT);
-                            holder.SenderMessageText.setText(messages.getMessage()+"\n"+messages.getDate()+" "+sdf2.format(date3));
+                            holder.SenderMessageText.setText(messages.getMessage()+"\n"+datetimehldr);
                             holder.SenderMessageText.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
@@ -266,7 +281,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
                             holder.ReceiverMessageText.setBackground(shape);
                             holder.ReceiverMessageText.setTextColor(Color.WHITE);
                             holder.ReceiverMessageText.setGravity(Gravity.LEFT);
-                            holder.ReceiverMessageText.setText(messages.getMessage()+"\n"+messages.getDate()+" "+sdf2.format(date3));
+                            holder.ReceiverMessageText.setText(messages.getMessage()+"\n"+datetimehldr);
                             holder.ReceiverMessageText.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {

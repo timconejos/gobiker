@@ -585,18 +585,37 @@ public class ChatGroupActivity extends AppCompatActivity {
                     List<String> selectedListHldr = new ArrayList<>();
                     List<String> idHldr = new ArrayList<>();
                     ArrayList<Map> messageArr = new ArrayList<>();
+                    ArrayList<Map> messageSenderArr = new ArrayList<>();
 
                     idHldr.add(messageSenderID);
                     for(int x=0; x<profileSelectedList.size(); x++){
                         if(!messageReceivers.contains(profileSelectedList.get(x).getUid()+" / "+profileSelectedList.get(x).getDescription())){
                             Toast.makeText(context, curr_name_hldr+" has added "+profileSelectedList.get(x).getDescription()+" to the group chat.", Toast.LENGTH_SHORT).show();
+
                             Map messageTextBody = new HashMap();
+                            Map receiverTextBody = new HashMap();
+                            Map senderTextBody = new HashMap();
+
                             messageTextBody.put("message", curr_name_hldr+" has added "+profileSelectedList.get(x).getDescription()+" to the group chat.");
                             messageTextBody.put("time",saveCurrentTime);
                             messageTextBody.put("date",saveCurrentDate);
                             messageTextBody.put("type","text");
                             messageTextBody.put("from",messageSenderID);
-                            messageArr.add(messageTextBody);
+
+                            senderTextBody.putAll(messageTextBody);
+                            senderTextBody.put("isSeen", true);
+
+                            receiverTextBody.putAll(messageTextBody);
+                            receiverTextBody.put("isSeen", false);
+
+                            if(!messageArr.contains(receiverTextBody)){
+                                messageArr.add(receiverTextBody);
+                            }
+
+                            if(!messageSenderArr.contains(senderTextBody)){
+                                messageSenderArr.add(senderTextBody);
+                            }
+
                         }
                         selectedListHldr.add(profileSelectedList.get(x).getUid()+" / "+profileSelectedList.get(x).getDescription());
                         idHldr.add(profileSelectedList.get(x).getUid());
@@ -607,12 +626,28 @@ public class ChatGroupActivity extends AppCompatActivity {
                             if(!selectedListHldr.contains(messageReceivers.get(y))){
                                 Toast.makeText(context, curr_name_hldr+" has removed "+messageReceivers.get(y).split(" / ")[1]+" from the group chat.", Toast.LENGTH_SHORT).show();
                                 Map messageTextBody = new HashMap();
+                                Map receiverTextBody = new HashMap();
+                                Map senderTextBody = new HashMap();
+
                                 messageTextBody.put("message", curr_name_hldr+" has removed "+messageReceivers.get(y).split(" / ")[1]+" from the group chat.");
                                 messageTextBody.put("time",saveCurrentTime);
                                 messageTextBody.put("date",saveCurrentDate);
                                 messageTextBody.put("type","text");
                                 messageTextBody.put("from",messageSenderID);
-                                messageArr.add(messageTextBody);
+
+                                senderTextBody.putAll(messageTextBody);
+                                senderTextBody.put("isSeen", true);
+
+                                receiverTextBody.putAll(messageTextBody);
+                                receiverTextBody.put("isSeen", false);
+
+                                if(!messageArr.contains(receiverTextBody)){
+                                    messageArr.add(receiverTextBody);
+                                }
+
+                                if(!messageSenderArr.contains(senderTextBody)){
+                                    messageSenderArr.add(senderTextBody);
+                                }
                             }
                         }
                     }
@@ -624,7 +659,7 @@ public class ChatGroupActivity extends AppCompatActivity {
                         String message_push_id = user_message_key.getKey();
 
                         Map messageBodyDetails = new HashMap();
-                        messageBodyDetails.put(message_sender_ref+"/"+message_push_id,messageArr.get(z));
+                        messageBodyDetails.put(message_sender_ref+"/"+message_push_id,messageSenderArr.get(z));
                         for(int a=0; a<profileSelectedList.size(); a++){
                             if(!profileSelectedList.get(a).getUid().equals(messageSenderID)){
                                 String message_receiver_ref = "Messages/" + profileSelectedList.get(a).getUid() + "/" +  gcKey;
@@ -732,7 +767,11 @@ public class ChatGroupActivity extends AppCompatActivity {
                     saveCurrentTime = currentTime.format(calForDate.getTime());
 
                     Map messageTextBody = new HashMap();
+                    Map receiverTextBody = new HashMap();
+                    Map senderTextBody = new HashMap();
+
                     ArrayList<Map> messageArr = new ArrayList<>();
+                    ArrayList<Map> messageSenderArr = new ArrayList<>();
 
                     if(!edit_gc_name.getText().toString().equals(gc_name_hldr)){
                         messageTextBody.put("message", curr_name_hldr+" has changed group chat name to "+edit_gc_name.getText().toString());
@@ -740,7 +779,21 @@ public class ChatGroupActivity extends AppCompatActivity {
                         messageTextBody.put("date",saveCurrentDate);
                         messageTextBody.put("type","text");
                         messageTextBody.put("from",messageSenderID);
-                        messageArr.add(messageTextBody);
+
+                        senderTextBody.putAll(messageTextBody);
+                        senderTextBody.put("isSeen", true);
+
+                        receiverTextBody.putAll(messageTextBody);
+                        receiverTextBody.put("isSeen", false);
+
+                        if(!messageArr.contains(receiverTextBody)){
+                            messageArr.add(receiverTextBody);
+                        }
+
+                        if(!messageSenderArr.contains(senderTextBody)){
+                            messageSenderArr.add(senderTextBody);
+                        }
+
                         gcRef.child(gcKey).child("gc_name").setValue(edit_gc_name.getText().toString().trim());
                     }
 
@@ -754,18 +807,34 @@ public class ChatGroupActivity extends AppCompatActivity {
                                     public void onSuccess(Uri uri) {
                                         String downloadUrl = uri.toString();
                                         Map messageTextBody = new HashMap();
+                                        Map receiverTextBody = new HashMap();
+                                        Map senderTextBody = new HashMap();
                                         messageTextBody.put("message", curr_name_hldr+" has changed group chat picture");
                                         messageTextBody.put("time",saveCurrentTime);
                                         messageTextBody.put("date",saveCurrentDate);
                                         messageTextBody.put("type","text");
                                         messageTextBody.put("from",messageSenderID);
-                                        messageArr.add(messageTextBody);
+
+                                        senderTextBody.putAll(messageTextBody);
+                                        senderTextBody.put("isSeen", true);
+
+                                        receiverTextBody.putAll(messageTextBody);
+                                        receiverTextBody.put("isSeen", false);
+
+                                        if(!messageArr.contains(receiverTextBody)){
+                                            messageArr.add(receiverTextBody);
+                                        }
+
+                                        if(!messageSenderArr.contains(senderTextBody)){
+                                            messageSenderArr.add(senderTextBody);
+                                        }
 
                                         gcRef.child(gcKey).child("gc_picture").setValue(downloadUrl);
                                         gc_name_hldr = edit_gc_name.getText().toString();
 
                                         writeDataToDatabase(
                                                 messageArr,
+                                                messageSenderArr,
                                                 chatdialog,
                                                 gcdialog,
                                                 activity,
@@ -780,6 +849,7 @@ public class ChatGroupActivity extends AppCompatActivity {
                         gc_name_hldr = edit_gc_name.getText().toString();
                         writeDataToDatabase(
                                 messageArr,
+                                messageSenderArr,
                                 chatdialog,
                                 gcdialog,
                                 activity,
@@ -793,6 +863,7 @@ public class ChatGroupActivity extends AppCompatActivity {
         }
 
         private void writeDataToDatabase(ArrayList<Map> messageTextBody,
+                                         ArrayList<Map> messageSenderTextBody,
                                          Dialog chatdialog,
                                          Dialog gcdialog,
                                          Activity activity,
@@ -806,7 +877,7 @@ public class ChatGroupActivity extends AppCompatActivity {
                 String message_push_id = user_message_key.getKey();
 
                 Map messageBodyDetails = new HashMap();
-                messageBodyDetails.put(message_sender_ref+"/"+message_push_id,messageTextBody.get(y));
+                messageBodyDetails.put(message_sender_ref+"/"+message_push_id,messageSenderTextBody.get(y));
                 for(int x=0; x<messageReceivers.size(); x++){
                     if(!messageReceivers.get(x).equals(messageSenderID+" / "+curr_name_hldr)){
                         String message_receiver_ref = "Messages/" + messageReceivers.get(x).split(" / ")[0] + "/" +  gcKey;
