@@ -250,6 +250,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         negative.setTextColor(Color.BLACK);
     }
 
+
     private void getAllLocationAvailable() {
         DatabaseReference locRef = FirebaseDatabase.getInstance().getReference().child("Location");
         locRef.addChildEventListener(new ChildEventListener() {
