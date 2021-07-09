@@ -52,6 +52,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -60,6 +62,8 @@ import java.util.Map;
 import de.hdodenhof.circleimageview.CircleImageView;
 import ph.com.team.gobiker.NavActivity;
 import ph.com.team.gobiker.R;
+import ph.com.team.gobiker.ui.notifications.Notifications;
+import ph.com.team.gobiker.ui.notifications.NotificationsFragment;
 
 public class ChatActivity extends AppCompatActivity {
     private Toolbar ChattoolBar;
@@ -196,6 +200,7 @@ public class ChatActivity extends AppCompatActivity {
                 Messages messages = dataSnapshot.getValue(Messages.class);
                 if(!messagesList.contains(messages)){
                     messagesList.add(messages);
+                    Collections.sort(messagesList, new TimeStampComparator());
                     userMessagesList.smoothScrollToPosition(messageAdapter.getItemCount());
                     messageAdapter.notifyDataSetChanged();
                 }
@@ -226,7 +231,12 @@ public class ChatActivity extends AppCompatActivity {
 
             }
         });
+    }
 
+    public class TimeStampComparator implements Comparator<Messages> {
+        public int compare(Messages left, Messages right) {
+            return left.getDate().compareTo(right.getDate());
+        }
     }
 
     private void SendMessage() {

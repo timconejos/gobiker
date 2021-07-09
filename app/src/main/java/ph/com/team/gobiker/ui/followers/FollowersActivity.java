@@ -67,13 +67,12 @@ public class FollowersActivity extends AppCompatActivity {
                                 if (dataSnapshot.exists()) {
                                     if (dataSnapshot.hasChild("following")){
                                         if (dataSnapshot.child("following").hasChild(receiverUserId)){
+                                            likesViewHolder.linearalllike.setVisibility(View.VISIBLE);
                                             likesViewHolder.setUsername(dataSnapshot.child("fullname").getValue().toString());
                                             if (dataSnapshot.hasChild("profileimage"))
                                                 likesViewHolder.setProfileimage(getApplicationContext(), dataSnapshot.child("profileimage").getValue().toString());
                                             else
                                                 likesViewHolder.setProfileimage(getApplicationContext(), "");
-
-                                            likesViewHolder.linearalllike.setVisibility(View.VISIBLE);
                                         }
                                     }
                                 }
@@ -100,7 +99,7 @@ public class FollowersActivity extends AppCompatActivity {
             myUserName = mView.findViewById(R.id.likes_username);
             image = mView.findViewById(R.id.likes_profile_image);
             linearalllike = mView.findViewById(R.id.linearalllikes);
-            linearalllike.setVisibility(View.INVISIBLE);
+            linearalllike.setVisibility(View.GONE);
         }
 
         public void setUsername(String username) {

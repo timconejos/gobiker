@@ -56,6 +56,8 @@ import com.squareup.picasso.Picasso;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -216,6 +218,7 @@ public class ChatGroupActivity extends AppCompatActivity {
                         if (dataSnapshot.exists()){
                             Messages messages = dataSnapshot.getValue(Messages.class);
                             messagesList.add(messages);
+                            Collections.sort(messagesList, new TimeStampComparator());
                             userMessagesList.smoothScrollToPosition(messageAdapter.getItemCount());
                             messageAdapter.notifyDataSetChanged();
 
@@ -247,6 +250,12 @@ public class ChatGroupActivity extends AppCompatActivity {
 
                     }
                 });
+    }
+
+    public class TimeStampComparator implements Comparator<Messages> {
+        public int compare(Messages left, Messages right) {
+            return left.getDate().compareTo(right.getDate());
+        }
     }
 
     private void SendMessage() {
