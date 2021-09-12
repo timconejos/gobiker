@@ -1,26 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:dist="http://schemas.android.com/apk/distribution"
+    xmlns:tools="http://schemas.android.com/tools"
     package="ph.com.team.gobiker">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <dist:module dist:instant="true" />
 
     <application
-        android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:launchMode="singleTask"
         android:finishOnTaskLaunch="true"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:fullBackupContent="true"
+        android:allowBackup="true">
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"
@@ -30,11 +33,12 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
         </provider>
-        <activity android:name=".ui.posts.SpecificPostActivity"></activity>
-        <activity android:name=".ui.profile.ViewOthersProfile"></activity>
-        <activity android:name=".ui.posts.PhotoFullScreenActivity"></activity>
-        <activity android:name=".ui.home.GroupDetailsActivity"></activity>
-        <activity android:name=".ui.following.FollowingActivity"></activity>
+
+        <activity android:name=".ui.posts.SpecificPostActivity" />
+        <activity android:name=".ui.profile.ViewOthersProfile" />
+        <activity android:name=".ui.posts.PhotoFullScreenActivity" />
+        <activity android:name=".ui.home.GroupDetailsActivity" />
+        <activity android:name=".ui.following.FollowingActivity" />
         <activity android:name=".ui.followers.FollowersActivity" />
         <activity android:name=".ui.posts.ClickCommentActivity" />
         <activity android:name=".ui.posts.LikesActivity" />
@@ -62,12 +66,12 @@
         <activity
             android:name=".NavActivity"
             android:label="@string/title_activity_nav" />
-        <activity android:name=".ResetPassword" />
-        <activity android:name=".ForgotEmailSent" />
-        <activity android:name=".ForgotPassword" />
+        <activity android:name=".ResetPasswordActivity" />
+        <activity android:name=".ForgotEmailSentActivity" />
+        <activity android:name=".ForgotPasswordActivity" />
         <activity android:name=".SuccessVerification" />
-        <activity android:name=".verification" />
-        <activity android:name=".CreateAccount" />
+        <activity android:name=".VerificationActivity" />
+        <activity android:name=".CreateAccountActivity" />
         <activity
             android:name=".SplashActivity"
             android:theme="@style/SplashTheme">
@@ -77,7 +81,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".login">
+        <activity android:name=".MainScreenActivity">
 
             <!-- <intent-filter> -->
             <!-- <action android:name="android.intent.action.MAIN" /> -->
@@ -87,9 +91,8 @@
             <!-- </intent-filter> -->
         </activity>
         <activity
-            android:name=".ui.login.MainLoginActivity"
+            android:name=".MainLoginActivity"
             android:label="@string/title_activity_main_login" />
-        <activity android:name=".MainActivity" />
         <activity android:name=".HomeActivity" />
         <activity android:name=".ui.map.NavigationStartActivity" />
         <activity android:name=".SetupWithExistingActivity"/>
@@ -98,6 +101,9 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
+        <meta-data android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id"/>
     </application>
+
 
 </manifest>

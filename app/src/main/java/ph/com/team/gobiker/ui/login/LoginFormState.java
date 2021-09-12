@@ -3,7 +3,7 @@ package ph.com.team.gobiker.ui.login;
 import androidx.annotation.Nullable;
 
 /**
- * Data validation state of the login form.
+ * Data validation state of the MainScreenActivity form.
  */
 class LoginFormState {
     @Nullable

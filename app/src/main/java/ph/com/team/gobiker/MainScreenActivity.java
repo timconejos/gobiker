@@ -1,25 +1,16 @@
 package ph.com.team.gobiker;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
-import ph.com.team.gobiker.ui.login.MainLoginActivity;
-
-public class login extends AppCompatActivity {
+public class MainScreenActivity extends AppCompatActivity {
 
     private Button mLogin,signUp;
     private FirebaseAuth mAuth;
@@ -27,7 +18,7 @@ public class login extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_main_screen);
         mAuth = FirebaseAuth.getInstance();
 
         mLogin = findViewById(R.id.login);
@@ -35,14 +26,14 @@ public class login extends AppCompatActivity {
         mLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(login.this, MainLoginActivity.class));
+                startActivity(new Intent(MainScreenActivity.this, MainLoginActivity.class));
                 finish();
             }
         });
         signUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(login.this, CreateAccount.class));
+                startActivity(new Intent(MainScreenActivity.this, CreateAccountActivity.class));
                 finish();
             }
         });
@@ -61,7 +52,7 @@ public class login extends AppCompatActivity {
     }
 
     private void SendUserToMainActivity() {
-        Intent setupIntent = new Intent(login.this, NavActivity.class);
+        Intent setupIntent = new Intent(MainScreenActivity.this, NavActivity.class);
         startActivity(setupIntent);
         finish();
     }

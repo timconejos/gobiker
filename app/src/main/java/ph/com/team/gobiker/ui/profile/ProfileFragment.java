@@ -24,7 +24,7 @@ import ph.com.team.gobiker.ui.following.FollowingActivity;
 import ph.com.team.gobiker.LogoutActivity;
 import ph.com.team.gobiker.R;
 import ph.com.team.gobiker.SettingsActivity;
-import ph.com.team.gobiker.login;
+import ph.com.team.gobiker.MainScreenActivity;
 
 public class ProfileFragment extends Fragment {
 
@@ -314,7 +314,7 @@ public class ProfileFragment extends Fragment {
 
 
     private void SendUserToLoginActivity() {
-        Intent loginIntent = new Intent(getActivity(), login.class);
+        Intent loginIntent = new Intent(getActivity(), MainScreenActivity.class);
         startActivity(loginIntent);
     }
 

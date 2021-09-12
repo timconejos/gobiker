@@ -1,12 +1,8 @@
-package ph.com.team.gobiker.ui.login;
+package ph.com.team.gobiker;
 
 import android.Manifest;
-import android.app.Activity;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -15,26 +11,21 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
-import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -55,23 +46,15 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
-import ph.com.team.gobiker.CreateAccount;
-import ph.com.team.gobiker.ForgotPassword;
-import ph.com.team.gobiker.HomeActivity;
-import ph.com.team.gobiker.NavActivity;
-import ph.com.team.gobiker.R;
-import ph.com.team.gobiker.SetupActivity;
-import ph.com.team.gobiker.SetupWithExistingActivity;
-import ph.com.team.gobiker.login;
-import ph.com.team.gobiker.ui.home.GroupDetailsActivity;
 import ph.com.team.gobiker.ui.login.LoginViewModel;
-import ph.com.team.gobiker.ui.login.LoginViewModelFactory;
 import ph.com.team.gobiker.ui.map.PermissionUtils;
 
 public class MainLoginActivity extends AppCompatActivity {
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private LoginViewModel loginViewModel;
-    private Button noAccBtn, forgotPassBtn, loginButton, googleButton;
+    private Button noAccBtn, forgotPassBtn, loginButton;
+    private SignInButton googleButton;
+    private LoginButton FBButton;
     private EditText UserEmail, UserPassword;
     private ProgressDialog loadingBar, confirmationLoading;
     private FirebaseAuth mAuth;
@@ -89,7 +72,7 @@ public class MainLoginActivity extends AppCompatActivity {
 
         // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestIdToken(getString(R.string.server_client_id))
                 .requestEmail()
                 .build();
         // [END config_signin]
@@ -100,7 +83,8 @@ public class MainLoginActivity extends AppCompatActivity {
         UserEmail = findViewById(R.id.username);
         UserPassword = findViewById(R.id.login_password);
         loginButton = findViewById(R.id.continueLogin);
-        googleButton = findViewById(R.id.gLogin);
+        googleButton = findViewById(R.id.g_login);
+        FBButton = findViewById(R.id.fb_login);
         noAccBtn = findViewById(R.id.login_no_account);
         forgotPassBtn = findViewById(R.id.login_forgot_pass);
         loadingBar = new ProgressDialog(this);
@@ -110,7 +94,7 @@ public class MainLoginActivity extends AppCompatActivity {
         noAccBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(MainLoginActivity.this, CreateAccount.class));
+                startActivity(new Intent(MainLoginActivity.this, CreateAccountActivity.class));
                 finish();
             }
         });
@@ -118,7 +102,7 @@ public class MainLoginActivity extends AppCompatActivity {
         forgotPassBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(MainLoginActivity.this, ForgotPassword.class));
+                startActivity(new Intent(MainLoginActivity.this, ForgotPasswordActivity.class));
                 finish();
             }
         });
@@ -137,83 +121,14 @@ public class MainLoginActivity extends AppCompatActivity {
             }
         });
 
-        askPermission();
-        /*loginViewModel.getLoginFormState().observe(this, new Observer<LoginFormState>() {
-            @Override
-            public void onChanged(@Nullable LoginFormState loginFormState) {
-                if (loginFormState == null) {
-                    return;
-                }
-                loginButton.setEnabled(loginFormState.isDataValid());
-                if (loginFormState.getUsernameError() != null) {
-                    usernameEditText.setError(getString(loginFormState.getUsernameError()));
-                }
-                if (loginFormState.getPasswordError() != null) {
-                    passwordEditText.setError(getString(loginFormState.getPasswordError()));
-                }
-            }
-        });
-
-        loginViewModel.getLoginResult().observe(this, new Observer<LoginResult>() {
-            @Override
-            public void onChanged(@Nullable LoginResult loginResult) {
-                if (loginResult == null) {
-                    return;
-                }
-                loadingProgressBar.setVisibility(View.GONE);
-                if (loginResult.getError() != null) {
-                    showLoginFailed(loginResult.getError());
-                }
-                if (loginResult.getSuccess() != null) {
-                    updateUiWithUser(loginResult.getSuccess());
-                }
-                setResult(Activity.RESULT_OK);
-
-                //Complete and destroy login activity once successful
-                startActivity(new Intent(MainLoginActivity.this, NavActivity.class));
-                finish();
-            }
-        });
-
-        TextWatcher afterTextChangedListener = new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // ignore
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // ignore
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                loginViewModel.loginDataChanged(usernameEditText.getText().toString(),
-                        passwordEditText.getText().toString());
-            }
-        };
-        usernameEditText.addTextChangedListener(afterTextChangedListener);
-        passwordEditText.addTextChangedListener(afterTextChangedListener);
-        passwordEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    loginViewModel.login(usernameEditText.getText().toString(),
-                            passwordEditText.getText().toString());
-                }
-                return false;
-            }
-        });
-
-        loginButton.setOnClickListener(new View.OnClickListener() {
+        FBButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                loadingProgressBar.setVisibility(View.VISIBLE);
-                loginViewModel.login(usernameEditText.getText().toString(),
-                        passwordEditText.getText().toString());
+                initiateFBLogin();
             }
-        });*/
+        });
+
+        askPermission();
     }
 
     private void gLogin() {
@@ -226,15 +141,10 @@ public class MainLoginActivity extends AppCompatActivity {
                 Manifest.permission.ACCESS_FINE_LOCATION, true);
     }
 
-    /*private void updateUiWithUser(LoggedInUserView model) {
-        String welcome = getString(R.string.welcome) + model.getDisplayName();
-        //TODO : initiate successful logged in experience
-        Toast.makeText(getApplicationContext(), welcome, Toast.LENGTH_LONG).show();
+    private void initiateFBLogin(){
+
     }
 
-    private void showLoginFailed(@StringRes Integer errorString) {
-        Toast.makeText(getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
-    }*/
 
     private void AllowingUserToLogin() {
         String email = UserEmail.getText().toString();
@@ -248,7 +158,7 @@ public class MainLoginActivity extends AppCompatActivity {
         }
         else{
             loadingBar.setTitle("Login");
-            loadingBar.setMessage("Please wait, while we are allowing you to login into your Account...");
+            loadingBar.setMessage("Please wait, while we are allowing you to MainScreenActivity into your Account...");
             loadingBar.setCanceledOnTouchOutside(true);
             loadingBar.show();
 
@@ -291,7 +201,7 @@ public class MainLoginActivity extends AppCompatActivity {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     confirmationLoading.setTitle("Loading");
-                    confirmationLoading.setMessage("Please wait, while we are sending you a new verification email...");
+                    confirmationLoading.setMessage("Please wait, while we are sending you a new VerificationActivity email...");
                     confirmationLoading.setCanceledOnTouchOutside(true);
                     confirmationLoading.show();
                     switch (which){
@@ -299,7 +209,7 @@ public class MainLoginActivity extends AppCompatActivity {
                             user.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
-                                    Toast.makeText(MainLoginActivity.this, "We have sent you a new verification email. If you have not received a new email in a few minutes please try again.", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(MainLoginActivity.this, "We have sent you a new VerificationActivity email. If you have not received a new email in a few minutes please try again.", Toast.LENGTH_SHORT).show();
                                     confirmationLoading.dismiss();
                                     mAuth.signOut();
                                 }

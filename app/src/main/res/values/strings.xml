@@ -128,11 +128,15 @@
     <string name="create_profile">Create Profile</string>
     <string name="current_location">Current Location</string>
     <string name="no_of_rides">No. of Rides</string>
-    
+
     <string-array name="create_room_options">
         <item>Private</item>
         <item>Group</item>
         <item>Public</item>
     </string-array>
+
+    <string name="facebook_app_id">821445725297008</string>
+    <string name="fb_login_protocol_scheme">fb821445725297008</string>
+    <string name="server_client_id">1037765640253-i447v1pt24i0mje6c9te4r0skfu9jr28.apps.googleusercontent.com</string>
 
 </resources>

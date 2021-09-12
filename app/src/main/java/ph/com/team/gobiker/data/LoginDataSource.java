@@ -1,8 +1,5 @@
 package ph.com.team.gobiker.data;
 
-import android.util.Log;
-import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -11,12 +8,11 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
 import ph.com.team.gobiker.data.model.LoggedInUser;
-import ph.com.team.gobiker.login;
 
 import java.io.IOException;
 
 /**
- * Class that handles authentication w/ login credentials and retrieves user information.
+ * Class that handles authentication w/ MainScreenActivity credentials and retrieves user information.
  */
 public class LoginDataSource {
 

@@ -200,10 +200,34 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
             startFreeRide.setText("Stop");
             pauseFreeRide.setVisibility(View.VISIBLE);
         } else {
-            startNav.setVisibility(View.VISIBLE);
-            startFreeRide.setText("Start");
-            pauseFreeRide.setVisibility(View.GONE);
+            stoppingSingleFreeRide();
         }
+    }
+
+    private void stoppingSingleFreeRide()
+    {
+        saveRideData();
+        resetTrackingData();
+        startNav.setVisibility(View.VISIBLE);
+        startFreeRide.setText("Start");
+        pauseFreeRide.setVisibility(View.GONE);
+    }
+
+    private void resetTrackingData() {
+        distanceTotal = 0;
+        distanceRemain = 0;
+        calories = 0;
+        speed = 0;
+        secondsTime = 0;
+    }
+
+    private void saveRideData() {
+        double distanceRode = distanceTotal;
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Go Biker").setMessage(String.format("You rode: %1$.2f km for %2$d seconds! \nCalories burned: %3$.2f", distanceTotal/1000, secondsTime, calories)).setPositiveButton("OK!", null).setCancelable(false);
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        dialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(Color.BLACK);
     }
 
 

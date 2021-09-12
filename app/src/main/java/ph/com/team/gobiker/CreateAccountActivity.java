@@ -22,9 +22,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.HashMap;
 
-import ph.com.team.gobiker.ui.login.MainLoginActivity;
-
-public class CreateAccount extends AppCompatActivity {
+public class CreateAccountActivity extends AppCompatActivity {
 
     private EditText UserEmail, UserPhone, UserPassword, UserConfirmPassword;
     private Button CreateAccountButton, mLogin;
@@ -56,7 +54,7 @@ public class CreateAccount extends AppCompatActivity {
         mLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(CreateAccount.this, MainLoginActivity.class));
+                startActivity(new Intent(CreateAccountActivity.this, MainLoginActivity.class));
                 finish();
             }
         });
@@ -104,11 +102,11 @@ public class CreateAccount extends AppCompatActivity {
                                         if (task.isSuccessful()){
                                             SendEmailVerificationMessage();
                                             //SendUserToLoginActivity();
-                                            //Toast.makeText(CreateAccount.this,"Your Account is created successfully",Toast.LENGTH_LONG).show();
+                                            //Toast.makeText(CreateAccountActivity.this,"Your Account is created successfully",Toast.LENGTH_LONG).show();
                                         }
                                         else{
                                             String message = task.getException().getMessage();
-                                            Toast.makeText(CreateAccount.this,"Error Occurred:"+message,Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(CreateAccountActivity.this,"Error Occurred:"+message,Toast.LENGTH_SHORT).show();
                                         }
 
                                     }
@@ -118,7 +116,7 @@ public class CreateAccount extends AppCompatActivity {
                             }
                             else{
                                 String message = task.getException().getMessage();
-                                Toast.makeText(CreateAccount.this, "Error Occured: " + message, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(CreateAccountActivity.this, "Error Occured: " + message, Toast.LENGTH_SHORT).show();
                             }
                             loadingBar.dismiss();
                         }
@@ -127,7 +125,7 @@ public class CreateAccount extends AppCompatActivity {
     }
 
     private void SendUserToLoginActivity() {
-        Intent setupIntent = new Intent(CreateAccount.this, MainLoginActivity.class);
+        Intent setupIntent = new Intent(CreateAccountActivity.this, MainLoginActivity.class);
         startActivity(setupIntent);
         finish();
     }
@@ -140,12 +138,12 @@ public class CreateAccount extends AppCompatActivity {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
                     if (task.isSuccessful()){
-                        Toast.makeText(CreateAccount.this,"Registration Successful. Please verify your account.",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(CreateAccountActivity.this,"Registration Successful. Please verify your account.",Toast.LENGTH_SHORT).show();
                         SendUserToLoginActivity();
                         mAuth.signOut();
                     }
                     else{
-                        Toast.makeText(CreateAccount.this,"Error: "+task.getException().getMessage(),Toast.LENGTH_SHORT).show();
+                        Toast.makeText(CreateAccountActivity.this,"Error: "+task.getException().getMessage(),Toast.LENGTH_SHORT).show();
                         mAuth.signOut();
                     }
                 }

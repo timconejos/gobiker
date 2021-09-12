@@ -151,7 +151,7 @@ public class NavActivity extends AppCompatActivity implements NotificationsFragm
     }
 
     private void SendUserToLoginActivity() {
-        Intent setupIntent = new Intent(NavActivity.this, login.class);
+        Intent setupIntent = new Intent(NavActivity.this, MainScreenActivity.class);
         startActivity(setupIntent);
         finish();
     }

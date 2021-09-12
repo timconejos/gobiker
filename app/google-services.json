@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "1037765640253-ebttgu43qviksdhtq93i9fhqt15ff69f.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ph.com.team.gobiker",
+            "certificate_hash": "0c5fbe545d2ab9c0473bca073ad6d33cd01de46b"
+          }
+        },
+        {
           "client_id": "1037765640253-umfaheekuhq1ou7jo1a4rukqptek598m.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

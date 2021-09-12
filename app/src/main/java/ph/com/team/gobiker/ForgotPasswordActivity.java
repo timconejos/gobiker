@@ -16,7 +16,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class ForgotPassword extends AppCompatActivity {
+public class ForgotPasswordActivity extends AppCompatActivity {
 
     private Toolbar mToolbar;
     private Button ResetPasswordSendEmailButton,ResetPasswordRememberButton;
@@ -39,19 +39,19 @@ public class ForgotPassword extends AppCompatActivity {
             public void onClick(View view) {
                 String userEmail = ResetEmailInput.getText().toString();
                 if (TextUtils.isEmpty(userEmail)){
-                    Toast.makeText(ForgotPassword.this,"Please write your valid email address first.",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ForgotPasswordActivity.this,"Please write your valid email address first.",Toast.LENGTH_SHORT).show();
                 }
                 else{
                     mAuth.sendPasswordResetEmail(userEmail).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()){
-                                Toast.makeText(ForgotPassword.this,"Please check your Email Account, If you want to reset your password.",Toast.LENGTH_SHORT).show();
-                                startActivity(new Intent(ForgotPassword.this, login.class));
+                                Toast.makeText(ForgotPasswordActivity.this,"Please check your Email Account, If you want to reset your password.",Toast.LENGTH_SHORT).show();
+                                startActivity(new Intent(ForgotPasswordActivity.this, MainScreenActivity.class));
                             }
                             else{
                                 String message  = task.getException().getMessage();
-                                Toast.makeText(ForgotPassword.this,"Error occurred: "+message,Toast.LENGTH_SHORT).show();
+                                Toast.makeText(ForgotPasswordActivity.this,"Error occurred: "+message,Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
@@ -62,7 +62,7 @@ public class ForgotPassword extends AppCompatActivity {
         ResetPasswordRememberButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(ForgotPassword.this, login.class));
+                startActivity(new Intent(ForgotPasswordActivity.this, MainScreenActivity.class));
             }
         });
     }
